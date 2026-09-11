@@ -91,6 +91,45 @@
   color: #2b2f3a;
 }
 
+.learning-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.learning-nav-button {
+  appearance: none;
+  background: rgba(65, 65, 243, 0.05);
+  border: 1px solid rgba(65, 65, 243, 0.12);
+  border-radius: 999px;
+  color: #1b1d3a;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 14px;
+  text-align: center;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.learning-nav-button:hover {
+  background: rgba(65, 65, 243, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(65, 65, 243, 0.08);
+}
+
+.learning-nav-button.is-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.learning-nav-button.next {
+  margin-left: auto;
+}
+
 .button_QA {
     padding: 12px 28px;
     font-size: 16px;
