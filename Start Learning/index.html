@@ -16,6 +16,7 @@
                 <li id="nav1"><a href="../index.html"> 主页 </a></li>
                 <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
                 <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
                 <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
             </ul>
             <div>
@@ -87,11 +88,63 @@
              </div>
         </div>
         <div class="box_with_side">
-            <h1>标题</h1> 
-            <div>
-                <h1>文字</h1>
+            <!-- 子项名称：在这里写每个 box 的独立名称与文字内容 -->
+            <div class="learning-content-panel">
+                <div class="learning-content-header">
+                    <!-- 子项名称：标题 -->
+                    <h1 id="learningTitle">开始音乐之旅</h1>
+                </div>
+                <div class="learning-content-body">
+                    <!-- 子项名称：文字 -->
+                    <h2 id="learningSubtitle">内容</h2>
+                    <!-- 子项名称：内容说明 -->
+                    <p id="learningText">请从左侧目录中选择一个子项查看内容。</p>
+                </div>
             </div>
         </div>
         <script src="../js/login.js"></script>
+        <script>
+            // 子项名称：按每个目录链接单独填写这里的标题、副标题和正文内容
+            const learningTitle = document.getElementById('learningTitle');
+            const learningSubtitle = document.getElementById('learningSubtitle');
+            const learningText = document.getElementById('learningText');
+
+            const sidebar = document.querySelector('.sidebar');
+            const contentBox = document.querySelector('.box_with_side');
+
+            const syncContentToSidebar = () => {
+                if (!sidebar || !contentBox) return;
+                const actualWidth = sidebar.offsetWidth || 80;
+                const offset = actualWidth + 12;
+                contentBox.style.left = `${offset}px`;
+            };
+
+            syncContentToSidebar();
+            sidebar?.addEventListener('mouseenter', syncContentToSidebar);
+            sidebar?.addEventListener('mouseleave', syncContentToSidebar);
+            sidebar?.addEventListener('focusin', syncContentToSidebar);
+            sidebar?.addEventListener('focusout', syncContentToSidebar);
+            window.addEventListener('resize', syncContentToSidebar);
+
+            if (window.ResizeObserver && sidebar) {
+                const sidebarObserver = new ResizeObserver(syncContentToSidebar);
+                sidebarObserver.observe(sidebar);
+            }
+
+            const directoryLinks = document.querySelectorAll('.directory-links a');
+
+            directoryLinks.forEach((link) => {
+                const title = link.textContent.trim();
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    // 子项名称：音名与唱名
+                    learningTitle.textContent = title;
+                    // 子项名称：音名与唱名
+                    learningSubtitle.textContent = title;
+                    // 子项名称：音名与唱名
+                    learningText.textContent = `${title}：此处为子项内容区域，暂时展示子项名称。`;
+                });
+            });
+        </script>
     </body>
 </html>
