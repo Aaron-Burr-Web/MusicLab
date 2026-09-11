@@ -1,5 +1,25 @@
 (() => {
   const modalId = 'musiclab-qa-modal';
+  const questions = [
+    {
+      question: '您的音乐基础如何？',
+      options: ['完全没有基础', '经历过一段时间的学习，有一定基础', '已经过大量时间的学习，基础扎实']
+    },
+    {
+      question: '您对音乐拥有的兴趣程度如何？',
+      options: ['完全没有兴趣', '有一些兴趣', '兴趣浓厚', '非常感兴趣']
+    },
+    {
+      question: '您希望通过本网站获取什么能力？',
+      options: ['乐理知识', '识谱技巧', '音乐制作能力']
+    }
+  ];
+
+  const firstQuestionResultMessages = [
+    '已为您选择个性化的方案，让我们从基础开始。',
+    '我们将跳过简单的基础学习，直接开始实操与学习结合环节。',
+    '您已经有了雄厚的乐理基础，推荐您直接到游乐园界面开始DAW制作！'
+  ];
 
   const ensureStyles = () => {
     if (document.getElementById('musiclab-qa-modal-styles')) return;
@@ -7,15 +27,15 @@
     const style = document.createElement('style');
     style.id = 'musiclab-qa-modal-styles';
     style.textContent = `
-      .musiclab-modal-overlay {
+      .musiclab-qa-overlay {
         position: fixed;
         inset: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(12, 14, 22, 0.62);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        background: rgba(10, 12, 18, 0.34);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
@@ -23,265 +43,276 @@
         z-index: 2000;
       }
 
-      .musiclab-modal-overlay.is-open {
+      .musiclab-qa-overlay.is-open {
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
       }
 
-      .musiclab-modal {
+      .musiclab-qa-modal {
         position: relative;
-        width: min(520px, calc(100vw - 32px));
-        background: rgba(20, 22, 30, 0.96);
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 22px;
-        box-shadow: 0 24px 60px rgba(0,0,0,0.4), 0 0 24px rgba(101, 128, 255, 0.18);
-        color: #edf4ff;
-        transform: translateY(16px) scale(0.96);
+        width: min(500px, calc(100vw - 32px));
+        background: aliceblue;
+        border: 1px solid #d8d8df;
+        border-radius: 12px;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+        color: #111111;
+        transform: translateY(12px) scale(0.98);
         opacity: 0;
         transition: transform 0.22s ease, opacity 0.22s ease;
         overflow: hidden;
       }
 
-      .musiclab-modal-overlay.is-open .musiclab-modal {
+      .musiclab-qa-overlay.is-open .musiclab-qa-modal {
         transform: translateY(0) scale(1);
         opacity: 1;
       }
 
-      .musiclab-modal-close {
+      .musiclab-qa-close {
         position: absolute;
-        right: 16px;
-        top: 12px;
-        width: 36px;
-        height: 36px;
+        top: 14px;
+        right: 14px;
+        width: 32px;
+        height: 32px;
         border: none;
         border-radius: 50%;
-        background: rgba(255,255,255,0.06);
-        color: #edf4ff;
+        background: rgba(65, 65, 243, 0.08);
+        color: #111111;
         font-size: 22px;
-        line-height: 1;
         cursor: pointer;
         transition: background 0.2s ease, transform 0.2s ease;
       }
 
-      .musiclab-modal-close:hover {
-        background: rgba(117, 139, 255, 0.18);
+      .musiclab-qa-close:hover {
+        background: rgba(65, 65, 243, 0.14);
         transform: rotate(90deg);
       }
 
-      .musiclab-modal-header {
-        padding: 28px 56px 12px 28px;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+      .musiclab-qa-header {
+        padding: 28px 48px 12px 24px;
+        border-bottom: 1px solid rgba(17, 17, 17, 0.08);
       }
 
-      .musiclab-modal-header h2 {
+      .musiclab-qa-header h2 {
         margin: 0;
-        font-size: clamp(24px, 2vw, 30px);
-        font-weight: 700;
+        font-size: 30px;
+        text-align: center;
       }
 
-      .musiclab-modal-body {
-        padding: 22px 28px 14px;
+      .musiclab-qa-body {
+        padding: 20px 24px 18px;
       }
 
-      .musiclab-modal-body p {
-        margin: 0 0 18px;
-        color: rgba(237,244,255,0.8);
-        line-height: 1.7;
-      }
-
-      .musiclab-modal-form {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-      }
-
-      .musiclab-field {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+      .musiclab-qa-progress {
+        margin: 0 0 16px;
         font-size: 14px;
-        color: rgba(237, 244, 255, 0.9);
+        color: #4a4a57;
+        text-align: center;
       }
 
-      .musiclab-field input,
-      .musiclab-field textarea,
-      .musiclab-field select {
+      .musiclab-qa-question {
+        margin: 0 0 18px;
+        font-size: 22px;
+        line-height: 1.5;
+        text-align: center;
+        color: #111111;
+      }
+
+      .musiclab-qa-options {
+        display: grid;
+        gap: 12px;
+      }
+
+      .musiclab-qa-option {
         width: 100%;
-        box-sizing: border-box;
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 10px;
-        background: rgba(255,255,255,0.03);
-        color: #edf4ff;
-        padding: 10px 12px;
-        outline: none;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      .musiclab-field input:focus,
-      .musiclab-field textarea:focus,
-      .musiclab-field select:focus {
-        border-color: rgba(118, 142, 255, 0.9);
-        box-shadow: 0 0 0 3px rgba(118, 142, 255, 0.18);
-      }
-
-      .musiclab-field textarea {
-        min-height: 100px;
-        resize: vertical;
-      }
-
-      .musiclab-modal-footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        padding: 10px 28px 24px;
-      }
-
-      .musiclab-btn {
-        border: none;
-        border-radius: 10px;
-        padding: 10px 18px;
+        padding: 12px 14px;
+        border: 1px solid #c8c8d2;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #111111;
         font-size: 15px;
-        font-weight: 600;
+        text-align: left;
         cursor: pointer;
-        transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
       }
 
-      .musiclab-btn:hover {
-        transform: translateY(-1px);
+      .musiclab-qa-option:hover {
+        border-color: rgb(65, 65, 243);
+        box-shadow: 0 0 0 3px rgba(65, 65, 243, 0.12);
+        transform: translateX(2px);
       }
 
-      .musiclab-btn:active {
-        transform: translateY(0);
+      .musiclab-qa-result {
+        display: none;
+        margin: 0 0 16px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        background: rgba(65, 65, 243, 0.06);
+        border: 1px solid rgba(65, 65, 243, 0.14);
+        color: #1b1d3a;
+        font-size: 14px;
+        line-height: 1.6;
+        text-align: center;
       }
 
-      .musiclab-btn-cancel {
-        background: rgba(255,255,255,0.06);
-        color: #edf4ff;
+      .musiclab-qa-footer {
+        display: flex;
+        justify-content: center;
+        padding: 0 24px 24px;
       }
 
-      .musiclab-btn-confirm {
-        background: linear-gradient(135deg, #4d63ff, #7a7cff);
-        color: white;
-        box-shadow: 0 12px 24px rgba(78, 92, 255, 0.3);
+      .musiclab-qa-start {
+        display: inline-block;
+        padding: 12px 30px;
+        background: rgb(65, 65, 243);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 10px 18px rgba(49, 78, 255, 0.35), 0 0 18px rgba(76, 94, 255, 0.18);
+        transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, filter 180ms ease;
       }
 
-      .musiclab-btn-confirm:hover {
+      .musiclab-qa-start:hover {
+        background: rgb(82, 82, 255);
+        box-shadow: 0 0 0 1px rgba(154, 168, 255, 0.35), 0 12px 24px rgba(64, 97, 255, 0.45), 0 0 18px rgba(124, 142, 255, 0.7), 0 0 36px rgba(124, 142, 255, 0.42);
         filter: brightness(1.08);
-        box-shadow: 0 0 18px rgba(110, 128, 255, 0.4), 0 12px 24px rgba(78, 92, 255, 0.35);
+        transform: translateY(-2px);
       }
     `;
     document.head.appendChild(style);
   };
 
+  const openModal = () => {
+    const wrapper = document.getElementById(modalId);
+    if (!wrapper) return;
+    wrapper.classList.add('is-open');
+    wrapper.setAttribute('aria-hidden', 'false');
+  };
+
+  const closeModal = () => {
+    const wrapper = document.getElementById(modalId);
+    if (!wrapper) return;
+    wrapper.classList.remove('is-open');
+    wrapper.setAttribute('aria-hidden', 'true');
+  };
+
   const buildModal = () => {
-    const overlay = document.getElementById(modalId);
-    if (overlay) return overlay;
+    const existing = document.getElementById(modalId);
+    if (existing) return existing;
 
     const wrapper = document.createElement('div');
     wrapper.id = modalId;
-    wrapper.className = 'musiclab-modal-overlay';
+    wrapper.className = 'musiclab-qa-overlay';
     wrapper.setAttribute('aria-hidden', 'true');
 
     wrapper.innerHTML = `
-      <div class="musiclab-modal" role="dialog" aria-modal="true" aria-labelledby="musiclab-modal-title">
-        <button class="musiclab-modal-close" type="button" aria-label="关闭">×</button>
-        <div class="musiclab-modal-header">
-          <h2 id="musiclab-modal-title">Q & A</h2>
+      <div class="musiclab-qa-modal" role="dialog" aria-modal="true" aria-labelledby="musiclab-qa-title">
+        <button class="musiclab-qa-close" type="button" aria-label="关闭">×</button>
+        <div class="musiclab-qa-header">
+          <h2 id="musiclab-qa-title">Q & A</h2>
         </div>
-        <div class="musiclab-modal-body">
-          <p>请填写你的问题，我们会尽快为你匹配合适的学习建议。</p>
-          <form class="musiclab-modal-form">
-            <label class="musiclab-field">
-              <span>你的姓名</span>
-              <input type="text" name="name" placeholder="请输入你的名字">
-            </label>
-            <label class="musiclab-field">
-              <span>问题类型</span>
-              <select name="type">
-                <option value="基础学习">基础学习</option>
-                <option value="乐理">乐理</option>
-                <option value="创作">创作</option>
-                <option value="其他">其他</option>
-              </select>
-            </label>
-            <label class="musiclab-field">
-              <span>描述你的问题</span>
-              <textarea name="message" placeholder="例如：我想学习和弦基础，但不知道从哪里开始..."></textarea>
-            </label>
-          </form>
+        <div class="musiclab-qa-body">
+          <p class="musiclab-qa-progress">1 / 3</p>
+          <p class="musiclab-qa-question">请输入文字</p>
+          <div class="musiclab-qa-options"></div>
         </div>
-        <div class="musiclab-modal-footer">
-          <button class="musiclab-btn musiclab-btn-cancel" type="button">取消</button>
-          <button class="musiclab-btn musiclab-btn-confirm" type="button">提交</button>
+        <div class="musiclab-qa-footer" style="display:none; flex-direction:column; align-items:center;">
+          <p class="musiclab-qa-result"></p>
+          <a class="musiclab-qa-start" href="Start Learning/index.html">开始</a>
         </div>
       </div>
     `;
 
     document.body.appendChild(wrapper);
 
-    const closeBtn = wrapper.querySelector('.musiclab-modal-close');
-    const cancelBtn = wrapper.querySelector('.musiclab-btn-cancel');
-    const confirmBtn = wrapper.querySelector('.musiclab-btn-confirm');
+    const closeBtn = wrapper.querySelector('.musiclab-qa-close');
+    const foot = wrapper.querySelector('.musiclab-qa-footer');
+    const resultNode = wrapper.querySelector('.musiclab-qa-result');
+    const progressNode = wrapper.querySelector('.musiclab-qa-progress');
+    const questionNode = wrapper.querySelector('.musiclab-qa-question');
+    const optionsNode = wrapper.querySelector('.musiclab-qa-options');
 
-    const closeModal = () => {
-      wrapper.classList.remove('is-open');
-      wrapper.setAttribute('aria-hidden', 'true');
+    let currentIndex = 0;
+    let firstQuestionChoice = null;
+
+    const resetQuizState = () => {
+      currentIndex = 0;
+      firstQuestionChoice = null;
+      foot.style.display = 'none';
+      resultNode.style.display = 'none';
+      resultNode.textContent = '';
+      renderQuestion();
     };
 
-    const openModal = () => {
-      wrapper.classList.add('is-open');
-      wrapper.setAttribute('aria-hidden', 'false');
+    const renderQuestion = () => {
+      const question = questions[currentIndex];
+      progressNode.textContent = `${currentIndex + 1} / ${questions.length}`;
+      questionNode.textContent = question.question;
+      optionsNode.innerHTML = '';
+
+      question.options.forEach((optionText, optionIndex) => {
+        const optionBtn = document.createElement('button');
+        optionBtn.type = 'button';
+        optionBtn.className = 'musiclab-qa-option';
+        optionBtn.textContent = optionText;
+        optionBtn.addEventListener('click', () => {
+          if (currentIndex === 0) {
+            firstQuestionChoice = optionIndex;
+          }
+
+          if (currentIndex < questions.length - 1) {
+            currentIndex += 1;
+            renderQuestion();
+          } else {
+            resultNode.textContent = firstQuestionResultMessages[firstQuestionChoice] || firstQuestionResultMessages[0];
+            resultNode.style.display = 'block';
+            foot.style.display = 'flex';
+            optionsNode.innerHTML = '';
+            progressNode.textContent = '3 / 3';
+          }
+        });
+        optionsNode.appendChild(optionBtn);
+      });
+
+      if (currentIndex === questions.length - 1) {
+        foot.style.display = 'none';
+      }
     };
 
-    closeBtn.addEventListener('click', closeModal);
-    cancelBtn.addEventListener('click', closeModal);
+    closeBtn.addEventListener('click', () => {
+      closeModal();
+      resetQuizState();
+    });
+
     wrapper.addEventListener('click', (event) => {
-      if (event.target === wrapper) closeModal();
+      if (event.target === wrapper) {
+        closeModal();
+        resetQuizState();
+      }
     });
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && wrapper.classList.contains('is-open')) {
         closeModal();
+        resetQuizState();
       }
     });
 
-    confirmBtn.addEventListener('click', () => {
-      const form = wrapper.querySelector('.musiclab-modal-form');
-      const data = new FormData(form);
-      const name = data.get('name') || '朋友';
-      alert(`感谢你，${name}！你的问题已提交。`);
-      closeModal();
-    });
-
-    window.musiclabQAOpen = openModal;
-    window.musiclabQAClose = closeModal;
-
+    renderQuestion();
     return wrapper;
   };
 
   ensureStyles();
-  const modal = buildModal();
+  buildModal();
 
-  const bindTriggers = () => {
-    const triggers = document.querySelectorAll('[data-qa-modal], [data-open-qa]');
-    triggers.forEach((button) => {
-      button.addEventListener('click', () => {
-        modal.classList.add('is-open');
-        modal.setAttribute('aria-hidden', 'false');
-      });
-    });
-  };
+  const trigger = document.getElementById('OpenQA');
+  if (trigger) {
+    trigger.addEventListener('click', openModal);
+  }
 
-  bindTriggers();
-
-  window.openQA = () => {
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden', 'false');
-  };
-
-  window.closeQA = () => {
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden', 'true');
-  };
+  window.openQA = openModal;
+  window.closeQA = closeModal;
 })();
