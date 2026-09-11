@@ -14,7 +14,6 @@
       options: ['乐理知识', '识谱技巧', '音乐制作能力']
     }
   ];
-
   const firstQuestionResultMessages = [
     '已为您选择个性化的方案，让我们从基础开始。',
     '我们将跳过简单的基础学习，直接开始实操与学习结合环节。',
@@ -271,7 +270,8 @@
             resultNode.style.display = 'block';
             foot.style.display = 'flex';
             optionsNode.innerHTML = '';
-            progressNode.textContent = '3 / 3';
+            progressNode.textContent = '';
+            questionNode.textContent = '';
           }
         });
         optionsNode.appendChild(optionBtn);
