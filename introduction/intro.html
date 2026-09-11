@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLab | 开发组介绍</title>
+    <link rel="stylesheet" href="../css/Home.css">
+</head>
+<body class="main">
+    <div class="top">
+        <div class="Logo">
+            <a href="../index.html" aria-label="返回主页"></a>
+            <img src="../images/Logo.png" width="250">
+        </div>
+        <ul class="nav">
+            <li id="nav1"><a href="../index.html"> 主页 </a></li>
+            <li id="nav2"><a href="intro.html"> 开发组介绍 </a></li>
+            <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+            <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
+            <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+        </ul>
+        <div><hr></div>
+    </div>
+
+    <div class="box">
+        <div class="content-card">
+            <h1>开发组介绍</h1>
+        </div>
+
+        <div class="content-card">
+            <h2>联创小组</h2>
+            <p>&emsp;&emsp;使用者您好，这里是MusicLab项目开发组，来自北京理工大学软件工程专业的联创小组。<br>
+            &emsp;&emsp;从前就在网上看到此类音乐学习或创作网站，但是大多数都涉及版权、收费、功能不齐全等问题，而市面上的音乐软件大多也需要很长的时间去学习。<br>
+            &emsp;&emsp;于是这个idea被催生了，我希望用我现有的乐理知识和编程能力创建一个更适合大众学习创作的音乐网站，在这个过程中，我负责项目牵头和主要的内容编写，得益于小组中其他同学的协助，我们正在把这个项目从0做到美满。虽然我的知识面还没有达到一定程度，html+Css+java也是边学边写，但经过这次的项目，我可以逐渐掌握网站开发的流程与方法。这个网站我也会一直做下去，以后希望能做出更好的网站。</p>
+        </div>
+
+        <div class="member-row">
+            <div class="member-card content-card">
+                <a href="Aaron.html"><h3>郑雨杭</h3></a>
+                <img src="../images/zyh.jpg" alt="郑雨杭">
+            </div>
+
+            <div class="member-card content-card">
+                <a href="Heak.html"><h3>何岚 | HEAK LEANGHAKK</h3></a>
+                <img src="../images/hl.jpg" alt="何岚">
+            </div>
+
+            <div class="member-card content-card">
+                <a href="Abdulkadir.html"><h3>李思齐 | ABDULKADIR</h3></a>
+                <img src="../images/lsq.jpg" alt="李思齐">
+            </div>
+
+            <div class="member-card content-card">
+                <a href="Omar.html"><h3>奥马尔 | MOHAMED OMAR A.</h3></a>
+                <img src="../images/ame.jpg" alt="奥马尔">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const root = document.documentElement;
+        const updateMouseGlow = (event) => {
+            const x = (event.clientX / window.innerWidth) * 100;
+            const y = (event.clientY / window.innerHeight) * 100;
+            root.style.setProperty('--mx', x + '%');
+            root.style.setProperty('--my', y + '%');
+        };
+
+        window.addEventListener('pointermove', updateMouseGlow);
+        window.addEventListener('load', () => {
+            root.style.setProperty('--mx', '50%');
+            root.style.setProperty('--my', '50%');
+        });
+    </script>
+    <script src="../js/login.js"></script>
+</body>
+</html>

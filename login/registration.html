@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="../css/Home.css">  
+</head>
+    <body class="main">
+        <div>
+			<div class="top">
+                <div class="Logo">
+                    <a href="../index.html" aria-label="返回主页"></a>
+                    <img src="../images/Logo.png" width="250">
+                </div>
+            </div>
+            <ul class="nav">
+                <li id="nav1"><a href="../index.html"> 主页 </a></li>
+                <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
+                <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
+                <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+            </ul>
+        </div>
+        <hr>
+        <div class="QAorLogin">
+            <div>
+                <h2>注册</h2>
+            </div>
+            <form id="registerForm" novalidate>
+                <label>创建用户名：</label><br>
+                <input type="text" name="username" id="registerUsernameInput">
+                <span class="field-error" id="registerUsernameError"></span>
+                <br>
+                <label>创建密码：</label><br>
+                <input type="password" name="password" id="registerPasswordInput">
+                <span class="field-error" id="registerPasswordError"></span>
+                <br>
+                <label>再次输入密码：</label><br>
+                <input type="password" name="confirmPassword" id="confirmPasswordInput">
+                <span class="field-error" id="confirmPasswordError"></span>
+                <br><br>
+                <button type="submit" class="button_QA is-disabled" id="registerSubmitButton">注册</button><br><br>
+                <div class="agreement-row" id="registerAgreementRow">
+                    <input type="checkbox" name="agreement" id="registerAgreementRadio" aria-label="我同意《用户服务条款》">
+                    <label for="registerAgreementRadio">我同意《用户服务条款》</label>
+                </div>
+                <br><br>
+                <p>&nbsp;</p>
+            </form>
+        </div>
+    <script src="../js/login.js"></script>
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const registerUsernameInput = document.getElementById('registerUsernameInput');
+        const registerPasswordInput = document.getElementById('registerPasswordInput');
+        const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+        const registerUsernameError = document.getElementById('registerUsernameError');
+        const registerPasswordError = document.getElementById('registerPasswordError');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+        const registerAgreementRadio = document.getElementById('registerAgreementRadio');
+        const registerAgreementRow = document.getElementById('registerAgreementRow');
+        const registerSubmitButton = document.getElementById('registerSubmitButton');
+
+        const clearFieldError = (fieldError) => {
+            fieldError.textContent = '';
+            fieldError.style.display = 'none';
+        };
+
+        const showFieldError = (fieldError, message) => {
+            fieldError.textContent = message;
+            fieldError.style.display = 'block';
+        };
+
+        const validateRegisterFields = () => {
+            const username = registerUsernameInput.value.trim();
+            const password = registerPasswordInput.value.trim();
+            const confirmPassword = confirmPasswordInput.value.trim();
+            let hasError = false;
+
+            clearFieldError(registerUsernameError);
+            clearFieldError(registerPasswordError);
+            clearFieldError(confirmPasswordError);
+
+            if (!username) {
+                showFieldError(registerUsernameError, '用户名未填写');
+                hasError = true;
+            }
+
+            if (!password) {
+                showFieldError(registerPasswordError, '密码未填写');
+                hasError = true;
+            }
+
+            if (!confirmPassword) {
+                showFieldError(confirmPasswordError, '请确认密码');
+                hasError = true;
+            } else if (password && confirmPassword && password !== confirmPassword) {
+                showFieldError(confirmPasswordError, '两次密码不一致');
+                hasError = true;
+            }
+
+            return !hasError;
+        };
+
+        const updateRegisterAgreementState = () => {
+            const isAgreed = registerAgreementRadio.checked;
+            registerSubmitButton.disabled = !isAgreed;
+            registerSubmitButton.classList.toggle('is-disabled', !isAgreed);
+        };
+
+        registerUsernameInput.addEventListener('input', () => {
+            if (registerUsernameInput.value.trim()) clearFieldError(registerUsernameError);
+        });
+
+        registerPasswordInput.addEventListener('input', () => {
+            if (registerPasswordInput.value.trim()) clearFieldError(registerPasswordError);
+        });
+
+        confirmPasswordInput.addEventListener('input', () => {
+            if (confirmPasswordInput.value.trim()) clearFieldError(confirmPasswordError);
+        });
+
+        registerAgreementRadio.addEventListener('change', updateRegisterAgreementState);
+
+        registerForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            if (!registerAgreementRadio.checked) {
+                return;
+            }
+
+            if (!validateRegisterFields()) {
+                return;
+            }
+
+            localStorage.setItem('musiclab_client_name', registerUsernameInput.value.trim());
+            localStorage.setItem('musiclab_login_state', 'true');
+            window.location.href = '../index.html';
+        });
+
+        updateRegisterAgreementState();
+    </script>
+    </body>
+</html>

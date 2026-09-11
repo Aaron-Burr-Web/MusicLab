@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLab | 设置</title>
+    <link rel="stylesheet" href="../css/Home.css">
+</head>
+<body class="main">
+    <div class="top">
+        <div class="Logo">
+            <a href="../index.html" aria-label="返回主页"></a>
+            <img src="../images/Logo.png" width="250">
+        </div>
+        <ul class="nav">
+            <li id="nav1"><a href="../index.html"> 主页 </a></li>
+            <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
+            <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+            <li id="nav5"><a href="settings.html"> 设置 </a></li>
+            <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+        </ul>
+        <div><hr></div>
+    </div>
+
+    <div class="box">
+        <div class="content-card">
+            <h1>设置</h1>
+        </div>
+
+        <div class="content-card">
+            <h2>账户状态</h2>
+            <p>当前页面用于演示新增导航项的样式和结构，后续可以继续补充个人设置、偏好、通知与隐私配置。</p>
+            <div class="logout-area">
+                <button type="button" class="logout-button" id="logoutButton">退出登录</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/login.js"></script>
+    <script>
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', () => {
+                localStorage.removeItem('musiclab_login_state');
+                localStorage.removeItem('musiclab_client_name');
+                window.location.href = '../index.html';
+            });
+        }
+    </script>
+</body>
+</html>

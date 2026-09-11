@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../css/Home.css">  
+</head>
+    <body class="main">
+        <div>
+			<div class="top">
+                <div class="Logo">
+                    <a href="../index.html" aria-label="返回主页"></a>
+                    <img src="../images/Logo.png" width="250">
+                </div>
+            </div>
+            <ul class="nav">
+                <li id="nav1"><a href="../index.html"> 主页 </a></li>
+                <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
+                <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
+                <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+            </ul>
+        </div>
+        <hr>
+        <div class="QAorLogin">
+            <div>
+                <h2 align="center">登录</h2>
+            </div>
+            <form id="loginForm" novalidate>
+                <label>用户名：</label><br>
+                <input type="text" name="username" id="usernameInput">
+                <span class="field-error" id="usernameError"></span>
+                <br>
+                <label>密码：</label><br>
+                <input type="password" name="password" id="passwordInput">
+                <span class="field-error" id="passwordError"></span>
+                <br><br>
+                <button type="submit" class="button_QA is-disabled" id="loginSubmitButton">登录</button><br><br>
+                <div class="agreement-row" id="agreementRow">
+                    <input type="checkbox" name="agreement" id="agreementRadio" aria-label="我同意《用户服务条款》">
+                    <label for="agreementRadio">我同意《用户服务条款》</label>
+                </div>
+                <br><br>
+                <label>没有账号？<a href="registration.html">点击这里创建一个账号</a></label>
+                <p>&nbsp;</p>
+            </form>
+        </div>
+
+        <script>
+            const loginStateKey = 'musiclab_login_state';
+            const clientNameKey = 'musiclab_client_name';
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('usernameInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const usernameError = document.getElementById('usernameError');
+            const passwordError = document.getElementById('passwordError');
+            const agreementRadio = document.getElementById('agreementRadio');
+            const agreementRow = document.getElementById('agreementRow');
+            const loginSubmitButton = document.getElementById('loginSubmitButton');
+
+            const clearFieldError = (fieldError) => {
+                fieldError.textContent = '';
+                fieldError.style.display = 'none';
+            };
+
+            const showFieldError = (fieldError, message) => {
+                fieldError.textContent = message;
+                fieldError.style.display = 'block';
+            };
+
+            const validateLoginFields = () => {
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value.trim();
+                let hasError = false;
+
+                clearFieldError(usernameError);
+                clearFieldError(passwordError);
+
+                if (!username) {
+                    showFieldError(usernameError, '用户名未填写');
+                    hasError = true;
+                }
+
+                if (!password) {
+                    showFieldError(passwordError, '密码未填写');
+                    hasError = true;
+                }
+
+                return !hasError;
+            };
+
+            const updateAgreementState = () => {
+                const isAgreed = agreementRadio.checked;
+                loginSubmitButton.disabled = !isAgreed;
+                loginSubmitButton.classList.toggle('is-disabled', !isAgreed);
+                if (isAgreed) {
+                    agreementRow.classList.remove('warning');
+                }
+            };
+
+            usernameInput.addEventListener('input', () => {
+                if (usernameInput.value.trim()) {
+                    clearFieldError(usernameError);
+                }
+            });
+
+            passwordInput.addEventListener('input', () => {
+                if (passwordInput.value.trim()) {
+                    clearFieldError(passwordError);
+                }
+            });
+
+            agreementRadio.addEventListener('change', updateAgreementState);
+
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                if (!agreementRadio.checked) {
+                    return;
+                }
+
+                if (!validateLoginFields()) {
+                    return;
+                }
+
+                localStorage.setItem(clientNameKey, usernameInput.value.trim());
+                localStorage.setItem(loginStateKey, 'true');
+                window.location.href = '../index.html';
+            });
+
+            updateAgreementState();
+        </script>
+    </body>
+</html>
