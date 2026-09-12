@@ -5,9 +5,14 @@
   const styles = document.createElement('style');
   styles.textContent = `
     .sequencer-panel {
+      --panel-accent: #f2d24f;
+      --panel-accent-strong: #f9c74f;
+      --panel-accent-soft: #f6d864;
+      --panel-accent-deep: rgba(56, 42, 8, 0.9);
+      --panel-shell: rgba(235, 240, 250, 0.9);
       position: relative;
       width: min(1200px, calc(100% - 30px));
-      margin: 0 auto;
+      margin: 0 auto 24px;
       padding: 22px 20px 18px;
       border-radius: 24px;
       background: linear-gradient(145deg, rgba(255,255,255,0.96) 0%, rgba(240,244,255,0.98) 38%, rgba(246,249,255,0.98) 100%);
@@ -19,6 +24,20 @@
       opacity: 1 !important;
       transform: none !important;
       animation: none !important;
+    }
+
+    .sequencer-panel.red-panel {
+      --panel-accent: #e53935;
+      --panel-accent-strong: #d32f2f;
+      --panel-accent-soft: #fca5a5;
+      --panel-accent-deep: rgba(76, 0, 0, 0.9);
+      --panel-shell: rgba(255, 236, 236, 0.92);
+      background: linear-gradient(145deg, rgba(255,245,245,0.97) 0%, rgba(255,233,233,0.98) 38%, rgba(255,246,247,0.98) 100%);
+      box-shadow:
+        inset 1px 1px 0 rgba(255,255,255,0.9),
+        inset -1px -1px 0 rgba(176,182,201,0.16),
+        12px 16px 24px rgba(94, 30, 30, 0.08),
+        -3px -4px 8px rgba(255,255,255,0.7);
     }
 
     .sequencer-header {
@@ -62,7 +81,7 @@
       height: 50px;
       border: none;
       border-radius: 0;
-      background: linear-gradient(135deg, #ffde59 0%, #f9c74f 100%);
+      background: linear-gradient(135deg, var(--panel-accent) 0%, var(--panel-accent-strong) 100%);
       color: #1f1b15;
       font-size: 22px;
       font-weight: 700;
@@ -72,7 +91,7 @@
     }
 
     .transport-button.is-playing {
-      background: linear-gradient(135deg, #ffd166 0%, #ffc857 100%);
+      background: linear-gradient(135deg, var(--panel-accent) 0%, var(--panel-accent-strong) 100%);
     }
 
     .bpm-wrap {
@@ -104,7 +123,7 @@
       height: 12px;
       appearance: none;
       -webkit-appearance: none;
-      background: linear-gradient(90deg, #f6d864 0%, #f2c335 100%);
+      background: linear-gradient(90deg, var(--panel-accent-soft) 0%, var(--panel-accent) 100%);
       border-radius: 999px;
       cursor: pointer;
       outline: none;
@@ -115,8 +134,8 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      border: 2px solid rgba(56, 42, 8, 0.9);
-      background: #f9d642;
+      border: 2px solid var(--panel-accent-deep);
+      background: var(--panel-accent);
       box-shadow: none;
       cursor: pointer;
     }
@@ -125,8 +144,8 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      border: 2px solid rgba(56, 42, 8, 0.9);
-      background: #f9d642;
+      border: 2px solid var(--panel-accent-deep);
+      background: var(--panel-accent);
       box-shadow: none;
       cursor: pointer;
     }
@@ -193,7 +212,7 @@
     }
 
     .mode-button.active {
-      background: linear-gradient(135deg, #ffde59 0%, #f8c84b 100%);
+      background: linear-gradient(135deg, var(--panel-accent) 0%, var(--panel-accent-strong) 100%);
       border-color: transparent;
       color: #1d1c1d;
       box-shadow: none;
@@ -203,7 +222,7 @@
       position: relative;
       padding: 18px 14px 18px;
       border-radius: 20px;
-      background: rgba(235, 240, 250, 0.9);
+      background: var(--panel-shell);
       overflow: hidden;
     }
 
@@ -257,12 +276,12 @@
     }
 
     .sequencer-cell.active {
-      background: #f2d24f;
+      background: var(--panel-accent);
       box-shadow: none;
     }
 
     .sequencer-cell.is-divider.active {
-      background: #f2d24f;
+      background: var(--panel-accent);
       border-left: 1px solid rgba(89, 99, 116, 0.75);
       box-shadow: none;
     }
@@ -273,7 +292,7 @@
       bottom: 10px;
       width: 2px;
       border-radius: 10px;
-      background: #f4c84f;
+      background: var(--panel-accent);
       box-shadow: none;
       pointer-events: none;
       z-index: 2;
@@ -349,315 +368,281 @@
     return displayScale.slice(0, 15).reverse();
   };
 
-  // 外源音频导入位置：
-  // 1. 把音频文件放到项目目录下的 /audio/ 文件夹；例如：/audio/demo-track.mp3
-  // 2. 或放到 /assets/audio/；例如：/assets/audio/demo-track.mp3
-  // 3. 在这里替换成对应的外部音源地址，并把本页面的合成音频逻辑关闭。
-  // 例如：const externalAudioSrc = '../audio/demo-track.mp3';
-
-  const panel = document.createElement('section');
-  panel.className = 'sequencer-panel';
-  panel.innerHTML = `
-    <div class="sequencer-header">
-      <div class="transport-group">
-        <button class="transport-button" type="button" aria-label="播放/暂停">▶</button>
-        <div class="bpm-wrap">
-          <span class="bpm-label">BPM</span>
-          <span class="bpm-value" id="bpmDisplay">60</span>
-          <input class="bpm-slider" id="bpmSlider" type="range" min="40" max="240" step="1" value="60" aria-label="BPM调节器" />
+  const createTrackPanel = ({ allowScaleControls = true, redTheme = false } = {}) => {
+    const panel = document.createElement('section');
+    panel.className = `sequencer-panel${redTheme ? ' red-panel' : ''}`;
+    panel.innerHTML = `
+      <div class="sequencer-header">
+        <div class="transport-group">
+          <button class="transport-button" type="button" aria-label="播放/暂停">▶</button>
+          <div class="bpm-wrap">
+            <span class="bpm-label">BPM</span>
+            <span class="bpm-value">60</span>
+            <input class="bpm-slider" type="range" min="40" max="240" step="1" value="60" aria-label="BPM调节器" />
+          </div>
+        </div>
+        <div class="header-actions">
+          ${allowScaleControls ? `
+            <div class="selector-cluster">
+              <div class="selector-column">
+                <div class="selector-label">Key</div>
+                <div class="mode-switcher" aria-label="音名调切换">
+                  <button class="mode-button active" type="button" data-key="C">C</button>
+                  <button class="mode-button" type="button" data-key="D">D</button>
+                  <button class="mode-button" type="button" data-key="E">E</button>
+                  <button class="mode-button" type="button" data-key="F">F</button>
+                  <button class="mode-button" type="button" data-key="G">G</button>
+                  <button class="mode-button" type="button" data-key="A">A</button>
+                  <button class="mode-button" type="button" data-key="B">B</button>
+                </div>
+              </div>
+              <div class="selector-column">
+                <div class="selector-label">Mode</div>
+                <div class="mode-switcher" aria-label="自然调式切换">
+                  <button class="mode-button active" type="button" data-mode="Ionian">Ionian</button>
+                  <button class="mode-button" type="button" data-mode="Dorian">Dorian</button>
+                  <button class="mode-button" type="button" data-mode="Phrygian">Phrygian</button>
+                  <button class="mode-button" type="button" data-mode="Lydian">Lydian</button>
+                  <button class="mode-button" type="button" data-mode="Mixolydian">Mixolydian</button>
+                  <button class="mode-button" type="button" data-mode="Aeolian">Aeolian</button>
+                  <button class="mode-button" type="button" data-mode="Locrian">Locrian</button>
+                </div>
+              </div>
+              <div class="status-pill">C / Ionian</div>
+            </div>
+          ` : ''}
+          <button class="clear-button" type="button" aria-label="清空全部交互块">Clear</button>
         </div>
       </div>
-      <div class="header-actions">
-        <div class="selector-cluster">
-          <div class="selector-column">
-            <div class="selector-label">Key</div>
-            <div class="mode-switcher" aria-label="音名调切换">
-              <button class="mode-button active" type="button" data-key="C">C</button>
-              <button class="mode-button" type="button" data-key="D">D</button>
-              <button class="mode-button" type="button" data-key="E">E</button>
-              <button class="mode-button" type="button" data-key="F">F</button>
-              <button class="mode-button" type="button" data-key="G">G</button>
-              <button class="mode-button" type="button" data-key="A">A</button>
-              <button class="mode-button" type="button" data-key="B">B</button>
-            </div>
-          </div>
-          <div class="selector-column">
-            <div class="selector-label">Mode</div>
-            <div class="mode-switcher" aria-label="自然调式切换">
-              <button class="mode-button active" type="button" data-mode="Ionian">Ionian</button>
-              <button class="mode-button" type="button" data-mode="Dorian">Dorian</button>
-              <button class="mode-button" type="button" data-mode="Phrygian">Phrygian</button>
-              <button class="mode-button" type="button" data-mode="Lydian">Lydian</button>
-              <button class="mode-button" type="button" data-mode="Mixolydian">Mixolydian</button>
-              <button class="mode-button" type="button" data-mode="Aeolian">Aeolian</button>
-              <button class="mode-button" type="button" data-mode="Locrian">Locrian</button>
-            </div>
-          </div>
-          <div class="status-pill" id="scaleStatus">C / Ionian</div>
-        </div>
-        <button class="clear-button" type="button" aria-label="清空全部交互块">Clear</button>
+
+      <div class="sequencer-shell">
+        <div class="sequencer-grid"></div>
+        <div class="playhead-line"></div>
       </div>
-    </div>
+    `;
 
-    <div class="sequencer-shell">
-      <div class="sequencer-grid" id="sequencerGrid"></div>
-      <div class="playhead-line" id="playheadLine"></div>
-    </div>
+    const grid = panel.querySelector('.sequencer-grid');
+    const playheadLine = panel.querySelector('.playhead-line');
+    const bpmDisplay = panel.querySelector('.bpm-value');
+    const bpmSlider = panel.querySelector('.bpm-slider');
+    const transportButton = panel.querySelector('.transport-button');
+    const clearButton = panel.querySelector('.clear-button');
+    const statusPill = panel.querySelector('.status-pill');
+    const keyButtons = [...panel.querySelectorAll('[data-key]')];
+    const modeButtons = [...panel.querySelectorAll('[data-mode]')];
 
-  `;
+    const state = {
+      bpm: 60,
+      currentStep: 0,
+      playing: false,
+      animationFrameId: null,
+      playheadRefreshFrame: null,
+      lastFrameTime: 0,
+      key: 'C',
+      mode: 'Ionian',
+      playheadPosition: 0,
+      playheadStartX: 0,
+      playheadTravelWidth: 1
+    };
 
-  box.appendChild(panel);
+    const cellMatrix = [];
+    const rowCount = redTheme ? 7 : 15;
+    const drumLabels = ['Kick', 'Snare', 'Hi-Hat', 'Tom', 'Crash', 'Ride', 'Clap'];
 
-  const grid = panel.querySelector('#sequencerGrid');
-  const playheadLine = panel.querySelector('#playheadLine');
-  const bpmDisplay = panel.querySelector('#bpmDisplay');
-  const bpmSlider = panel.querySelector('#bpmSlider');
-  const transportButton = panel.querySelector('.transport-button');
-  const clearButton = panel.querySelector('.clear-button');
-  const scaleStatus = panel.querySelector('#scaleStatus');
-  const keyButtons = [...panel.querySelectorAll('[data-key]')];
-  const modeButtons = [...panel.querySelectorAll('[data-mode]')];
-
-  const state = {
-    bpm: 60,
-    currentStep: 0,
-    playing: false,
-    intervalId: null,
-    animationFrameId: null,
-    playheadRefreshFrame: null,
-    lastFrameTime: 0,
-    key: 'C',
-    mode: 'Ionian',
-    stepProgress: 0,
-    playheadPosition: 0,
-    playheadStartX: 0,
-    playheadTravelWidth: 1
-  };
-
-  const metrics = {
-    gap: 4,
-    cellWidth: 0
-  };
-
-  const cellMatrix = [];
-  const updateScaleStatus = () => {
-    scaleStatus.textContent = `${state.key} / ${state.mode}`;
-  };
-
-  const fillPreset = () => {
-    for (let rowIndex = 0; rowIndex < cellMatrix.length; rowIndex += 1) {
-      for (let step = 0; step < cellMatrix[rowIndex].length; step += 1) {
-        cellMatrix[rowIndex][step].classList.remove('active');
+    const updateStatus = () => {
+      if (statusPill) {
+        statusPill.textContent = `${state.key} / ${state.mode}`;
       }
-    }
-  };
+    };
 
-  const renderGrid = () => {
-    grid.innerHTML = '';
-    cellMatrix.length = 0;
+    const renderGrid = () => {
+      grid.innerHTML = '';
+      cellMatrix.length = 0;
 
-    const currentPitchNames = getModePitchNames(state.key, state.mode);
-    for (let rowIndex = 0; rowIndex < currentPitchNames.length; rowIndex += 1) {
-      const rowButtons = [];
-      const row = document.createElement('div');
-      row.className = 'sequencer-row';
+      const pitchNames = allowScaleControls
+        ? getModePitchNames(state.key, state.mode)
+        : drumLabels;
 
-      const label = document.createElement('div');
-      label.className = 'pitch-label';
-      label.textContent = currentPitchNames[rowIndex];
-      row.appendChild(label);
+      for (let rowIndex = 0; rowIndex < Math.min(rowCount, pitchNames.length); rowIndex += 1) {
+        const rowButtons = [];
+        const row = document.createElement('div');
+        row.className = 'sequencer-row';
 
-      for (let step = 0; step < steps; step += 1) {
-        const cell = document.createElement('button');
-        cell.type = 'button';
-        cell.className = 'sequencer-cell';
-        if (dividerStepIndexes.has(step)) {
-          cell.classList.add('is-divider');
+        const label = document.createElement('div');
+        label.className = 'pitch-label';
+        label.textContent = pitchNames[rowIndex];
+        row.appendChild(label);
+
+        for (let step = 0; step < steps; step += 1) {
+          const cell = document.createElement('button');
+          cell.type = 'button';
+          cell.className = 'sequencer-cell';
+          if (dividerStepIndexes.has(step)) {
+            cell.classList.add('is-divider');
+          }
+          cell.setAttribute('aria-label', `${pitchNames[rowIndex]} step ${step + 1}`);
+          cell.addEventListener('click', () => {
+            cell.classList.toggle('active');
+          });
+          rowButtons.push(cell);
+          row.appendChild(cell);
         }
-        cell.setAttribute('aria-label', `${currentPitchNames[rowIndex]} step ${step + 1}`);
-        cell.dataset.rowIndex = String(rowIndex);
-        cell.dataset.step = String(step);
-        cell.addEventListener('click', () => {
-          const currentValue = cell.classList.contains('active');
-          cell.classList.toggle('active', !currentValue);
-        });
-        rowButtons.push(cell);
-        row.appendChild(cell);
+
+        grid.appendChild(row);
+        cellMatrix.push(rowButtons);
       }
+    };
 
-      grid.appendChild(row);
-      cellMatrix.push(rowButtons);
-    }
-
-    fillPreset();
-  };
-
-  const clearInteractionCells = () => {
-    const currentPitchNames = getModePitchNames(state.key, state.mode);
-    for (let rowIndex = 0; rowIndex < currentPitchNames.length; rowIndex += 1) {
-      for (let step = 0; step < steps; step += 1) {
-        if (cellMatrix[rowIndex] && cellMatrix[rowIndex][step]) {
+    const clearInteractionCells = () => {
+      for (let rowIndex = 0; rowIndex < cellMatrix.length; rowIndex += 1) {
+        for (let step = 0; step < cellMatrix[rowIndex].length; step += 1) {
           cellMatrix[rowIndex][step].classList.remove('active');
         }
       }
+      state.currentStep = 0;
+      state.playheadPosition = 0;
+      updatePlayheadPosition();
+    };
+
+    const measureGridGeometry = () => {
+      const shellRect = panel.querySelector('.sequencer-shell').getBoundingClientRect();
+      const firstRow = grid.querySelector('.sequencer-row');
+      const cells = firstRow ? firstRow.querySelectorAll('.sequencer-cell') : [];
+      const firstCell = cells[0];
+      const lastCell = cells[steps - 1];
+
+      if (!firstCell || !lastCell) {
+        state.playheadStartX = 0;
+        state.playheadTravelWidth = 1;
+        return;
+      }
+
+      state.playheadStartX = firstCell.getBoundingClientRect().left - shellRect.left;
+      state.playheadTravelWidth = Math.max(
+        lastCell.getBoundingClientRect().right - shellRect.left - state.playheadStartX,
+        1
+      );
+    };
+
+    const updatePlayheadPosition = () => {
+      const position = Number.isFinite(state.playheadPosition) ? state.playheadPosition : state.currentStep;
+      const clamped = Math.min(Math.max(position, 0), steps - 0.0001);
+      const x = (clamped / steps) * state.playheadTravelWidth;
+
+      playheadLine.style.left = `${state.playheadStartX}px`;
+      playheadLine.style.transform = `translate3d(${x}px, 0, 0)`;
+    };
+
+    const stopPlayback = () => {
+      if (state.animationFrameId) {
+        window.cancelAnimationFrame(state.animationFrameId);
+        state.animationFrameId = null;
+      }
+      transportButton.classList.remove('is-playing');
+      transportButton.textContent = '▶';
+      state.playing = false;
+      state.lastFrameTime = 0;
+      state.playheadPosition = state.currentStep;
+      playheadLine.style.display = 'none';
+    };
+
+    const getStepDurationMs = () => (60000 / state.bpm) / 4;
+
+    const animatePlayback = (timestamp) => {
+      if (!state.playing) return;
+
+      if (!state.lastFrameTime) {
+        state.lastFrameTime = timestamp;
+      }
+
+      const stepDuration = getStepDurationMs();
+      const elapsed = timestamp - state.lastFrameTime;
+      state.lastFrameTime = timestamp;
+
+      state.playheadPosition += elapsed / stepDuration;
+      while (state.playheadPosition >= steps) {
+        state.playheadPosition -= steps;
+      }
+
+      state.currentStep = Math.floor(state.playheadPosition) % steps;
+      updatePlayheadPosition();
+      state.animationFrameId = window.requestAnimationFrame(animatePlayback);
+    };
+
+    const startPlayback = () => {
+      if (state.playing) return;
+      state.playing = true;
+      state.lastFrameTime = performance.now();
+      state.playheadPosition = Number.isFinite(state.playheadPosition) ? state.playheadPosition : state.currentStep;
+      measureGridGeometry();
+      transportButton.classList.add('is-playing');
+      transportButton.textContent = '❚❚';
+      playheadLine.style.display = 'block';
+      updatePlayheadPosition();
+      state.animationFrameId = window.requestAnimationFrame(animatePlayback);
+    };
+
+    transportButton.addEventListener('click', () => {
+      if (state.playing) {
+        stopPlayback();
+      } else {
+        startPlayback();
+      }
+    });
+
+    bpmSlider.addEventListener('input', (event) => {
+      state.bpm = Number(event.target.value);
+      bpmDisplay.textContent = String(state.bpm);
+      if (state.playing) {
+        state.lastFrameTime = performance.now();
+      }
+    });
+
+    clearButton.addEventListener('click', () => {
+      clearInteractionCells();
+      if (state.playing) {
+        stopPlayback();
+      }
+    });
+
+    if (allowScaleControls) {
+      keyButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          keyButtons.forEach((item) => item.classList.toggle('active', item === button));
+          state.key = button.dataset.key || 'C';
+          renderGrid();
+          clearInteractionCells();
+          updateStatus();
+          updatePlayheadPosition();
+        });
+      });
+
+      modeButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          modeButtons.forEach((item) => item.classList.toggle('active', item === button));
+          state.mode = button.dataset.mode || 'Ionian';
+          renderGrid();
+          clearInteractionCells();
+          updateStatus();
+          updatePlayheadPosition();
+        });
+      });
     }
 
-    state.currentStep = 0;
-    state.stepProgress = 0;
-    state.playheadPosition = 0;
+    renderGrid();
+    clearInteractionCells();
+    updateStatus();
+    bpmDisplay.textContent = String(state.bpm);
+    measureGridGeometry();
     updatePlayheadPosition();
-  };
-
-  const measureGridGeometry = () => {
-    const shellRect = panel.querySelector('.sequencer-shell').getBoundingClientRect();
-    const firstRow = grid.querySelector('.sequencer-row');
-    const cells = firstRow ? firstRow.querySelectorAll('.sequencer-cell') : [];
-    const firstCell = cells[0] || null;
-    const lastCell = cells[steps - 1] || null;
-
-    if (!firstCell || !lastCell) {
-      state.playheadStartX = 0;
-      state.playheadTravelWidth = 1;
-      return;
-    }
-
-    state.playheadStartX = firstCell.getBoundingClientRect().left - shellRect.left;
-    state.playheadTravelWidth = Math.max(
-      lastCell.getBoundingClientRect().right - shellRect.left - state.playheadStartX,
-      1
-    );
-  };
-
-  const updatePlayheadPosition = () => {
-    const position = Number.isFinite(state.playheadPosition) ? state.playheadPosition : state.currentStep;
-    const clamped = Math.min(Math.max(position, 0), steps - 0.0001);
-    const x = (clamped / steps) * state.playheadTravelWidth;
-
-    playheadLine.style.left = `${state.playheadStartX}px`;
-    playheadLine.style.transform = `translate3d(${x}px, 0, 0)`;
-  };
-
-  const schedulePlayheadRefresh = () => {
-    if (state.playheadRefreshFrame !== null) return;
-    state.playheadRefreshFrame = window.requestAnimationFrame(() => {
-      state.playheadRefreshFrame = null;
+    window.addEventListener('resize', () => {
       measureGridGeometry();
       updatePlayheadPosition();
     });
+
+    return panel;
   };
 
-  const stopPlayback = () => {
-    if (state.animationFrameId) {
-      window.cancelAnimationFrame(state.animationFrameId);
-      state.animationFrameId = null;
-    }
-    transportButton.classList.remove('is-playing');
-    transportButton.textContent = '▶';
-    state.playing = false;
-    state.lastFrameTime = 0;
-    state.stepProgress = 0;
-    state.playheadPosition = state.currentStep;
-    playheadLine.style.display = 'none';
-  };
-
-  const getStepDurationMs = () => (60000 / state.bpm) / 4;
-
-  const animatePlayback = (timestamp) => {
-    if (!state.playing) return;
-
-    if (!state.lastFrameTime) {
-      state.lastFrameTime = timestamp;
-    }
-
-    const stepDuration = getStepDurationMs();
-    const elapsed = timestamp - state.lastFrameTime;
-    state.lastFrameTime = timestamp;
-
-    state.playheadPosition += elapsed / stepDuration;
-    while (state.playheadPosition >= steps) {
-      state.playheadPosition -= steps;
-    }
-
-    state.currentStep = Math.floor(state.playheadPosition) % steps;
-    state.stepProgress = state.playheadPosition - state.currentStep;
-    updatePlayheadPosition();
-
-    // 外部音轨入口：
-    // 把真正的音频文件放到 /audio/ 或 /assets/audio/ 后，
-    // 在此处替换为 new Audio('../audio/demo-track.mp3') 或相应的 src。
-
-    state.animationFrameId = window.requestAnimationFrame(animatePlayback);
-  };
-
-  const startPlayback = () => {
-    if (state.playing) return;
-
-    state.playing = true;
-    state.lastFrameTime = performance.now();
-    state.playheadPosition = Number.isFinite(state.playheadPosition) ? state.playheadPosition : state.currentStep;
-    measureGridGeometry();
-    transportButton.classList.add('is-playing');
-    transportButton.textContent = '❚❚';
-    playheadLine.style.display = 'block';
-    updatePlayheadPosition();
-    state.animationFrameId = window.requestAnimationFrame(animatePlayback);
-  };
-
-  transportButton.addEventListener('click', () => {
-    if (state.playing) {
-      stopPlayback();
-      return;
-    }
-    startPlayback();
-  });
-
-  bpmSlider.addEventListener('input', (event) => {
-    state.bpm = Number(event.target.value);
-    bpmDisplay.textContent = String(state.bpm);
-
-    if (state.playing) {
-      state.lastFrameTime = performance.now();
-    }
-    schedulePlayheadRefresh();
-  });
-
-  clearButton.addEventListener('click', () => {
-    clearInteractionCells();
-    if (state.playing) {
-      stopPlayback();
-    }
-  });
-
-  keyButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      keyButtons.forEach((item) => item.classList.toggle('active', item === button));
-      state.key = button.dataset.key || 'C';
-      renderGrid();
-      clearInteractionCells();
-      updateScaleStatus();
-      updatePlayheadPosition();
-    });
-  });
-
-  modeButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      modeButtons.forEach((item) => item.classList.toggle('active', item === button));
-      state.mode = button.dataset.mode || 'Ionian';
-      renderGrid();
-      clearInteractionCells();
-      updateScaleStatus();
-      updatePlayheadPosition();
-    });
-  });
-
-  renderGrid();
-  clearInteractionCells();
-  updateScaleStatus();
-  bpmDisplay.textContent = String(state.bpm);
-  measureGridGeometry();
-  updatePlayheadPosition();
-  window.addEventListener('resize', () => {
-    measureGridGeometry();
-    updatePlayheadPosition();
-  });
+  box.appendChild(createTrackPanel({ allowScaleControls: true, redTheme: false }));
+  box.appendChild(createTrackPanel({ allowScaleControls: false, redTheme: true }));
 })();

@@ -5,6 +5,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | Start Learning</title>
     <link rel="stylesheet" href="../css/Home.css">  
+    <style>
+        .beat-demo-wrapper {
+            width: min(1100px, calc(100% - 20px));
+            margin: 18px auto 0;
+            padding: 20px 14px 18px;
+            border-radius: 24px;
+            background: linear-gradient(145deg, rgba(255,245,245,0.97) 0%, rgba(255,233,233,0.98) 38%, rgba(255,246,247,0.98) 100%);
+            box-shadow:
+                inset 1px 1px 0 rgba(255,255,255,0.9),
+                inset -1px -1px 0 rgba(176,182,201,0.16),
+                12px 16px 24px rgba(94, 30, 30, 0.08),
+                -3px -4px 8px rgba(255,255,255,0.7);
+        }
+
+        .beat-demo-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 0 6px 14px;
+        }
+
+        .beat-demo-transport {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .beat-demo-play {
+            width: 50px;
+            height: 50px;
+            border: none;
+            background: linear-gradient(135deg, #e53935 0%, #d32f2f 100%);
+            color: #1f1b15;
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .beat-demo-bpm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .beat-demo-label {
+            color: #484a59;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .beat-demo-value {
+            min-width: 52px;
+            color: #111827;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .beat-demo-slider {
+            width: min(220px, 45vw);
+            height: 12px;
+            appearance: none;
+            background: linear-gradient(90deg, #fca5a5 0%, #e53935 100%);
+            border-radius: 999px;
+        }
+
+        .beat-demo-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid rgba(76, 0, 0, 0.9);
+            background: #e53935;
+        }
+
+        .beat-demo-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid rgba(76, 0, 0, 0.9);
+            background: #e53935;
+        }
+
+        .beat-demo-clear {
+            border: 1px solid rgba(107, 114, 128, 0.24);
+            background: rgba(255, 255, 255, 0.7);
+            color: #3f475c;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 9px 12px;
+            cursor: pointer;
+        }
+
+        .beat-demo-shell {
+            position: relative;
+            padding: 18px 14px 18px;
+            border-radius: 20px;
+            background: rgba(255, 236, 236, 0.92);
+            overflow: hidden;
+        }
+
+        .beat-demo-grid {
+            position: relative;
+            display: grid;
+            gap: 4px;
+            z-index: 1;
+        }
+
+        .beat-demo-row {
+            display: grid;
+            grid-template-columns: 64px repeat(32, minmax(10px, 1fr));
+            gap: 4px;
+            align-items: center;
+            min-height: 18px;
+        }
+
+        .beat-demo-label-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 18px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #4e586d;
+            letter-spacing: 0.05em;
+        }
+
+        .beat-demo-cell {
+            width: 100%;
+            height: 18px;
+            border: 0;
+            background: #dfe4eb;
+            cursor: pointer;
+        }
+
+        .beat-demo-cell.is-divider {
+            border-left: 1px solid rgba(89, 99, 116, 0.75);
+        }
+
+        .beat-demo-cell.active {
+            background: #e53935;
+        }
+
+        .beat-demo-cell.is-divider.active {
+            background: #e53935;
+            border-left: 1px solid rgba(89, 99, 116, 0.75);
+        }
+
+        @media (max-width: 720px) {
+            .beat-demo-row {
+                grid-template-columns: 58px repeat(32, minmax(12px, 1fr));
+                gap: 6px;
+            }
+        }
+    </style>
 </head>
     <body class="main">
         <div class="top">
@@ -16,6 +177,7 @@
                 <li id="nav1"><a href="../index.html"> 主页 </a></li>
                 <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
                 <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav6"><a href="index.html"> 初学者教程 </a></li>
                 <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
                 <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
             </ul>
@@ -104,6 +266,275 @@
                     <p>常见的节拍有 2/4、3/4、4/4 等。2/4 更有推进感，常用于快速行进的音乐；3/4 常见于华尔兹，带有轻盈转身的舞步感；4/4 是最常见的基础节拍，很多流行、摇滚和古典作品都采用它。</p>
                     <p>理解节奏时，最关键的是感受到“强拍”和“弱拍”的交替。强拍通常更明显，像音乐的落脚点；弱拍则让音乐有流动感。你可以通过敲击桌面、拍手、踩点来感受不同节拍的感觉。</p>
                     <p>真正的节奏训练不是死记数字，而是让身体跟上音乐。练习时，先从慢速四拍开始，再尝试在 2/4 或 3/4 中保持稳定，逐渐增强对重音和间隔的感知。</p>
+                    <h2>小试一下</h2>
+                    <p>下面是Beat音轨里面会用到的七种常见乐器，分别为：Kick、Snare、Hi-Hat、Tom、Crash、Ride和Clap；你可以依次点按下面的块来试听他们的音色</p>
+                    <div></div><!--试听块-->
+                    <h2>乐器介绍</h2>
+                    <p>这些是你要在Beat音轨中使用的乐器，下面的图片向你展示了他们在现实中的样子，把他们按照节拍组合起来，就形成一个完整的节奏模式。</p>
+                    <img src="../images/instruments.jpg" alt="乐器图片">
+                    <p>节奏是音乐的骨架，大多类型的乐曲中，你都能听到明显的鼓点，尤其是摇滚等近现代音乐类型中。但大多数舒缓的音乐并不需要强烈的鼓点，但这并不代表节奏不存在。它决定着乐曲的快慢和强弱，根植于乐曲结构之中。有关其与其他声道的配合，你会在后续的学习中逐渐了解到。</p>
+                    <h2>类型</h2>
+                    <p>节奏的核心是节拍与速度，但是不同类型的音乐有着不同的节奏特点和表现方式。在长期的音乐演变中，多种丰富的节奏型逐渐形成了。例如下面的这些音频，你可以试听一下，来看看不同的节奏型是什么样的。</p>
+                    <div></div><!--节奏试听块-->
+                    <h2>Beat音轨</h2>
+                    <p>好的，现在让我们来创建一个Beat音轨吧！</p>
+                    <p>利用网格化的设计，你可以轻松地在Beat音轨中安排不同的鼓点和节奏元素。你可以尝试着应用刚才的节奏型，也可以创造自己的节奏型。</p>
+                    <p>节奏是充满自由的，它允许你根据自己的创意和情感来表达音乐，所以，尽情地发挥你的创造力吧！</p>
+                    <div class="beat-demo-wrapper">
+                        <div class="beat-demo-header">
+                            <div class="beat-demo-transport">
+                                <button class="beat-demo-play" type="button" aria-label="播放/暂停">▶</button>
+                                <div class="beat-demo-bpm">
+                                    <span class="beat-demo-label">BPM</span>
+                                    <span class="beat-demo-value">60</span>
+                                    <input class="beat-demo-slider" type="range" min="40" max="240" step="1" value="60" aria-label="BPM调节器" />
+                                </div>
+                            </div>
+                            <button class="beat-demo-clear" type="button" aria-label="清空全部交互块">Clear</button>
+                        </div>
+                        <div class="beat-demo-shell">
+                            <div class="beat-demo-grid">
+                                <div class="beat-demo-row">
+                                    <div class="beat-demo-label-cell">Kick</div>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                </div>
+                                <div class="beat-demo-row">
+                                    <div class="beat-demo-label-cell">Snare</div>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                </div>
+                                <div class="beat-demo-row">
+                                    <div class="beat-demo-label-cell">Hi-Hat</div>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                </div>
+                                <div class="beat-demo-row">
+                                    <div class="beat-demo-label-cell">Tom</div>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                </div>
+                                <div class="beat-demo-row">
+                                    <div class="beat-demo-label-cell">Crash</div>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                </div>
+                                <div class="beat-demo-row">
+                                    <div class="beat-demo-label-cell">Ride</div>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                </div>
+                                <div class="beat-demo-row">
+                                    <div class="beat-demo-label-cell">Clap</div>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell is-divider" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                    <button class="beat-demo-cell" type="button"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="learning-nav">
                         <a href="pitches.html" class="learning-nav-button prev">上一页：音名与唱名</a>
                         <a href="chords.html" class="learning-nav-button next">下一页：音程与和弦</a>
