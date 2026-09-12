@@ -169,6 +169,15 @@
     font-size: small;
     text-decoration: none;
 }
+
+ a,
+ a:link,
+ a:visited,
+ a:hover,
+ a:active {
+    font-family: 'MusicLabFont', -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+ }
+
 .content a:hover{
     color:rgb(0, 0, 0);
     text-decoration: underline;
@@ -768,6 +777,13 @@
     --playhead: #ff5a5f;
   }
 
+  @font-face {
+    font-family: 'MusicLabFont';
+    src: url('../fonts/330.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   body{
     position: relative;
     background:
@@ -775,7 +791,7 @@
       radial-gradient(circle at calc(var(--mx) * 0.8) calc(var(--my) * 1.25), rgba(137, 222, 214, 0.14), rgba(137, 222, 214, 0) 30%),
       linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);
     color: #111111;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: 'MusicLabFont', -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;

@@ -31,6 +31,8 @@
                 </div>
 
                 <div class="directory-tree">
+                    <a href="index.html" class="directory-page-link"><h3>开始音乐之旅</h3></a>
+
                     <details class="directory-group">
                         <summary><h3>音符与记谱</h3></summary>
                         <div class="directory-links">
@@ -102,7 +104,37 @@
                     <h2 id="learningSubtitle">引入</h2>
                     <!-- 子项名称：内容说明 -->
                     <p id="learningText">这个网站将在教你音乐基础知识的同时，给你个人DAW创作的机会，下面是不同使用者创作的示例，你可以点击三角播放按钮来试听。下面展示了节奏、和弦、贝斯、旋律四个音轨，尝试着把他们组合起来，可以达到不同的效果。</p>
-                    <div></div><!--这里加入4个音轨的4种不同音频-->
+
+                    <div class="audio-demo-panel" aria-label="音轨演示区">
+                        <div class="audio-demo-header">
+                            <div class="audio-demo-column">节奏</div>
+                            <div class="audio-demo-column">贝斯</div>
+                            <div class="audio-demo-column">和弦</div>
+                            <div class="audio-demo-column">旋律</div>
+                        </div>
+                        <div class="audio-demo-grid">
+                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 1">1</button>
+                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 1">1</button>
+                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 1">1</button>
+                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 1">1</button>
+
+                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 2">2</button>
+                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 2">2</button>
+                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 2">2</button>
+                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 2">2</button>
+
+                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 3">3</button>
+                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 3">3</button>
+                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 3">3</button>
+                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 3">3</button>
+
+                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 4">4</button>
+                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 4">4</button>
+                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 4">4</button>
+                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 4">4</button>
+                        </div>
+                    </div>
+
                     <p id="learningTextSecondary">怎么样？你一定会认为这些创作会很难。实际上，只需要通过一定的尝试，你就可以写出一样的乐曲！<br>
                     接下来，你可以点击下面的“下一节：”按钮，开始第一个内容的学习，也可以先看看左侧的目录，寻找自己感兴趣的内容。</p>
                     <div class="learning-nav">
@@ -112,8 +144,153 @@
                 </div>
             </div>
         </div>
+        <style>
+            .audio-demo-panel {
+                width: 50%;
+                margin: 22px auto 18px;
+                padding: 14px 16px 16px;
+                border: 1px solid rgba(90, 104, 126, 0.18);
+                border-radius: 16px;
+                background: rgba(248, 250, 255, 0.9);
+            }
+
+            .audio-demo-header {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+
+            .audio-demo-column {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 32px;
+                border-radius: 10px;
+                background: transparent;
+                border: none;
+                font-size: 14px;
+                font-weight: 700;
+                color: #374152;
+            }
+
+            .audio-demo-grid {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 8px;
+                justify-items: center;
+                align-items: center;
+                width: min(100%, 360px);
+                margin: 0 auto;
+            }
+
+            .audio-demo-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: min(100%, 58px);
+                aspect-ratio: 1;
+                min-width: 40px;
+                max-width: 58px;
+                border: 1px solid rgba(144, 154, 172, 0.24);
+                border-radius: 12px;
+                font-size: 0;
+                line-height: 0;
+                background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(233, 239, 249, 0.94));
+                box-shadow:
+                    inset 1px 1px 0 rgba(255,255,255,0.9),
+                    inset -1px -1px 0 rgba(170, 179, 197, 0.18),
+                    6px 8px 16px rgba(52, 65, 90, 0.07);
+                cursor: pointer;
+                transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+                transform: scale(0.6);
+            }
+
+            .audio-demo-button::before {
+                content: "";
+                width: 0;
+                height: 0;
+                border-left: 12px solid #ffffff;
+                border-top: 8px solid transparent;
+                border-bottom: 8px solid transparent;
+                filter: drop-shadow(0 0 0 rgba(0,0,0,0));
+            }
+
+            .audio-demo-button:hover {
+                transform: scale(0.6) translateY(-1px);
+                filter: brightness(0.99);
+            }
+
+            .audio-demo-button:active,
+            .audio-demo-button.is-active {
+                background: linear-gradient(145deg, rgba(92, 101, 116, 0.97), rgba(66, 75, 88, 0.97));
+                box-shadow:
+                    inset 1px 1px 0 rgba(255,255,255,0.14),
+                    inset -1px -1px 0 rgba(20, 24, 31, 0.22),
+                    6px 8px 16px rgba(34, 42, 56, 0.12);
+            }
+
+            .audio-demo-button:active::before,
+            .audio-demo-button.is-active::before {
+                border-left-color: #d4d7dd;
+            }
+
+            .audio-demo-button.rhythm {
+                background: linear-gradient(145deg, rgba(255, 248, 214, 1), rgba(245, 220, 142, 0.9));
+            }
+
+            .audio-demo-button.bass {
+                background: linear-gradient(145deg, rgba(227, 245, 234, 1), rgba(176, 216, 191, 0.9));
+            }
+
+            .audio-demo-button.chords {
+                background: linear-gradient(145deg, rgba(217, 232, 255, 1), rgba(167, 196, 247, 0.9));
+            }
+
+            .audio-demo-button.melody {
+                background: linear-gradient(145deg, rgba(240, 231, 255, 1), rgba(208, 188, 247, 0.9));
+            }
+        </style>
+        <style>
+            .directory-page-link {
+                display: block;
+                margin: 8px 0 14px;
+                padding: 10px 12px;
+                border-radius: 10px;
+                text-decoration: none;
+                color: #1f2937;
+                background: rgba(255, 255, 255, 0.18);
+            }
+
+            .directory-page-link h3 {
+                margin: 0;
+                font-size: 15px;
+                font-weight: 700;
+            }
+        </style>
         <script src="../js/login.js"></script>
         <script>
+            // 音频文件放置位置：
+            // 1. 把真实音频文件放到项目目录下的 /audio/ 文件夹，例如：/audio/beat-demo-01.mp3
+            // 2. 或放到 /assets/audio/；例如：/assets/audio/beat-demo-01.mp3
+            // 3. 之后把下面 data-audio 的空字符串替换成对应的外部音源地址，例如：
+            //    document.querySelector('.audio-demo-button.rhythm').dataset.audio = '../audio/beat-demo-01.mp3';
+            // 4. 链接尾部先保留空字符串，后续你把实际音频文件放进 /audio/ 后再逐一补上即可。
+            const demoButtons = document.querySelectorAll('.audio-demo-button');
+            demoButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    demoButtons.forEach((item) => {
+                        item.classList.toggle('is-active', item === button);
+                    });
+
+                    const src = button.dataset.audio;
+                    if (!src) {
+                        return;
+                    }
+                    const audio = new Audio(src);
+                    audio.play().catch(() => {});
+                });
+            });
             const learningTitle = document.getElementById('learningTitle');
             const learningSubtitle = document.getElementById('learningSubtitle');
             const learningText = document.getElementById('learningText');
