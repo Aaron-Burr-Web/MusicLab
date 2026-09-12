@@ -30,6 +30,26 @@
       margin-bottom: 4px;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .clear-button {
+      border: 1px solid rgba(107, 114, 128, 0.24);
+      background: rgba(255, 255, 255, 0.7);
+      color: #3f475c;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 9px 12px;
+      cursor: pointer;
+      transition: none;
+    }
+
     .transport-group {
       display: flex;
       align-items: center;
@@ -48,12 +68,7 @@
       font-weight: 700;
       cursor: pointer;
       box-shadow: none;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .transport-button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 22px rgba(249, 199, 79, 0.3);
+      transition: none;
     }
 
     .transport-button.is-playing {
@@ -86,8 +101,74 @@
 
     .bpm-slider {
       width: min(220px, 45vw);
-      accent-color: #f4c84f;
+      height: 12px;
+      appearance: none;
+      -webkit-appearance: none;
+      background: linear-gradient(90deg, #f6d864 0%, #f2c335 100%);
+      border-radius: 999px;
       cursor: pointer;
+      outline: none;
+    }
+
+    .bpm-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid rgba(56, 42, 8, 0.9);
+      background: #f9d642;
+      box-shadow: none;
+      cursor: pointer;
+    }
+
+    .bpm-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid rgba(56, 42, 8, 0.9);
+      background: #f9d642;
+      box-shadow: none;
+      cursor: pointer;
+    }
+
+    .selector-cluster {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-left: auto;
+    }
+
+    .selector-column {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .selector-label {
+      padding-left: 2px;
+      font-size: 10px;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #58657a;
+      font-weight: 700;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(92, 104, 128, 0.2);
+      color: #303a4f;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .mode-switcher {
@@ -96,7 +177,6 @@
       justify-content: flex-end;
       flex-wrap: wrap;
       gap: 8px;
-      margin-left: auto;
     }
 
     .mode-button {
@@ -109,12 +189,7 @@
       font-weight: 700;
       letter-spacing: 0.04em;
       cursor: pointer;
-      transition: all 0.18s ease;
-    }
-
-    .mode-button:hover {
-      background: rgba(244, 200, 79, 0.12);
-      border-color: rgba(244, 200, 79, 0.38);
+      transition: none;
     }
 
     .mode-button.active {
@@ -135,7 +210,7 @@
     .sequencer-grid {
       position: relative;
       display: grid;
-      gap: 8px;
+      gap: 4px;
       align-items: center;
       min-height: 230px;
       z-index: 1;
@@ -143,8 +218,8 @@
 
     .sequencer-row {
       display: grid;
-      grid-template-columns: 64px repeat(16, minmax(16px, 1fr));
-      gap: 5px;
+      grid-template-columns: 64px repeat(32, minmax(10px, 1fr));
+      gap: 4px;
       align-items: center;
       min-height: 18px;
     }
@@ -165,62 +240,46 @@
     .sequencer-cell {
       width: 100%;
       height: 18px;
-      border: none;
+      border: 0;
+      border-left: 1px solid transparent;
       border-radius: 0;
       background: #dfe4eb;
       box-shadow: none;
       cursor: pointer;
-      transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      transition: none;
+      position: relative;
     }
 
-    .sequencer-cell:hover {
-      transform: translateY(-1px);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5), 0 8px 12px rgba(0, 0, 0, 0.04);
+    .sequencer-cell.is-divider {
+      background: #dfe4eb;
+      border-left: 1px solid rgba(89, 99, 116, 0.75);
+      box-shadow: none;
     }
 
     .sequencer-cell.active {
-      background: linear-gradient(180deg, #fde96a 0%, #f4c84e 100%);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45), 0 10px 18px rgba(243, 195, 70, 0.2);
+      background: #f2d24f;
+      box-shadow: none;
+    }
+
+    .sequencer-cell.is-divider.active {
+      background: #f2d24f;
+      border-left: 1px solid rgba(89, 99, 116, 0.75);
+      box-shadow: none;
     }
 
     .playhead-line {
       position: absolute;
       top: 10px;
       bottom: 10px;
-      width: 3px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(255, 210, 62, 0.9), rgba(255, 169, 46, 0.9));
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.4), 0 0 14px rgba(255, 191, 74, 0.42);
+      width: 2px;
+      border-radius: 10px;
+      background: #f4c84f;
+      box-shadow: none;
       pointer-events: none;
       z-index: 2;
       display: none;
-    }
-
-    .audio-placeholder {
-      margin-top: 18px;
-      min-height: 120px;
-      padding: 18px 20px;
-      border-radius: 18px;
-      background: linear-gradient(145deg, rgba(241,243,247,0.65), rgba(230,234,241,0.76));
-      border: 1px dashed rgba(96, 108, 135, 0.3);
-      color: #58657a;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 6px;
-      text-align: left;
-    }
-
-    .audio-placeholder strong {
-      font-size: 16px;
-      color: #363d4d;
-    }
-
-    .audio-placeholder span {
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(88, 101, 122, 0.9);
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
     }
 
     @media (max-width: 720px) {
@@ -235,7 +294,7 @@
       }
 
       .sequencer-grid {
-        grid-template-columns: 58px repeat(16, minmax(22px, 1fr));
+        grid-template-columns: 58px repeat(32, minmax(12px, 1fr));
         gap: 6px;
       }
 
@@ -246,39 +305,55 @@
   `;
   document.head.appendChild(styles);
 
-  const steps = 16;
-  const modeNoteOrder = {
-    Ionian: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
-    Dorian: ['D', 'E', 'F', 'G', 'A', 'B', 'C'],
-    Phrygian: ['E', 'F', 'G', 'A', 'B', 'C', 'D'],
-    Lydian: ['F', 'G', 'A', 'B', 'C', 'D', 'E'],
-    Mixolydian: ['G', 'A', 'B', 'C', 'D', 'E', 'F'],
-    Aeolian: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-    Locrian: ['B', 'C', 'D', 'E', 'F', 'G', 'A']
+  const steps = 32;
+  const dividerStepIndexes = new Set([8, 16, 24]);
+  const modeIntervals = {
+    Ionian: [0, 2, 4, 5, 7, 9, 11],
+    Dorian: [0, 2, 3, 5, 7, 9, 10],
+    Phrygian: [0, 1, 3, 5, 7, 8, 10],
+    Lydian: [0, 2, 4, 6, 7, 9, 11],
+    Mixolydian: [0, 2, 4, 5, 7, 9, 10],
+    Aeolian: [0, 2, 3, 5, 7, 8, 10],
+    Locrian: [0, 1, 3, 5, 6, 8, 10]
   };
 
-  const getModePitchNames = (mode = 'Ionian') => {
-    const rotation = modeNoteOrder[mode] || modeNoteOrder.Ionian;
-    const labels = [];
-    for (let octave = 2; octave <= 4; octave += 1) {
-      rotation.forEach((note) => labels.push(`${note}${octave}`));
+  const pitchClasses = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  const letterSequence = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+
+  const getScaleNotes = (keyName = 'C', modeName = 'Ionian') => {
+    const rootPitch = pitchClasses[keyName] ?? pitchClasses.C;
+    const intervals = modeIntervals[modeName] || modeIntervals.Ionian;
+    const scale = [];
+
+    for (let degree = 0; degree < 7; degree += 1) {
+      const targetPitchClass = (rootPitch + intervals[degree]) % 12;
+      const letter = letterSequence[(letterSequence.indexOf(keyName) + degree) % letterSequence.length];
+      const naturalPitch = pitchClasses[letter] ?? 0;
+      const diff = ((targetPitchClass - naturalPitch) % 12 + 12) % 12;
+
+      let accidental = '';
+      if (diff === 1) accidental = '#';
+      if (diff === 11) accidental = 'b';
+      if (diff === 2) accidental = '##';
+      if (diff === 10) accidental = 'bb';
+
+      scale.push(`${letter}${accidental}`);
     }
-    return labels;
+
+    return scale;
   };
 
-  const pitchNames = getModePitchNames();
-  const initialPattern = Array.from({ length: pitchNames.length }, (_, rowIndex) => {
-    return Array.from({ length: steps }, (_, stepIndex) => Number(((stepIndex + rowIndex) % 4 === 0) || ((stepIndex + rowIndex) % 8 === 3)));
-  });
-
-  const state = {
-    bpm: 120,
-    currentStep: 0,
-    playing: false,
-    intervalId: null,
-    audioContext: null,
-    mode: 'Ionian'
+  const getModePitchNames = (keyName = 'C', modeName = 'Ionian') => {
+    const scale = getScaleNotes(keyName, modeName);
+    const displayScale = [...scale, ...scale, scale[0]];
+    return displayScale.slice(0, 15).reverse();
   };
+
+  // 外源音频导入位置：
+  // 1. 把音频文件放到项目目录下的 /audio/ 文件夹；例如：/audio/demo-track.mp3
+  // 2. 或放到 /assets/audio/；例如：/assets/audio/demo-track.mp3
+  // 3. 在这里替换成对应的外部音源地址，并把本页面的合成音频逻辑关闭。
+  // 例如：const externalAudioSrc = '../audio/demo-track.mp3';
 
   const panel = document.createElement('section');
   panel.className = 'sequencer-panel';
@@ -288,18 +363,39 @@
         <button class="transport-button" type="button" aria-label="播放/暂停">▶</button>
         <div class="bpm-wrap">
           <span class="bpm-label">BPM</span>
-          <span class="bpm-value" id="bpmDisplay">120</span>
-          <input class="bpm-slider" id="bpmSlider" type="range" min="40" max="240" step="1" value="120" aria-label="BPM调节器" />
+          <span class="bpm-value" id="bpmDisplay">60</span>
+          <input class="bpm-slider" id="bpmSlider" type="range" min="40" max="240" step="1" value="60" aria-label="BPM调节器" />
         </div>
       </div>
-      <div class="mode-switcher" aria-label="调式切换">
-        <button class="mode-button active" type="button" data-mode="Ionian">Ionian</button>
-        <button class="mode-button" type="button" data-mode="Dorian">Dorian</button>
-        <button class="mode-button" type="button" data-mode="Phrygian">Phrygian</button>
-        <button class="mode-button" type="button" data-mode="Lydian">Lydian</button>
-        <button class="mode-button" type="button" data-mode="Mixolydian">Mixolydian</button>
-        <button class="mode-button" type="button" data-mode="Aeolian">Aeolian</button>
-        <button class="mode-button" type="button" data-mode="Locrian">Locrian</button>
+      <div class="header-actions">
+        <div class="selector-cluster">
+          <div class="selector-column">
+            <div class="selector-label">Key</div>
+            <div class="mode-switcher" aria-label="音名调切换">
+              <button class="mode-button active" type="button" data-key="C">C</button>
+              <button class="mode-button" type="button" data-key="D">D</button>
+              <button class="mode-button" type="button" data-key="E">E</button>
+              <button class="mode-button" type="button" data-key="F">F</button>
+              <button class="mode-button" type="button" data-key="G">G</button>
+              <button class="mode-button" type="button" data-key="A">A</button>
+              <button class="mode-button" type="button" data-key="B">B</button>
+            </div>
+          </div>
+          <div class="selector-column">
+            <div class="selector-label">Mode</div>
+            <div class="mode-switcher" aria-label="自然调式切换">
+              <button class="mode-button active" type="button" data-mode="Ionian">Ionian</button>
+              <button class="mode-button" type="button" data-mode="Dorian">Dorian</button>
+              <button class="mode-button" type="button" data-mode="Phrygian">Phrygian</button>
+              <button class="mode-button" type="button" data-mode="Lydian">Lydian</button>
+              <button class="mode-button" type="button" data-mode="Mixolydian">Mixolydian</button>
+              <button class="mode-button" type="button" data-mode="Aeolian">Aeolian</button>
+              <button class="mode-button" type="button" data-mode="Locrian">Locrian</button>
+            </div>
+          </div>
+          <div class="status-pill" id="scaleStatus">C / Ionian</div>
+        </div>
+        <button class="clear-button" type="button" aria-label="清空全部交互块">Clear</button>
       </div>
     </div>
 
@@ -308,11 +404,6 @@
       <div class="playhead-line" id="playheadLine"></div>
     </div>
 
-    <div class="audio-placeholder" aria-label="音频区占位">
-      <strong>Audio Track Placeholder</strong>
-      <span>Import audio later</span>
-      <small>此处预留音频区域，之后可替换为实际音轨文件。</small>
-    </div>
   `;
 
   box.appendChild(panel);
@@ -322,14 +413,50 @@
   const bpmDisplay = panel.querySelector('#bpmDisplay');
   const bpmSlider = panel.querySelector('#bpmSlider');
   const transportButton = panel.querySelector('.transport-button');
-  const modeButtons = [...panel.querySelectorAll('.mode-button')];
+  const clearButton = panel.querySelector('.clear-button');
+  const scaleStatus = panel.querySelector('#scaleStatus');
+  const keyButtons = [...panel.querySelectorAll('[data-key]')];
+  const modeButtons = [...panel.querySelectorAll('[data-mode]')];
+
+  const state = {
+    bpm: 60,
+    currentStep: 0,
+    playing: false,
+    intervalId: null,
+    animationFrameId: null,
+    playheadRefreshFrame: null,
+    lastFrameTime: 0,
+    key: 'C',
+    mode: 'Ionian',
+    stepProgress: 0,
+    playheadPosition: 0,
+    playheadStartX: 0,
+    playheadTravelWidth: 1
+  };
+
+  const metrics = {
+    gap: 4,
+    cellWidth: 0
+  };
 
   const cellMatrix = [];
+  const updateScaleStatus = () => {
+    scaleStatus.textContent = `${state.key} / ${state.mode}`;
+  };
+
+  const fillPreset = () => {
+    for (let rowIndex = 0; rowIndex < cellMatrix.length; rowIndex += 1) {
+      for (let step = 0; step < cellMatrix[rowIndex].length; step += 1) {
+        cellMatrix[rowIndex][step].classList.remove('active');
+      }
+    }
+  };
+
   const renderGrid = () => {
     grid.innerHTML = '';
     cellMatrix.length = 0;
 
-    const currentPitchNames = getModePitchNames(state.mode);
+    const currentPitchNames = getModePitchNames(state.key, state.mode);
     for (let rowIndex = 0; rowIndex < currentPitchNames.length; rowIndex += 1) {
       const rowButtons = [];
       const row = document.createElement('div');
@@ -344,6 +471,9 @@
         const cell = document.createElement('button');
         cell.type = 'button';
         cell.className = 'sequencer-cell';
+        if (dividerStepIndexes.has(step)) {
+          cell.classList.add('is-divider');
+        }
         cell.setAttribute('aria-label', `${currentPitchNames[rowIndex]} step ${step + 1}`);
         cell.dataset.rowIndex = String(rowIndex);
         cell.dataset.step = String(step);
@@ -362,109 +492,115 @@
     fillPreset();
   };
 
-  const fillPreset = () => {
-    const currentPitchNames = getModePitchNames(state.mode);
+  const clearInteractionCells = () => {
+    const currentPitchNames = getModePitchNames(state.key, state.mode);
     for (let rowIndex = 0; rowIndex < currentPitchNames.length; rowIndex += 1) {
       for (let step = 0; step < steps; step += 1) {
-        const isActive = Boolean(initialPattern[rowIndex][step]);
         if (cellMatrix[rowIndex] && cellMatrix[rowIndex][step]) {
-          cellMatrix[rowIndex][step].classList.toggle('active', isActive);
+          cellMatrix[rowIndex][step].classList.remove('active');
         }
       }
     }
+
+    state.currentStep = 0;
+    state.stepProgress = 0;
+    state.playheadPosition = 0;
+    updatePlayheadPosition();
   };
 
-  const getAudioContext = () => {
-    if (!state.audioContext) {
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      if (!Ctx) return null;
-      state.audioContext = new Ctx();
+  const measureGridGeometry = () => {
+    const shellRect = panel.querySelector('.sequencer-shell').getBoundingClientRect();
+    const firstRow = grid.querySelector('.sequencer-row');
+    const cells = firstRow ? firstRow.querySelectorAll('.sequencer-cell') : [];
+    const firstCell = cells[0] || null;
+    const lastCell = cells[steps - 1] || null;
+
+    if (!firstCell || !lastCell) {
+      state.playheadStartX = 0;
+      state.playheadTravelWidth = 1;
+      return;
     }
 
-    if (state.audioContext.state === 'suspended') {
-      state.audioContext.resume();
-    }
-
-    return state.audioContext;
-  };
-
-  const noteToFrequency = (noteLabel) => {
-    const match = /^([A-G])([0-9])$/.exec(noteLabel);
-    if (!match) return 440;
-
-    const [, noteName, octaveText] = match;
-    const semitoneMap = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-    const midi = (Number(octaveText) + 1) * 12 + semitoneMap[noteName];
-    return 440 * Math.pow(2, (midi - 69) / 12);
-  };
-
-  const triggerStepAudio = (stepIndex) => {
-    const audioContext = getAudioContext();
-    if (!audioContext) return;
-
-    const activeRows = cellMatrix
-      .map((row, rowIndex) => ({ rowIndex, active: row[stepIndex].classList.contains('active') }))
-      .filter((item) => item.active)
-      .map((item) => item.rowIndex);
-
-    if (!activeRows.length) return;
-
-    activeRows.forEach((rowIndex) => {
-      const oscillator = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-      const noteLabel = getModePitchNames(state.mode)[rowIndex];
-      const frequency = noteToFrequency(noteLabel);
-
-      oscillator.type = 'triangle';
-      oscillator.frequency.value = frequency;
-      gain.gain.value = 0.0001;
-      gain.gain.exponentialRampToValueAtTime(0.045, audioContext.currentTime + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.12);
-
-      oscillator.connect(gain);
-      gain.connect(audioContext.destination);
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.14);
-    });
+    state.playheadStartX = firstCell.getBoundingClientRect().left - shellRect.left;
+    state.playheadTravelWidth = Math.max(
+      lastCell.getBoundingClientRect().right - shellRect.left - state.playheadStartX,
+      1
+    );
   };
 
   const updatePlayheadPosition = () => {
-    const shellRect = panel.querySelector('.sequencer-shell').getBoundingClientRect();
-    const gridRect = grid.getBoundingClientRect();
-    const gap = 8;
-    const usableWidth = gridRect.width - ((steps - 1) * gap);
-    const cellWidth = usableWidth / steps;
-    const left = gridRect.left - shellRect.left + (state.currentStep + 0.5) * (cellWidth + gap);
-    playheadLine.style.left = `${left}px`;
+    const position = Number.isFinite(state.playheadPosition) ? state.playheadPosition : state.currentStep;
+    const clamped = Math.min(Math.max(position, 0), steps - 0.0001);
+    const x = (clamped / steps) * state.playheadTravelWidth;
+
+    playheadLine.style.left = `${state.playheadStartX}px`;
+    playheadLine.style.transform = `translate3d(${x}px, 0, 0)`;
+  };
+
+  const schedulePlayheadRefresh = () => {
+    if (state.playheadRefreshFrame !== null) return;
+    state.playheadRefreshFrame = window.requestAnimationFrame(() => {
+      state.playheadRefreshFrame = null;
+      measureGridGeometry();
+      updatePlayheadPosition();
+    });
   };
 
   const stopPlayback = () => {
-    if (state.intervalId) {
-      window.clearInterval(state.intervalId);
-      state.intervalId = null;
+    if (state.animationFrameId) {
+      window.cancelAnimationFrame(state.animationFrameId);
+      state.animationFrameId = null;
     }
     transportButton.classList.remove('is-playing');
     transportButton.textContent = '▶';
     state.playing = false;
+    state.lastFrameTime = 0;
+    state.stepProgress = 0;
+    state.playheadPosition = state.currentStep;
     playheadLine.style.display = 'none';
+  };
+
+  const getStepDurationMs = () => (60000 / state.bpm) / 4;
+
+  const animatePlayback = (timestamp) => {
+    if (!state.playing) return;
+
+    if (!state.lastFrameTime) {
+      state.lastFrameTime = timestamp;
+    }
+
+    const stepDuration = getStepDurationMs();
+    const elapsed = timestamp - state.lastFrameTime;
+    state.lastFrameTime = timestamp;
+
+    state.playheadPosition += elapsed / stepDuration;
+    while (state.playheadPosition >= steps) {
+      state.playheadPosition -= steps;
+    }
+
+    state.currentStep = Math.floor(state.playheadPosition) % steps;
+    state.stepProgress = state.playheadPosition - state.currentStep;
+    updatePlayheadPosition();
+
+    // 外部音轨入口：
+    // 把真正的音频文件放到 /audio/ 或 /assets/audio/ 后，
+    // 在此处替换为 new Audio('../audio/demo-track.mp3') 或相应的 src。
+
+    state.animationFrameId = window.requestAnimationFrame(animatePlayback);
   };
 
   const startPlayback = () => {
     if (state.playing) return;
 
-    getAudioContext();
     state.playing = true;
+    state.lastFrameTime = performance.now();
+    state.playheadPosition = Number.isFinite(state.playheadPosition) ? state.playheadPosition : state.currentStep;
+    measureGridGeometry();
     transportButton.classList.add('is-playing');
     transportButton.textContent = '❚❚';
     playheadLine.style.display = 'block';
     updatePlayheadPosition();
-
-    const stepInterval = Math.round((60000 / state.bpm) / 4);
-    state.intervalId = window.setInterval(() => {
-      state.currentStep = (state.currentStep + 1) % steps;
-      updatePlayheadPosition();
-      triggerStepAudio(state.currentStep);
-    }, stepInterval);
+    state.animationFrameId = window.requestAnimationFrame(animatePlayback);
   };
 
   transportButton.addEventListener('click', () => {
@@ -480,9 +616,27 @@
     bpmDisplay.textContent = String(state.bpm);
 
     if (state.playing) {
-      stopPlayback();
-      startPlayback();
+      state.lastFrameTime = performance.now();
     }
+    schedulePlayheadRefresh();
+  });
+
+  clearButton.addEventListener('click', () => {
+    clearInteractionCells();
+    if (state.playing) {
+      stopPlayback();
+    }
+  });
+
+  keyButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      keyButtons.forEach((item) => item.classList.toggle('active', item === button));
+      state.key = button.dataset.key || 'C';
+      renderGrid();
+      clearInteractionCells();
+      updateScaleStatus();
+      updatePlayheadPosition();
+    });
   });
 
   modeButtons.forEach((button) => {
@@ -490,12 +644,20 @@
       modeButtons.forEach((item) => item.classList.toggle('active', item === button));
       state.mode = button.dataset.mode || 'Ionian';
       renderGrid();
+      clearInteractionCells();
+      updateScaleStatus();
       updatePlayheadPosition();
     });
   });
 
   renderGrid();
+  clearInteractionCells();
+  updateScaleStatus();
   bpmDisplay.textContent = String(state.bpm);
+  measureGridGeometry();
   updatePlayheadPosition();
-  window.addEventListener('resize', updatePlayheadPosition);
+  window.addEventListener('resize', () => {
+    measureGridGeometry();
+    updatePlayheadPosition();
+  });
 })();
