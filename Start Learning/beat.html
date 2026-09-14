@@ -104,6 +104,28 @@
             cursor: pointer;
         }
 
+        .beat-demo-meter-switcher {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+        }
+
+        .beat-demo-meter-button {
+            border: 1px solid rgba(107, 114, 128, 0.24);
+            background: rgba(255, 255, 255, 0.7);
+            color: #3f475c;
+            padding: 9px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .beat-demo-meter-button.active {
+            border-color: transparent;
+            background: #e53935;
+            color: #ffffff;
+        }
+
         .beat-demo-shell {
             position: relative;
             padding: 18px 14px 18px;
@@ -119,9 +141,33 @@
             z-index: 1;
         }
 
+        .beat-demo-playhead {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 2px;
+            display: none;
+            background: #e53935;
+            box-shadow: 0 0 8px rgba(229, 57, 53, 0.65);
+            pointer-events: none;
+            z-index: 3;
+            will-change: transform;
+        }
+
+        .beat-demo-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(89, 99, 116, 0.75);
+            pointer-events: none;
+            z-index: 2;
+        }
+
         .beat-demo-row {
             display: grid;
-            grid-template-columns: 64px repeat(32, minmax(10px, 1fr));
+            grid-template-columns: 64px repeat(var(--beat-step-count), minmax(10px, 1fr));
             gap: 4px;
             align-items: center;
             min-height: 18px;
@@ -146,23 +192,156 @@
             cursor: pointer;
         }
 
-        .beat-demo-cell.is-divider {
-            border-left: 1px solid rgba(89, 99, 116, 0.75);
-        }
-
         .beat-demo-cell.active {
             background: #e53935;
         }
 
-        .beat-demo-cell.is-divider.active {
+        .beat-demo-cell.is-current {
+            outline: 2px solid #1f2937;
+            outline-offset: -2px;
+        }
+
+        .beat-instrument-buttons {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin: 16px 0 24px;
+        }
+
+        .beat-instrument-button {
+            flex: 1 1 0;
+            min-width: 0;
+            height: 80px;
+            border: 0;
+            border-radius: 0;
+            background: #dfe4eb;
+            color: #4e586d;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 100ms ease;
+        }
+
+        .beat-instrument-button.is-flashing {
             background: #e53935;
-            border-left: 1px solid rgba(89, 99, 116, 0.75);
+            color: #ffffff;
+        }
+
+        .beat-instrument-introductions {
+            margin-top: 20px;
+        }
+
+        .beat-instrument-introduction {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            align-items: center;
+            column-gap: 28px;
+            margin: 0 auto 30px;
+            padding-bottom: 30px;
+            text-align: left;
+            border-bottom: 1px solid rgba(89, 99, 116, 0.28);
+        }
+
+        .beat-instrument-introduction h3 {
+            grid-column: 2;
+            margin-bottom: 8px;
+        }
+
+        .beat-instrument-introduction p {
+            grid-column: 2;
+            margin-bottom: 14px;
+        }
+
+        .beat-instrument-introduction img {
+            grid-column: 1;
+            grid-row: 1 / span 3;
+            display: block;
+            width: 100%;
+            max-height: 300px;
+            margin: 0 auto;
+            object-fit: contain;
+        }
+
+        .beat-instrument-introduction .beat-instrument-button {
+            grid-column: 2;
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .beat-cymbals-introduction {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 18px 28px;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(89, 99, 116, 0.28);
+        }
+
+        .beat-cymbals-introduction > img {
+            grid-column: 1;
+            grid-row: 1 / span 2;
+            width: 100%;
+            max-height: 360px;
+            margin: 0 auto;
+            object-fit: contain;
+        }
+
+        .beat-cymbals-content {
+            grid-column: 2;
+        }
+
+        .beat-cymbal-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .beat-cymbal-copy h3 {
+            margin: 16px 0 6px;
+        }
+
+        .beat-cymbal-copy h3:first-child {
+            margin-top: 0;
+        }
+
+        .beat-cymbal-copy p {
+            margin-bottom: 10px;
         }
 
         @media (max-width: 720px) {
             .beat-demo-row {
-                grid-template-columns: 58px repeat(32, minmax(12px, 1fr));
+                grid-template-columns: 58px repeat(var(--beat-step-count), minmax(12px, 1fr));
                 gap: 6px;
+            }
+
+            .beat-instrument-buttons {
+                gap: 5px;
+            }
+
+            .beat-instrument-button {
+                height: 68px;
+                font-size: 13px;
+            }
+
+            .beat-instrument-introduction img {
+                width: 80%;
+            }
+
+            .beat-instrument-introduction,
+            .beat-cymbals-introduction {
+                display: block;
+            }
+
+            .beat-instrument-introduction img,
+            .beat-cymbals-introduction > img {
+                width: 80%;
+                margin-bottom: 16px;
+            }
+
+            .beat-instrument-introduction .beat-instrument-button {
+                width: 100%;
             }
         }
     </style>
@@ -206,11 +385,11 @@
                     <details class="directory-group" open>
                         <summary><h3>节奏基础</h3></summary>
                         <div class="directory-links">
-                            <a href="beat.html"><h3>节奏基础</h3></a>
-                            <a href="beat.html"><h3>小试一下</h3></a>
-                            <a href="beat.html"><h3>乐器介绍</h3></a>
-                            <a href="beat.html"><h3>类型</h3></a>
-                            <a href="beat.html"><h3>Beat音轨</h3></a>
+                            <a href="beat.html#rhythm-basics"><h3>节奏基础</h3></a>
+                            <a href="beat.html#try-it"><h3>小试一下</h3></a>
+                            <a href="beat.html#instrument-introductions"><h3>乐器介绍</h3></a>
+                            <a href="beat.html#in-song"><h3>在乐曲中</h3></a>
+                            <a href="beat.html#beat-track"><h3>Beat音轨</h3></a>
                         </div>
                     </details>
 
@@ -261,25 +440,88 @@
                     <h1>节奏基础</h1>
                 </div>
                 <div class="learning-content-body">
-                    <h2>节拍和拍子</h2>
+                    <h2 id="rhythm-basics">节拍和拍子</h2>
                     <p>节奏是音乐中最容易感受到、也最能打动人的部分。拍子决定每小节中有多少个强弱不同的节拍，而节奏则告诉我们这些拍子如何分配和延长。</p>
                     <p>常见的节拍有 2/4、3/4、4/4 等。2/4 更有推进感，常用于快速行进的音乐；3/4 常见于华尔兹，带有轻盈转身的舞步感；4/4 是最常见的基础节拍，很多流行、摇滚和古典作品都采用它。</p>
                     <p>理解节奏时，最关键的是感受到“强拍”和“弱拍”的交替。强拍通常更明显，像音乐的落脚点；弱拍则让音乐有流动感。你可以通过敲击桌面、拍手、踩点来感受不同节拍的感觉。</p>
                     <p>真正的节奏训练不是死记数字，而是让身体跟上音乐。练习时，先从慢速四拍开始，再尝试在 2/4 或 3/4 中保持稳定，逐渐增强对重音和间隔的感知。</p>
-                    <h2>小试一下</h2>
-                    <p>下面是Beat音轨里面会用到的七种常见乐器，分别为：Kick、Snare、Hi-Hat、Tom、Crash、Ride和Clap；你可以依次点按下面的块来试听他们的音色</p>
-                    <div></div><!--试听块-->
-                    <h2>乐器介绍</h2>
-                    <p>这些是你要在Beat音轨中使用的乐器，下面的图片向你展示了他们在现实中的样子，把他们按照节拍组合起来，就形成一个完整的节奏模式。</p>
-                    <img src="../images/instruments.jpg" alt="乐器图片">
+                    <br><br><br><br>
+                    <h2 id="try-it">小试一下</h2>
+                    <p>下面是Beat音轨里面会用到的八种常见乐器，分别为：Kick、Snare、Open-Hat、Closed-Hat、Tom、Crash、Ride和Clap；你可以依次点按下面的块来试听他们的音色</p>
+                    <div class="beat-instrument-buttons" aria-label="乐器试听">
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/kick.wav">Kick</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/snare.wav">Snare</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/open-hat.wav">Open-Hat</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/closed-hat.wav">Closed-Hat</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/Tom.wav">Tom</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/crash.wav">Crash</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/ride.wav">Ride</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/clap.wav">Clap</button>
+                    </div><!--试听块-->
+                    <br><br><br><br>
+                    <h2 id="instrument-introductions">乐器介绍</h2>
+                    <p>这些乐器共同构成了 Beat 音轨。每种乐器承担不同的节奏角色，把它们按照拍点组合起来，就能形成完整的节奏模式。</p>
+                    <div class="beat-instrument-introductions">
+                        <section class="beat-instrument-introduction">
+                            <h3>Kick（底鼓）</h3>
+                            <p>Kick 是鼓组中最厚重、最低沉的声音，通常负责强调每小节的根基和主要重拍，让节奏听起来更稳定、更有推动力。
+                            </p>
+                            <img src="../images/Kick.png" alt="Kick 底鼓">
+                            <button class="beat-instrument-button" type="button" data-audio="../audio/kick.wav">Kick</button>
+                        </section>
+                        <section class="beat-instrument-introduction">
+                            <h3>Snare（军鼓）</h3>
+                            <p>Snare 的声音清脆、有明显的击打感，常用于强调第二拍和第四拍，是流行、摇滚和电子音乐中常见的节奏骨架。</p>
+                            <img src="../images/snare.png" alt="Snare 军鼓">
+                            <button class="beat-instrument-button" type="button" data-audio="../audio/snare.wav">Snare</button>
+                        </section>
+                        <section class="beat-instrument-introduction">
+                            <h3>Tom（通鼓）</h3>
+                            <p>Tom 的音高通常介于底鼓和军鼓之间，不同尺寸的 Tom 能产生不同音高，常用于填充、过门和连接段落。</p>
+                            <img src="../images/Tom.png" alt="Tom 通鼓">
+                            <button class="beat-instrument-button" type="button" data-audio="../audio/Tom.wav">Tom</button>
+                        </section>
+                        <section class="beat-cymbals-introduction">
+                            <img src="../images/cymbals.jpg" alt="镲类乐器">
+                            <div class="beat-cymbals-content">
+                                <div class="beat-cymbal-buttons">
+                                    <button class="beat-instrument-button" type="button" data-audio="../audio/open-hat.wav">Open-Hat</button>
+                                    <button class="beat-instrument-button" type="button" data-audio="../audio/closed-hat.wav">Closed-Hat</button>
+                                    <button class="beat-instrument-button" type="button" data-audio="../audio/crash.wav">Crash</button>
+                                    <button class="beat-instrument-button" type="button" data-audio="../audio/ride.wav">Ride</button>
+                                </div>
+                                <div class="beat-cymbal-copy">
+                                    <h3>Open-Hat（开镲）</h3>
+                                    <p>Open-Hat 是打开镲片后的明亮延音，声音比闭镲更长，常用来制造开放感、连接不同节拍或推动段落变化。</p>
+                                    <h3>Closed-Hat（闭镲）</h3>
+                                    <p>Closed-Hat 是镲片闭合时产生的短促声音，适合连续演奏八分音符或十六分音符，用来维持稳定而细密的律动。</p>
+                                    <h3>Crash（碎音镲）</h3>
+                                    <p>Crash 的声音响亮、爆发力强，适合在段落开始、重拍或音乐高潮处使用，用来突出结构变化。</p>
+                                    <h3>Ride（叮叮镲）</h3>
+                                    <p>Ride 的声音清晰、延音较长，通常用于持续标记节拍。敲击镲面和镲边会产生不同的音色。</p>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="beat-instrument-introduction">
+                            <h3>Clap（拍手）</h3>
+                            <p>Clap 模拟多人拍手的声音，具有鲜明的律动感，常用于加强军鼓位置，让节奏更有舞曲和现场表演的感觉。</p>
+                            <img src="../images/clap.png" alt="Clap 拍手">
+                            <button class="beat-instrument-button" type="button" data-audio="../audio/clap.wav">Clap</button>
+                        </section>
+                    </div>
+                    <br><br><br><br>
+                    <h2 id="in-song">在乐曲中</h2>
                     <p>节奏是音乐的骨架，大多类型的乐曲中，你都能听到明显的鼓点，尤其是摇滚等近现代音乐类型中。但大多数舒缓的音乐并不需要强烈的鼓点，但这并不代表节奏不存在。它决定着乐曲的快慢和强弱，根植于乐曲结构之中。有关其与其他声道的配合，你会在后续的学习中逐渐了解到。</p>
-                    <h2>类型</h2>
                     <p>节奏的核心是节拍与速度，但是不同类型的音乐有着不同的节奏特点和表现方式。在长期的音乐演变中，多种丰富的节奏型逐渐形成了。例如下面的这些音频，你可以试听一下，来看看不同的节奏型是什么样的。</p>
-                    <div></div><!--节奏试听块-->
-                    <h2>Beat音轨</h2>
-                    <p>好的，现在让我们来创建一个Beat音轨吧！</p>
-                    <p>利用网格化的设计，你可以轻松地在Beat音轨中安排不同的鼓点和节奏元素。你可以尝试着应用刚才的节奏型，也可以创造自己的节奏型。</p>
-                    <p>节奏是充满自由的，它允许你根据自己的创意和情感来表达音乐，所以，尽情地发挥你的创造力吧！</p>
+                    <div class="beat-instrument-buttons" aria-label="节奏类型试听">
+                        <button class="beat-instrument-button" type="button" data-rhythm="jazz">爵士</button>
+                        <button class="beat-instrument-button" type="button" data-rhythm="samba">桑巴</button>
+                        <button class="beat-instrument-button" type="button" data-rhythm="tango">探戈</button>
+                        <button class="beat-instrument-button" type="button" data-rhythm="waltz">华尔兹</button>
+                        <button class="beat-instrument-button" type="button" data-rhythm="funk">放克</button>
+                        <button class="beat-instrument-button" type="button" data-rhythm="rock">摇滚</button>
+                    </div><br> <br>   <br><br><br><br>
+                    <h2 id="beat-track">Beat音轨</h2>
                     <div class="beat-demo-wrapper">
                         <div class="beat-demo-header">
                             <div class="beat-demo-transport">
@@ -290,10 +532,14 @@
                                     <input class="beat-demo-slider" type="range" min="40" max="240" step="1" value="60" aria-label="BPM调节器" />
                                 </div>
                             </div>
+                            <div class="beat-demo-meter-switcher" aria-label="拍号切换">
+                                <button class="beat-demo-meter-button active" type="button" data-steps="16">2/4、4/4</button>
+                                <button class="beat-demo-meter-button" type="button" data-steps="24">3/4、6/8</button>
+                            </div>
                             <button class="beat-demo-clear" type="button" aria-label="清空全部交互块">Clear</button>
                         </div>
                         <div class="beat-demo-shell">
-                            <div class="beat-demo-grid">
+                                <div class="beat-demo-grid">
                                 <div class="beat-demo-row">
                                     <div class="beat-demo-label-cell">Kick</div>
                                     <button class="beat-demo-cell" type="button"></button>
@@ -363,7 +609,7 @@
                                     <button class="beat-demo-cell" type="button"></button>
                                 </div>
                                 <div class="beat-demo-row">
-                                    <div class="beat-demo-label-cell">Hi-Hat</div>
+                                    <div class="beat-demo-label-cell">Open-Hat</div>
                                     <button class="beat-demo-cell" type="button"></button>
                                     <button class="beat-demo-cell" type="button"></button>
                                     <button class="beat-demo-cell" type="button"></button>
@@ -533,6 +779,7 @@
                                     <button class="beat-demo-cell" type="button"></button>
                                 </div>
                             </div>
+                            <div class="beat-demo-playhead" aria-hidden="true"></div>
                         </div>
                     </div>
                     <div class="learning-nav">
@@ -542,6 +789,356 @@
                 </div>
             </div>
         </div>
+    <audio id="kick-audio" preload="auto" src="../audio/kick.wav"></audio>
+    <audio id="snare-audio" preload="auto" src="../audio/snare.wav"></audio>
+    <audio id="open-hat-audio" preload="auto" src="../audio/open-hat.wav"></audio>
+    <audio id="closed-hat-audio" preload="auto" src="../audio/closed-hat.wav"></audio>
+    <audio id="tom-audio" preload="auto" src="../audio/Tom.wav"></audio>
+    <audio id="crash-audio" preload="auto" src="../audio/crash.wav"></audio>
+    <audio id="ride-audio" preload="auto" src="../audio/ride.wav"></audio>
+    <audio id="clap-audio" preload="auto" src="../audio/clap.wav"></audio>
+    <script>
+        const kickAudio = document.querySelector('#kick-audio');
+        const snareAudio = document.querySelector('#snare-audio');
+        const openHatAudio = document.querySelector('#open-hat-audio');
+        const closedHatAudio = document.querySelector('#closed-hat-audio');
+        const tomAudio = document.querySelector('#tom-audio');
+        const crashAudio = document.querySelector('#crash-audio');
+        const rideAudio = document.querySelector('#ride-audio');
+        const clapAudio = document.querySelector('#clap-audio');
+        const instrumentAudio = {
+            '../audio/kick.wav': kickAudio,
+            '../audio/snare.wav': snareAudio,
+            '../audio/open-hat.wav': openHatAudio,
+            '../audio/closed-hat.wav': closedHatAudio,
+            '../audio/Tom.wav': tomAudio,
+            '../audio/crash.wav': crashAudio,
+            '../audio/ride.wav': rideAudio,
+            '../audio/clap.wav': clapAudio
+        };
+        kickAudio.volume = 1;
+        snareAudio.volume = 1;
+        openHatAudio.volume = 1;
+        closedHatAudio.volume = 1;
+        tomAudio.volume = 1;
+        crashAudio.volume = 1;
+        rideAudio.volume = 1;
+        clapAudio.volume = 1;
+        const beatPlayButton = document.querySelector('.beat-demo-play');
+        const beatBpmSlider = document.querySelector('.beat-demo-slider');
+        const beatBpmValue = document.querySelector('.beat-demo-value');
+        const beatClearButton = document.querySelector('.beat-demo-clear');
+        const beatMeterButtons = [...document.querySelectorAll('.beat-demo-meter-button')];
+        const rhythmButtons = [...document.querySelectorAll('[data-rhythm]')];
+        const beatGrid = document.querySelector('.beat-demo-grid');
+        const beatPlayhead = document.querySelector('.beat-demo-playhead');
+        let beatSteps = 16;
+        let beatCells = [];
+        let beatActive = [];
+        const beatTracks = [
+            ['Kick', kickAudio],
+            ['Snare', snareAudio],
+            ['Open-Hat', openHatAudio],
+            ['Closed-Hat', closedHatAudio],
+            ['Tom', tomAudio],
+            ['Crash', crashAudio],
+            ['Ride', rideAudio],
+            ['Clap', clapAudio]
+        ];
+        const rhythmPatterns = {
+            jazz: {
+                steps: 24, bpm: 80,
+                pattern: { 0: [1, 6, 7, 12, 13, 18, 19, 24], 1: [4, 10, 16, 22], 2: [23], 3: [3, 9, 15, 21], 6: [11], 7: [4, 10, 16, 22] }
+            },
+            samba: {
+                steps: 16, bpm: 130,
+                pattern: { 0: [1, 5, 9, 13], 1: [4, 7, 12, 15], 2: [10], 3: [3, 8, 11, 16], 4: [6], 7: [4, 12] }
+            },
+            tango: {
+                steps: 16, bpm: 65,
+                pattern: { 0: [1, 7, 9, 14, 16], 1: [5, 13], 2: [6, 14], 3: [2, 7, 10, 15], 4: [4, 8, 12] }
+            },
+            waltz: {
+                steps: 24, bpm: 140,
+                pattern: { 0: [1], 1: [5, 9, 17, 21], 2: [13], 3: [4, 12, 20], 6: [13] }
+            },
+            funk: {
+                steps: 16, bpm: 95,
+                pattern: { 0: [1, 6, 10, 12, 14], 1: [3, 7, 11, 15], 2: [5, 13], 3: [2, 4, 6, 8, 10, 12, 14, 16] }
+            },
+            rock: {
+                steps: 16, bpm: 110,
+                pattern: { 0: [1, 9], 1: [5, 13], 2: [5, 13], 3: [2, 3, 4, 6, 7, 8, 10, 11, 12, 14, 15, 16], 5: [5, 13] }
+            }
+        };
+        const renderBeatGrid = () => {
+            beatGrid.style.setProperty('--beat-step-count', String(beatSteps));
+            beatGrid.innerHTML = beatTracks.map(([name]) => `
+                <div class="beat-demo-row">
+                    <div class="beat-demo-label-cell">${name}</div>
+                    ${Array.from({ length: beatSteps }, (_, index) =>
+                        `<button class="beat-demo-cell" type="button" aria-pressed="false" aria-label="${name} 第 ${index + 1} 拍"></button>`
+                    ).join('')}
+                </div>
+            `).join('');
+            [4, 8, 12, ...(beatSteps === 24 ? [16, 20] : [])].forEach((boundary) => {
+                const divider = document.createElement('div');
+                divider.className = 'beat-demo-divider';
+                divider.dataset.boundary = String(boundary);
+                beatGrid.appendChild(divider);
+            });
+            beatCells = [...beatGrid.querySelectorAll('.beat-demo-row')]
+                .map((row) => [...row.querySelectorAll('.beat-demo-cell')]);
+            beatActive = beatCells.map((row) => row.map(() => false));
+        };
+
+        renderBeatGrid();
+
+        const updateBeatDividers = () => {
+            const gridRect = beatGrid.getBoundingClientRect();
+            const firstRowCells = beatCells[0];
+            beatGrid.querySelectorAll('.beat-demo-divider').forEach((divider) => {
+                const boundary = Number(divider.dataset.boundary);
+                const leftCell = firstRowCells[boundary - 1];
+                const rightCell = firstRowCells[boundary];
+                if (!leftCell || !rightCell) return;
+                const leftEdge = leftCell.getBoundingClientRect().right;
+                const rightEdge = rightCell.getBoundingClientRect().left;
+                divider.style.left = `${((leftEdge + rightEdge) / 2) - gridRect.left}px`;
+            });
+        };
+        const beatState = {
+            bpm: Number(beatBpmSlider.value),
+            currentStep: 0,
+            playing: false,
+            animationFrameId: null,
+            lastFrameTime: 0
+            ,stepAccumulator: 0,
+            playheadStartX: 0,
+            playheadStepWidth: 1
+        };
+
+        const measureBeatPlayhead = () => {
+            const gridRect = beatGrid.getBoundingClientRect();
+            const firstRow = beatCells[0];
+            const firstCell = firstRow?.[0];
+            const secondCell = firstRow?.[1];
+            if (!firstCell || !secondCell) return;
+
+            beatState.playheadStartX = firstCell.getBoundingClientRect().left - gridRect.left;
+            beatState.playheadStepWidth = secondCell.getBoundingClientRect().left - firstCell.getBoundingClientRect().left;
+            beatPlayhead.style.left = `${beatState.playheadStartX}px`;
+        };
+
+        const updateBeatPlayhead = () => {
+            const stepProgress = beatState.stepAccumulator / ((60000 / beatState.bpm) / 4);
+            const position = (beatState.currentStep + stepProgress) % beatSteps;
+            beatPlayhead.style.transform = `translate3d(${position * beatState.playheadStepWidth}px, 0, 0)`;
+        };
+
+        const playInstrumentAtStep = (rowIndex, step) => {
+            const [name, audio] = beatTracks[rowIndex] || [];
+            const cell = beatCells[rowIndex]?.[step];
+            if (!cell || !beatActive[rowIndex]?.[step]) return;
+
+            audio.currentTime = 0;
+            audio.play().catch((error) => {
+                console.error(`${name} 音频播放失败:`, error);
+            });
+        };
+
+        const playSoundsAtStep = (step) => {
+            beatTracks.forEach((_, rowIndex) => playInstrumentAtStep(rowIndex, step));
+        };
+
+        const stopBeatPlayback = () => {
+            if (beatState.animationFrameId) {
+                window.cancelAnimationFrame(beatState.animationFrameId);
+                beatState.animationFrameId = null;
+            }
+            beatState.playing = false;
+            beatState.lastFrameTime = 0;
+            beatState.stepAccumulator = 0;
+            beatPlayButton.textContent = '▶';
+            beatPlayhead.style.display = 'none';
+        };
+
+        const animateBeatPlayback = (timestamp) => {
+            if (!beatState.playing) return;
+            if (!beatState.lastFrameTime) beatState.lastFrameTime = timestamp;
+
+            const stepDuration = (60000 / beatState.bpm) / 4;
+            const elapsed = timestamp - beatState.lastFrameTime;
+            beatState.lastFrameTime = timestamp;
+            beatState.stepAccumulator += elapsed;
+
+            while (beatState.stepAccumulator >= stepDuration) {
+                beatState.stepAccumulator -= stepDuration;
+                beatState.currentStep = (beatState.currentStep + 1) % beatSteps;
+                playSoundsAtStep(beatState.currentStep);
+            }
+            updateBeatPlayhead();
+
+            beatState.animationFrameId = window.requestAnimationFrame(animateBeatPlayback);
+        };
+
+        const startBeatPlayback = () => {
+            if (beatState.playing) return;
+            beatState.playing = true;
+            beatState.lastFrameTime = performance.now();
+            beatState.stepAccumulator = 0;
+            beatPlayButton.textContent = '❚❚';
+            beatState.currentStep = 0;
+            measureBeatPlayhead();
+            updateBeatPlayhead();
+            beatPlayhead.style.display = 'block';
+            playSoundsAtStep(beatState.currentStep);
+            beatState.animationFrameId = window.requestAnimationFrame(animateBeatPlayback);
+        };
+
+        const bindBeatCellEvents = () => {
+            beatCells.forEach((row, rowIndex) => {
+                row.forEach((cell, step) => {
+                    cell.addEventListener('click', () => {
+                        const isActive = cell.classList.toggle('active');
+                        beatActive[rowIndex][step] = isActive;
+                        cell.setAttribute('aria-pressed', String(isActive));
+                        if (isActive && !beatState.playing) {
+                            playInstrumentAtStep(rowIndex, step);
+                        }
+                    });
+                });
+            });
+        };
+
+        bindBeatCellEvents();
+
+        const applyRhythmPattern = (patternName) => {
+            const preset = rhythmPatterns[patternName];
+            if (!preset) return;
+
+            stopBeatPlayback();
+            const meterButton = beatMeterButtons.find((button) => Number(button.dataset.steps) === preset.steps);
+            if (preset.steps !== beatSteps && meterButton) {
+                beatSteps = preset.steps;
+                renderBeatGrid();
+                beatMeterButtons.forEach((item) => item.classList.toggle('active', item === meterButton));
+                bindBeatCellEvents();
+                updateBeatDividers();
+                measureBeatPlayhead();
+            }
+            beatState.bpm = preset.bpm;
+            beatBpmSlider.value = String(preset.bpm);
+            beatBpmValue.textContent = String(preset.bpm);
+            beatCells.flat().forEach((cell) => {
+                cell.classList.remove('active');
+                cell.setAttribute('aria-pressed', 'false');
+            });
+            beatActive = beatCells.map((row) => row.map(() => false));
+
+            Object.entries(preset.pattern).forEach(([rowIndex, steps]) => {
+                steps.forEach((oneBasedStep) => {
+                    const cell = beatCells[Number(rowIndex)]?.[oneBasedStep - 1];
+                    if (cell) {
+                        beatActive[Number(rowIndex)][oneBasedStep - 1] = true;
+                        cell.classList.add('active');
+                        cell.setAttribute('aria-pressed', 'true');
+                    }
+                });
+            });
+            rhythmButtons.forEach((button) => {
+                button.classList.toggle('is-flashing', button.dataset.rhythm === patternName);
+            });
+            window.setTimeout(() => {
+                rhythmButtons.forEach((button) => button.classList.remove('is-flashing'));
+            }, 180);
+        };
+
+        rhythmButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                applyRhythmPattern(button.dataset.rhythm);
+            });
+        });
+
+        beatMeterButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const nextSteps = Number(button.dataset.steps);
+                if (nextSteps === beatSteps) return;
+
+                const activeSteps = beatActive.map((row) => [...row]);
+                stopBeatPlayback();
+                beatSteps = nextSteps;
+                renderBeatGrid();
+                beatCells.forEach((row, rowIndex) => {
+                    row.forEach((cell, step) => {
+                        const isActive = activeSteps[rowIndex]?.[step] || false;
+                        beatActive[rowIndex][step] = isActive;
+                        cell.classList.toggle('active', isActive);
+                        cell.setAttribute('aria-pressed', String(isActive));
+                    });
+                });
+                bindBeatCellEvents();
+                beatMeterButtons.forEach((item) => item.classList.toggle('active', item === button));
+                beatState.currentStep = 0;
+                updateBeatDividers();
+                measureBeatPlayhead();
+                updateBeatPlayhead();
+            });
+        });
+
+        beatPlayButton.addEventListener('click', () => {
+            if (beatState.playing) {
+                stopBeatPlayback();
+            } else {
+                startBeatPlayback();
+            }
+        });
+
+        beatBpmSlider.addEventListener('input', (event) => {
+            beatState.bpm = Number(event.target.value);
+            beatBpmValue.textContent = String(beatState.bpm);
+            beatState.lastFrameTime = performance.now();
+            beatState.stepAccumulator = 0;
+        });
+
+        beatClearButton.addEventListener('click', () => {
+            beatCells.flat().forEach((cell) => {
+                cell.classList.remove('active');
+                cell.setAttribute('aria-pressed', 'false');
+            });
+            beatState.currentStep = 0;
+            stopBeatPlayback();
+            updateBeatPlayhead();
+        });
+
+        updateBeatDividers();
+        measureBeatPlayhead();
+        window.addEventListener('resize', updateBeatDividers);
+        window.addEventListener('resize', measureBeatPlayhead);
+
+        document.querySelectorAll('.beat-instrument-button').forEach((button) => {
+            button.addEventListener('click', () => {
+                button.classList.remove('is-flashing');
+                void button.offsetWidth;
+                button.classList.add('is-flashing');
+
+                const audio = instrumentAudio[button.dataset.audio];
+                if (audio) {
+                    audio.currentTime = 0;
+                    const playRequest = audio.play();
+                    if (playRequest) {
+                        playRequest.catch((error) => {
+                            console.error(`${button.textContent} 音频播放失败:`, error);
+                        });
+                    }
+                }
+
+                window.setTimeout(() => {
+                    button.classList.remove('is-flashing');
+                }, 180);
+            });
+        });
+    </script>
     <script src="../js/login.js"></script>
     </body>
 </html>

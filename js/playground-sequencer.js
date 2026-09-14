@@ -40,6 +40,34 @@
         -3px -4px 8px rgba(255,255,255,0.7);
     }
 
+    .sequencer-panel.blue-panel {
+      --panel-accent: #3b82f6;
+      --panel-accent-strong: #2563eb;
+      --panel-accent-soft: #93c5fd;
+      --panel-accent-deep: rgba(20, 61, 130, 0.9);
+      --panel-shell: rgba(232, 242, 255, 0.92);
+      background: linear-gradient(145deg, rgba(245,250,255,0.98) 0%, rgba(228,240,255,0.98) 38%, rgba(242,248,255,0.98) 100%);
+      box-shadow:
+        inset 1px 1px 0 rgba(255,255,255,0.9),
+        inset -1px -1px 0 rgba(176,182,201,0.16),
+        12px 16px 24px rgba(30, 64, 120, 0.08),
+        -3px -4px 8px rgba(255,255,255,0.7);
+    }
+
+    .sequencer-panel.light-green-panel {
+      --panel-accent: #72c98b;
+      --panel-accent-strong: #4caf70;
+      --panel-accent-soft: #b7e7c3;
+      --panel-accent-deep: rgba(30, 91, 50, 0.9);
+      --panel-shell: rgba(235, 250, 239, 0.92);
+      background: linear-gradient(145deg, rgba(248,255,249,0.98) 0%, rgba(229,247,233,0.98) 38%, rgba(243,253,245,0.98) 100%);
+      box-shadow:
+        inset 1px 1px 0 rgba(255,255,255,0.9),
+        inset -1px -1px 0 rgba(176,182,201,0.16),
+        12px 16px 24px rgba(37, 99, 57, 0.08),
+        -3px -4px 8px rgba(255,255,255,0.7);
+    }
+
     .sequencer-header {
       display: flex;
       align-items: center;
@@ -47,6 +75,13 @@
       gap: 16px;
       padding: 0 6px 18px;
       margin-bottom: 4px;
+    }
+
+    .sequencer-title {
+      margin: 0 6px 16px;
+      color: #263247;
+      font-size: 28px;
+      line-height: 1.2;
     }
 
     .header-actions {
@@ -368,10 +403,11 @@
     return displayScale.slice(0, 15).reverse();
   };
 
-  const createTrackPanel = ({ allowScaleControls = true, redTheme = false } = {}) => {
+  const createTrackPanel = ({ allowScaleControls = true, theme = 'yellow', title = '' } = {}) => {
     const panel = document.createElement('section');
-    panel.className = `sequencer-panel${redTheme ? ' red-panel' : ''}`;
+    panel.className = `sequencer-panel${theme === 'yellow' ? '' : ` ${theme}-panel`}`;
     panel.innerHTML = `
+      <h1 class="sequencer-title">${title}</h1>
       <div class="sequencer-header">
         <div class="transport-group">
           <button class="transport-button" type="button" aria-label="播放/暂停">▶</button>
@@ -442,12 +478,31 @@
       mode: 'Ionian',
       playheadPosition: 0,
       playheadStartX: 0,
-      playheadTravelWidth: 1
+      playheadTravelWidth: 1,
+      lastTriggeredStep: null
     };
 
     const cellMatrix = [];
-    const rowCount = redTheme ? 7 : 15;
-    const drumLabels = ['Kick', 'Snare', 'Hi-Hat', 'Tom', 'Crash', 'Ride', 'Clap'];
+    const drumTracks = [
+      ['Kick', '../audio/kick.wav'],
+      ['Snare', '../audio/snare.wav'],
+      ['Open-Hat', '../audio/open-hat.wav'],
+      ['Closed-Hat', '../audio/closed-hat.wav'],
+      ['Tom', '../audio/Tom.wav'],
+      ['Crash', '../audio/crash.wav'],
+      ['Ride', '../audio/ride.wav'],
+      ['Clap', '../audio/clap.wav']
+    ];
+    const rowCount = theme === 'red' ? drumTracks.length : 15;
+    const drumLabels = drumTracks.map(([label]) => label);
+    const drumAudio = theme === 'red'
+      ? drumTracks.map(([, source]) => {
+        const audio = new Audio(source);
+        audio.preload = 'auto';
+        audio.volume = 1;
+        return audio;
+      })
+      : [];
 
     const updateStatus = () => {
       if (statusPill) {
@@ -482,7 +537,11 @@
           }
           cell.setAttribute('aria-label', `${pitchNames[rowIndex]} step ${step + 1}`);
           cell.addEventListener('click', () => {
-            cell.classList.toggle('active');
+            const isActive = cell.classList.toggle('active');
+            cell.setAttribute('aria-pressed', String(isActive));
+            if (isActive && theme === 'red' && !state.playing) {
+              playDrumAtStep(rowIndex, step);
+            }
           });
           rowButtons.push(cell);
           row.appendChild(cell);
@@ -501,7 +560,23 @@
       }
       state.currentStep = 0;
       state.playheadPosition = 0;
+      state.lastTriggeredStep = null;
       updatePlayheadPosition();
+    };
+
+    const playDrumAtStep = (rowIndex, step) => {
+      const cell = cellMatrix[rowIndex]?.[step];
+      const audio = drumAudio[rowIndex];
+      if (theme !== 'red' || !cell?.classList.contains('active') || !audio) return;
+
+      audio.currentTime = 0;
+      audio.play().catch((error) => {
+        console.error(`${drumLabels[rowIndex]} 音频播放失败:`, error);
+      });
+    };
+
+    const playDrumsAtStep = (step) => {
+      drumAudio.forEach((_, rowIndex) => playDrumAtStep(rowIndex, step));
     };
 
     const measureGridGeometry = () => {
@@ -543,6 +618,7 @@
       state.playing = false;
       state.lastFrameTime = 0;
       state.playheadPosition = state.currentStep;
+      state.lastTriggeredStep = null;
       playheadLine.style.display = 'none';
     };
 
@@ -564,7 +640,12 @@
         state.playheadPosition -= steps;
       }
 
-      state.currentStep = Math.floor(state.playheadPosition) % steps;
+      const nextStep = Math.floor(state.playheadPosition) % steps;
+      if (theme === 'red' && state.lastTriggeredStep !== nextStep) {
+        state.lastTriggeredStep = nextStep;
+        playDrumsAtStep(nextStep);
+      }
+      state.currentStep = nextStep;
       updatePlayheadPosition();
       state.animationFrameId = window.requestAnimationFrame(animatePlayback);
     };
@@ -579,6 +660,10 @@
       transportButton.textContent = '❚❚';
       playheadLine.style.display = 'block';
       updatePlayheadPosition();
+      if (theme === 'red') {
+        state.lastTriggeredStep = state.currentStep;
+        playDrumsAtStep(state.currentStep);
+      }
       state.animationFrameId = window.requestAnimationFrame(animatePlayback);
     };
 
@@ -643,6 +728,8 @@
     return panel;
   };
 
-  box.appendChild(createTrackPanel({ allowScaleControls: true, redTheme: false }));
-  box.appendChild(createTrackPanel({ allowScaleControls: false, redTheme: true }));
+  box.appendChild(createTrackPanel({ allowScaleControls: false, theme: 'red', title: '节奏' }));
+  box.appendChild(createTrackPanel({ allowScaleControls: true, theme: 'yellow', title: '和弦' }));
+  box.appendChild(createTrackPanel({ allowScaleControls: true, theme: 'light-green', title: '贝斯' }));
+  box.appendChild(createTrackPanel({ allowScaleControls: true, theme: 'blue', title: '旋律' }));
 })();
