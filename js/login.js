@@ -4,6 +4,26 @@
   const clientNameKey = 'musiclab_client_name';
   const navLoginLink = document.querySelector('#nav4 a');
 
+  const updateActiveNav = () => {
+    const path = decodeURIComponent(window.location.pathname || '');
+    const sectionId = path.match(/\/introduction\//i) ? 'nav2'
+      : path.match(/\/The Playground\//i) ? 'nav3'
+      : path.match(/\/Start Learning\//i) ? 'nav6'
+      : path.match(/\/settings\//i) ? 'nav5'
+      : path.match(/\/login\//i) ? 'nav4'
+      : 'nav1';
+
+    document.querySelectorAll('.nav li').forEach((item) => {
+      const isActive = item.id === sectionId;
+      const link = item.querySelector('a');
+
+      item.classList.toggle('active', isActive);
+      link?.classList.toggle('active', isActive);
+      if (isActive) link?.setAttribute('aria-current', 'page');
+      else link?.removeAttribute('aria-current');
+    });
+  };
+
   const getLoginPageHref = () => {
     const path = decodeURIComponent(window.location.pathname || '');
     const isInsideLoginFolder = /\/login\//i.test(path);
@@ -56,8 +76,10 @@
     root.style.setProperty('--mx', '50%');
     root.style.setProperty('--my', '50%');
     updateLoginNav();
+    updateActiveNav();
   });
   window.addEventListener('storage', updateLoginNav);
 
   updateLoginNav();
+  updateActiveNav();
 })();

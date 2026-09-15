@@ -478,19 +478,36 @@
 }
 
 .nav a:link{
-    color:#111111;
+    color: #333333;
+    display: block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
     text-decoration: none;
-    transition: color 180ms ease, opacity 180ms ease;
+    transition: color 260ms ease, background-color 260ms ease, transform 260ms ease, opacity 260ms ease;
 }
 
 .nav a:visited{
-    color:#111111;
+    color: #333333;
     text-decoration: none;
 }
 
 .nav a:hover {
-    color: #3d5afe;
+    color: #555555;
+    background: rgba(100, 100, 100, 0.1);
+    transform: translateY(-1px);
     text-decoration: none;
+}
+
+.nav a:focus-visible {
+  outline: 2px solid #777777;
+  outline-offset: 2px;
+}
+
+.nav a.active {
+  color: #444444;
+  background: rgba(100, 100, 100, 0.16);
+  font-weight: 600;
 }
 
 .open-QA{
