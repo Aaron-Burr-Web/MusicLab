@@ -361,7 +361,6 @@
     updateBeatPlayhead();
   });
 
-  // 清空只清除交互块，不打断播放，方便边听边改
   beatClearButton.addEventListener('click', () => {
     beatCells.flat().forEach((cell) => { cell.classList.remove('active'); cell.setAttribute('aria-pressed', 'false'); });
     beatActive = beatCells.map((row) => row.map(() => false));
