@@ -814,8 +814,7 @@
     flex-direction: column;
     user-select: none;
     -webkit-user-select: none;
-    transition: background 0.35s ease;
-    animation: pageGlowShift 12s ease-in-out infinite alternate;
+    transition: background 0.35s ease, color 0.35s ease;
   }
 
   body::before {

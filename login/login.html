@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="../css/Home.css">  
+    <title>MusicLab | 登录</title>
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
-    <body class="main">
-        <div>
-			<div class="top">
-                <div class="Logo">
-                    <a href="../index.html" aria-label="返回主页"></a>
-                    <img src="../images/MusicLabBlackLogo.png" width="250">
-                </div>
+    <body class="main" data-no-footer>
+        <div class="top">
+            <div class="Logo">
+                <a href="../index.html" aria-label="返回主页"></a>
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
             </div>
             <ul class="nav">
                 <li id="nav1"><a href="../index.html"> 主页 </a></li>
@@ -20,118 +20,138 @@
                 <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
                 <li id="nav6"><a href="../Start Learning/index.html"> 初学者教程 </a></li>
                 <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
-                <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+                <li id="nav4"><a href="login.html"> 登录  |  注册 </a></li>
             </ul>
         </div>
-        <hr>
-        <div class="QAorLogin">
-            <div>
-                <h2 align="center">登录</h2>
+
+        <main class="QAorLogin" aria-labelledby="loginTitle">
+            <div class="auth-header">
+                <h2 id="loginTitle">登录</h2>
+                <a href="../index.html" class="auth-back" id="loginBackButton">← 返回</a>
             </div>
             <form id="loginForm" novalidate>
-                <label>用户名：</label><br>
-                <input type="text" name="username" id="usernameInput">
-                <span class="field-error" id="usernameError"></span>
+                <label for="usernameInput">用户名：</label><br>
+                <input type="text" name="username" id="usernameInput" autocomplete="username" aria-describedby="usernameError">
+                <span class="field-error" id="usernameError" role="alert"></span>
                 <br>
-                <label>密码：</label><br>
-                <input type="password" name="password" id="passwordInput">
-                <span class="field-error" id="passwordError"></span>
-                <br><br>
-                <button type="submit" class="button_QA is-disabled" id="loginSubmitButton">登录</button><br><br>
+                <label for="passwordInput">密码：</label><br>
+                <input type="password" name="password" id="passwordInput" autocomplete="current-password" aria-describedby="passwordError">
+                <span class="field-error" id="passwordError" role="alert"></span>
+                <br>
                 <div class="agreement-row" id="agreementRow">
-                    <input type="checkbox" name="agreement" id="agreementRadio" aria-label="我同意《用户服务条款》">
+                    <input type="checkbox" name="agreement" id="agreementRadio">
                     <label for="agreementRadio">我同意《用户服务条款》</label>
                 </div>
                 <br><br>
-                <label>没有账号？<a href="registration.html">点击这里创建一个账号</a></label>
-                <p>&nbsp;</p>
+                <div class="form-actions">
+                    <button type="submit" class="ml-btn" id="loginSubmitButton" disabled>登录</button>
+                    <button type="button" class="ml-btn secondary" id="loginCancelButton">取消</button>
+                </div>
+                <p class="auth-hint">没有账号？<a href="registration.html">点击这里创建一个账号</a>（用户名、密码随意，例如 1 / 1）</p>
             </form>
-        </div>
+        </main>
 
         <script src="../js/login.js"></script>
         <script>
-            const loginStateKey = 'musiclab_login_state';
-            const clientNameKey = 'musiclab_client_name';
-            const loginForm = document.getElementById('loginForm');
-            const usernameInput = document.getElementById('usernameInput');
-            const passwordInput = document.getElementById('passwordInput');
-            const usernameError = document.getElementById('usernameError');
-            const passwordError = document.getElementById('passwordError');
-            const agreementRadio = document.getElementById('agreementRadio');
-            const agreementRow = document.getElementById('agreementRow');
-            const loginSubmitButton = document.getElementById('loginSubmitButton');
+            (() => {
+                const ML = window.MusicLab;
+                const loginForm = document.getElementById('loginForm');
+                const usernameInput = document.getElementById('usernameInput');
+                const passwordInput = document.getElementById('passwordInput');
+                const usernameError = document.getElementById('usernameError');
+                const passwordError = document.getElementById('passwordError');
+                const agreementRadio = document.getElementById('agreementRadio');
+                const agreementRow = document.getElementById('agreementRow');
+                const loginSubmitButton = document.getElementById('loginSubmitButton');
+                const loginCancelButton = document.getElementById('loginCancelButton');
+                const loginBackButton = document.getElementById('loginBackButton');
 
-            const clearFieldError = (fieldError) => {
-                fieldError.textContent = '';
-                fieldError.style.display = 'none';
-            };
+                // "Back" returns to the previous page on this site, otherwise the homepage.
+                const goBack = () => {
+                    const cameFromSite = document.referrer
+                        && new URL(document.referrer).origin === window.location.origin
+                        && !/\/login\//i.test(document.referrer);
+                    if (cameFromSite && window.history.length > 1) window.history.back();
+                    else window.location.href = '../index.html';
+                };
+                loginCancelButton.addEventListener('click', goBack);
+                loginBackButton.addEventListener('click', (event) => { event.preventDefault(); goBack(); });
 
-            const showFieldError = (fieldError, message) => {
-                fieldError.textContent = message;
-                fieldError.style.display = 'block';
-            };
-
-            const validateLoginFields = () => {
-                const username = usernameInput.value.trim();
-                const password = passwordInput.value.trim();
-                let hasError = false;
-
-                clearFieldError(usernameError);
-                clearFieldError(passwordError);
-
-                if (!username) {
-                    showFieldError(usernameError, '用户名未填写');
-                    hasError = true;
+                // Already signed in: let the user know instead of showing an empty form.
+                if (ML && ML.auth.isLoggedIn()) {
+                    ML.toast(`你已经以「${ML.auth.currentUser()}」登录，可在设置中退出`, { type: 'info' });
                 }
 
-                if (!password) {
-                    showFieldError(passwordError, '密码未填写');
-                    hasError = true;
-                }
+                const clearFieldError = (fieldError, input) => {
+                    fieldError.textContent = '';
+                    input.removeAttribute('aria-invalid');
+                };
 
-                return !hasError;
-            };
+                const showFieldError = (fieldError, input, message) => {
+                    fieldError.textContent = message;
+                    input.setAttribute('aria-invalid', 'true');
+                };
 
-            const updateAgreementState = () => {
-                const isAgreed = agreementRadio.checked;
-                loginSubmitButton.disabled = !isAgreed;
-                loginSubmitButton.classList.toggle('is-disabled', !isAgreed);
-                if (isAgreed) {
-                    agreementRow.classList.remove('warning');
-                }
-            };
+                const validateLoginFields = () => {
+                    let hasError = false;
+                    clearFieldError(usernameError, usernameInput);
+                    clearFieldError(passwordError, passwordInput);
 
-            usernameInput.addEventListener('input', () => {
-                if (usernameInput.value.trim()) {
-                    clearFieldError(usernameError);
-                }
-            });
+                    if (!usernameInput.value.trim()) {
+                        showFieldError(usernameError, usernameInput, '用户名未填写');
+                        hasError = true;
+                    }
+                    if (!passwordInput.value) {
+                        showFieldError(passwordError, passwordInput, '密码未填写');
+                        hasError = true;
+                    }
+                    return !hasError;
+                };
 
-            passwordInput.addEventListener('input', () => {
-                if (passwordInput.value.trim()) {
-                    clearFieldError(passwordError);
-                }
-            });
+                const updateAgreementState = () => {
+                    const isAgreed = agreementRadio.checked;
+                    loginSubmitButton.disabled = !isAgreed;
+                    if (isAgreed) agreementRow.classList.remove('warning');
+                };
 
-            agreementRadio.addEventListener('change', updateAgreementState);
+                usernameInput.addEventListener('input', () => {
+                    if (usernameInput.value.trim()) clearFieldError(usernameError, usernameInput);
+                });
+                passwordInput.addEventListener('input', () => {
+                    if (passwordInput.value) clearFieldError(passwordError, passwordInput);
+                });
+                agreementRadio.addEventListener('change', updateAgreementState);
 
-            loginForm.addEventListener('submit', (event) => {
-                event.preventDefault();
+                loginForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
 
-                if (!agreementRadio.checked) {
-                    return;
-                }
+                    if (!agreementRadio.checked) {
+                        agreementRow.classList.add('warning');
+                        ML && ML.toast('请先同意《用户服务条款》', { type: 'warning' });
+                        return;
+                    }
+                    if (!validateLoginFields()) return;
 
-                if (!validateLoginFields()) {
-                    return;
-                }
+                    loginSubmitButton.disabled = true;
+                    loginSubmitButton.textContent = '登录中…';
 
-                localStorage.setItem(clientNameKey, usernameInput.value.trim());
-                localStorage.setItem(loginStateKey, 'true');
-                window.location.href = '../index.html';
-            });
+                    const result = await ML.auth.login(usernameInput.value, passwordInput.value);
 
-            updateAgreementState();
+                    if (!result.ok) {
+                        loginSubmitButton.disabled = false;
+                        loginSubmitButton.textContent = '登录';
+                        if (result.field === 'username') showFieldError(usernameError, usernameInput, result.message);
+                        else showFieldError(passwordError, passwordInput, result.message);
+                        ML.toast(result.message, { type: 'error' });
+                        return;
+                    }
+
+                    ML.toastAfterReload(`登录成功，欢迎回来，${result.name}！`, 'success');
+                    window.location.href = '../index.html';
+                });
+
+                updateAgreementState();
+            })();
         </script>
     </body>
 </html>

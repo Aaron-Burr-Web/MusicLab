@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | Start Learning</title>
-    <link rel="stylesheet" href="../css/Home.css">  
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
-    <body class="main">
+    <body class="main" data-lesson="index">
         <div class="top">
 			<div class="Logo">
                 <a href="../index.html" aria-label="返回主页"></a>
-                <img src="../images/MusicLabBlackLogo.png" width="250">
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
             </div>
             <ul class="nav">
                 <li id="nav1"><a href="../index.html"> 主页 </a></li>
@@ -27,73 +29,13 @@
         
          <div class="sidebar">
             <div class="directory-panel">
-                <div class="directory-header">
+                <div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录">
                     <img src="../icons/directory.png" alt="Directory" class="directory-icon">
                 </div>
 
-                <div class="directory-tree">
-                    <a href="index.html" class="directory-page-link"><h3>开始音乐之旅</h3></a>
-
-                    <details class="directory-group">
-                        <summary><h3>音符与记谱</h3></summary>
-                        <div class="directory-links">
-                            <a href="pitches.html"><h3>音符与记谱</h3></a>
-                            <a href="pitches.html"><h3>音名与唱名</h3></a>
-                            <a href="pitches.html"><h3>钢琴键盘</h3></a>
-                            <a href="pitches.html"><h3>谱与音符</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>节奏基础</h3></summary>
-                        <div class="directory-links">
-                            <a href="beat.html"><h3>节奏基础</h3></a>
-                            <a href="beat.html"><h3>小试一下</h3></a>
-                            <a href="beat.html"><h3>乐器介绍</h3></a>
-                            <a href="beat.html#in-song"><h3>在乐曲中</h3></a>
-                            <a href="beat.html"><h3>Beat音轨</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>音程与和弦</h3></summary>
-                        <div class="directory-links">
-                            <a href="chords.html"><h3>音程与和弦</h3></a>
-                            <a href="chords.html"><h3>小试一下</h3></a>
-                            <a href="chords.html"><h3>乐器介绍</h3></a>
-                            <a href="chords.html"><h3>音程</h3></a>
-                            <a href="chords.html"><h3>和弦</h3></a>
-                            <a href="chords.html"><h3>音轨</h3></a>
-                            <a href="chords.html"><h3>Chords音轨</h3></a>
-                            <a href="chords.html"><h3>Basslines音轨</h3></a>
-                            <a href="chords.html"><h3>Melodies音轨</h3></a>
-                            <a href="chords.html"><h3>合奏</h3></a>
-                            <a href="chords.html"><h3>单音听辨测试</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>调式基础</h3></summary>
-                        <div class="directory-links">
-                            <a href="tones.html"><h3>调式基础</h3></a>
-                            <a href="tones.html"><h3>小试一下</h3></a>
-                            <a href="tones.html"><h3>常见调式</h3></a>
-                            <a href="tones.html"><h3>民族调式</h3></a>
-                            <a href="tones.html"><h3>更多调式</h3></a>
-                            <a href="tones.html"><h3>多音和弦听辨测试</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>拓展与其他</h3></summary>
-                        <div class="directory-links">
-                            <a href="others.html"><h3>拓展与其他</h3></a>
-                            <a href="others.html"><h3>扩展内容</h3></a>
-                            <a href="others.html"><h3>更多乐理知识</h3></a>
-                        </div>
-                    </details>
-                </div>
-             </div>
+                <!-- 目录由 js/musiclab-ui.js 根据课程列表统一渲染 -->
+                <div class="directory-tree"></div>
+            </div>
         </div>
         <div class="box_with_side">
             <div class="learning-content-panel">
@@ -138,9 +80,11 @@
 
                     <p id="learningTextSecondary">怎么样？你一定会认为这些创作会很难。实际上，只需要通过一定的尝试，你就可以写出一样的乐曲！<br>
                     接下来，你可以点击下面的“下一节：”按钮，开始第一个内容的学习，也可以先看看左侧的目录，寻找自己感兴趣的内容。</p>
+                    <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
+                    <section class="lesson-quiz" data-lesson-quiz></section>
                     <div class="learning-nav">
-                        <button type="button" class="learning-nav-button prev is-hidden">上一页：无</button>
-                        <button type="button" class="learning-nav-button next">下一页：音名与唱名</button>
+                        <span class="learning-nav-button prev is-hidden" aria-hidden="true">上一页：无</span>
+                        <a href="pitches.html" class="learning-nav-button next">下一页：音符与记谱</a>
                     </div>
                 </div>
             </div>
@@ -252,24 +196,8 @@
                 background: linear-gradient(145deg, rgba(240, 231, 255, 1), rgba(208, 188, 247, 0.9));
             }
         </style>
-        <style>
-            .directory-page-link {
-                display: block;
-                margin: 8px 0 14px;
-                padding: 10px 12px;
-                border-radius: 10px;
-                text-decoration: none;
-                color: #1f2937;
-                background: rgba(255, 255, 255, 0.18);
-            }
-
-            .directory-page-link h3 {
-                margin: 0;
-                font-size: 15px;
-                font-weight: 700;
-            }
-        </style>
         <script src="../js/login.js"></script>
+    <script src="../js/lesson-quiz.js"></script>
         <script>
             // 音频文件放置位置：
             // 1. 把真实音频文件放到项目目录下的 /audio/ 文件夹，例如：/audio/beat-demo-01.mp3

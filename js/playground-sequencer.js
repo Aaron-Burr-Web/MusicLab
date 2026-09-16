@@ -321,6 +321,79 @@
       box-shadow: none;
     }
 
+    .stop-button {
+      width: 50px;
+      height: 50px;
+      border: 1px solid rgba(107, 114, 128, 0.3);
+      border-radius: 0;
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--panel-accent-deep);
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .stop-button:hover { filter: brightness(1.05); }
+
+    /* 步进标尺：点击 / 拖动可以把播放线移到任意一格 */
+    .sequencer-ruler {
+      display: grid;
+      grid-template-columns: 64px repeat(32, minmax(10px, 1fr));
+      gap: 4px;
+      align-items: center;
+      margin-bottom: 6px;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .ruler-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #6b7280;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    .ruler-cell {
+      height: 16px;
+      border: 0;
+      border-radius: 3px 3px 0 0;
+      padding: 0;
+      background: rgba(255, 255, 255, 0.55);
+      color: #6b7280;
+      font-size: 10px;
+      line-height: 16px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .ruler-cell.is-beat {
+      font-weight: 700;
+      color: var(--panel-accent-deep);
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .ruler-cell:hover,
+    .ruler-cell.is-current {
+      background: var(--panel-accent-strong);
+      color: #fff;
+    }
+
+    .sequencer-hint {
+      margin: 10px 6px 0;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    :root[data-theme="dark"] .ruler-cell { background: rgba(255, 255, 255, 0.06); color: #8b92a6; }
+    :root[data-theme="dark"] .ruler-cell.is-beat { background: rgba(255, 255, 255, 0.12); color: #e8eaf2; }
+    :root[data-theme="dark"] .ruler-cell:hover,
+    :root[data-theme="dark"] .ruler-cell.is-current { background: var(--panel-accent-strong); color: #fff; }
+    :root[data-theme="dark"] .stop-button { background: rgba(255, 255, 255, 0.08); color: var(--panel-accent-soft); }
+    :root[data-theme="dark"] .sequencer-hint,
+    :root[data-theme="dark"] .ruler-label { color: #8b92a6; }
+
     .playhead-line {
       position: absolute;
       top: 10px;
@@ -411,6 +484,7 @@
       <div class="sequencer-header">
         <div class="transport-group">
           <button class="transport-button" type="button" aria-label="播放/暂停">▶</button>
+          <button class="stop-button" type="button" aria-label="停止并回到开头">■</button>
           <div class="bpm-wrap">
             <span class="bpm-label">BPM</span>
             <span class="bpm-value">60</span>
@@ -452,9 +526,11 @@
       </div>
 
       <div class="sequencer-shell">
+        <div class="sequencer-ruler" aria-label="播放位置标尺：点击或拖动可移动播放线"></div>
         <div class="sequencer-grid"></div>
         <div class="playhead-line"></div>
       </div>
+      <p class="sequencer-hint">提示：❚❚ 暂停会停在原地，■ 回到开头；点击 / 拖动上方标尺可把播放线移到任意一格，播放中也可以随时增删方块。</p>
     `;
 
     const grid = panel.querySelector('.sequencer-grid');
@@ -462,6 +538,8 @@
     const bpmDisplay = panel.querySelector('.bpm-value');
     const bpmSlider = panel.querySelector('.bpm-slider');
     const transportButton = panel.querySelector('.transport-button');
+    const stopButton = panel.querySelector('.stop-button');
+    const ruler = panel.querySelector('.sequencer-ruler');
     const clearButton = panel.querySelector('.clear-button');
     const statusPill = panel.querySelector('.status-pill');
     const keyButtons = [...panel.querySelectorAll('[data-key]')];
@@ -599,6 +677,72 @@
       );
     };
 
+    const rulerCells = [];
+    const renderRuler = () => {
+      ruler.innerHTML = '';
+      rulerCells.length = 0;
+      const label = document.createElement('div');
+      label.className = 'ruler-label';
+      label.textContent = '拍';
+      ruler.appendChild(label);
+      for (let step = 0; step < steps; step += 1) {
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = `ruler-cell${step % 4 === 0 ? ' is-beat' : ''}`;
+        cell.dataset.step = String(step);
+        cell.textContent = step % 4 === 0 ? String(step / 4 + 1) : '·';
+        cell.setAttribute('aria-label', `跳到第 ${step + 1} 格`);
+        ruler.appendChild(cell);
+        rulerCells.push(cell);
+      }
+    };
+
+    const updateRulerHighlight = () => {
+      rulerCells.forEach((cell, index) => cell.classList.toggle('is-current', index === state.currentStep));
+    };
+
+    // 把播放线移到指定格（播放中会从这一格继续）
+    const seekToStep = (step) => {
+      const target = ((Math.round(step) % steps) + steps) % steps;
+      state.currentStep = target;
+      state.playheadPosition = target;
+      state.lastTriggeredStep = target;
+      state.lastFrameTime = state.playing ? performance.now() : 0;
+      measureGridGeometry();
+      playheadLine.style.display = 'block';
+      updatePlayheadPosition();
+      if (state.playing && theme === 'red') playDrumsAtStep(target);
+    };
+
+    const stepFromPointer = (clientX) => {
+      const first = rulerCells[0]?.getBoundingClientRect();
+      const last = rulerCells[rulerCells.length - 1]?.getBoundingClientRect();
+      if (!first || !last) return 0;
+      const ratio = (clientX - first.left) / Math.max(last.right - first.left, 1);
+      return Math.min(steps - 1, Math.max(0, Math.floor(ratio * steps)));
+    };
+
+    let scrubbing = false;
+    ruler.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0 && event.pointerType === 'mouse') return;
+      scrubbing = true;
+      try { ruler.setPointerCapture(event.pointerId); } catch (_) { /* 非标准指针（如自动化测试）忽略 */ }
+      seekToStep(stepFromPointer(event.clientX));
+    });
+    ruler.addEventListener('pointermove', (event) => {
+      if (!scrubbing) return;
+      const step = stepFromPointer(event.clientX);
+      if (step !== state.currentStep) seekToStep(step);
+    });
+    const endScrub = () => { scrubbing = false; };
+    ruler.addEventListener('pointerup', endScrub);
+    ruler.addEventListener('pointercancel', endScrub);
+    ruler.addEventListener('keydown', (event) => {
+      if (!event.target.matches('.ruler-cell')) return;
+      if (event.key === 'ArrowRight') { event.preventDefault(); seekToStep(state.currentStep + 1); rulerCells[state.currentStep]?.focus(); }
+      if (event.key === 'ArrowLeft') { event.preventDefault(); seekToStep(state.currentStep - 1); rulerCells[state.currentStep]?.focus(); }
+    });
+
     const updatePlayheadPosition = () => {
       const position = Number.isFinite(state.playheadPosition) ? state.playheadPosition : state.currentStep;
       const clamped = Math.min(Math.max(position, 0), steps - 0.0001);
@@ -606,9 +750,11 @@
 
       playheadLine.style.left = `${state.playheadStartX}px`;
       playheadLine.style.transform = `translate3d(${x}px, 0, 0)`;
+      updateRulerHighlight();
     };
 
-    const stopPlayback = () => {
+    // 暂停：停在当前位置，播放线保持可见
+    const pausePlayback = () => {
       if (state.animationFrameId) {
         window.cancelAnimationFrame(state.animationFrameId);
         state.animationFrameId = null;
@@ -619,7 +765,15 @@
       state.lastFrameTime = 0;
       state.playheadPosition = state.currentStep;
       state.lastTriggeredStep = null;
+    };
+
+    // 停止：回到第一格并隐藏播放线
+    const stopPlayback = () => {
+      pausePlayback();
+      state.currentStep = 0;
+      state.playheadPosition = 0;
       playheadLine.style.display = 'none';
+      updatePlayheadPosition();
     };
 
     const getStepDurationMs = () => (60000 / state.bpm) / 4;
@@ -669,11 +823,12 @@
 
     transportButton.addEventListener('click', () => {
       if (state.playing) {
-        stopPlayback();
+        pausePlayback();
       } else {
         startPlayback();
       }
     });
+    stopButton.addEventListener('click', stopPlayback);
 
     bpmSlider.addEventListener('input', (event) => {
       state.bpm = Number(event.target.value);
@@ -684,9 +839,10 @@
     });
 
     clearButton.addEventListener('click', () => {
-      clearInteractionCells();
-      if (state.playing) {
-        stopPlayback();
+      for (let rowIndex = 0; rowIndex < cellMatrix.length; rowIndex += 1) {
+        for (let step = 0; step < cellMatrix[rowIndex].length; step += 1) {
+          cellMatrix[rowIndex][step].classList.remove('active');
+        }
       }
     });
 
@@ -714,6 +870,7 @@
       });
     }
 
+    renderRuler();
     renderGrid();
     clearInteractionCells();
     updateStatus();

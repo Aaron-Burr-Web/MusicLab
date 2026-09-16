@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <link rel="stylesheet" href="../css/Home.css">  
+    <title>MusicLab | 注册</title>
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
-    <body class="main">
-        <div>
-			<div class="top">
-                <div class="Logo">
-                    <a href="../index.html" aria-label="返回主页"></a>
-                    <img src="../images/MusicLabBlackLogo.png" width="250">
-                </div>
+    <body class="main" data-no-footer>
+        <div class="top">
+            <div class="Logo">
+                <a href="../index.html" aria-label="返回主页"></a>
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
             </div>
             <ul class="nav">
                 <li id="nav1"><a href="../index.html"> 主页 </a></li>
@@ -20,127 +20,143 @@
                 <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
                 <li id="nav6"><a href="../Start Learning/index.html"> 初学者教程 </a></li>
                 <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
-                <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+                <li id="nav4"><a href="login.html"> 登录  |  注册 </a></li>
             </ul>
         </div>
-        <hr>
-        <div class="QAorLogin">
-            <div>
-                <h2>注册</h2>
+
+        <main class="QAorLogin" aria-labelledby="registerTitle">
+            <div class="auth-header">
+                <h2 id="registerTitle">注册</h2>
+                <a href="login.html" class="auth-back">← 返回登录</a>
             </div>
             <form id="registerForm" novalidate>
-                <label>创建用户名：</label><br>
-                <input type="text" name="username" id="registerUsernameInput">
-                <span class="field-error" id="registerUsernameError"></span>
+                <label for="registerUsernameInput">创建用户名：</label><br>
+                <input type="text" name="username" id="registerUsernameInput" autocomplete="username" aria-describedby="registerUsernameError">
+                <span class="field-error" id="registerUsernameError" role="alert"></span>
                 <br>
-                <label>创建密码：</label><br>
-                <input type="password" name="password" id="registerPasswordInput">
-                <span class="field-error" id="registerPasswordError"></span>
+                <label for="registerPasswordInput">创建密码：</label><br>
+                <input type="password" name="password" id="registerPasswordInput" autocomplete="new-password" aria-describedby="registerPasswordError">
+                <span class="field-error" id="registerPasswordError" role="alert"></span>
                 <br>
-                <label>再次输入密码：</label><br>
-                <input type="password" name="confirmPassword" id="confirmPasswordInput">
-                <span class="field-error" id="confirmPasswordError"></span>
-                <br><br>
-                <button type="submit" class="button_QA is-disabled" id="registerSubmitButton">注册</button><br><br>
+                <label for="confirmPasswordInput">再次输入密码：</label><br>
+                <input type="password" name="confirmPassword" id="confirmPasswordInput" autocomplete="new-password" aria-describedby="confirmPasswordError">
+                <span class="field-error" id="confirmPasswordError" role="alert"></span>
+                <br>
                 <div class="agreement-row" id="registerAgreementRow">
-                    <input type="checkbox" name="agreement" id="registerAgreementRadio" aria-label="我同意《用户服务条款》">
+                    <input type="checkbox" name="agreement" id="registerAgreementRadio">
                     <label for="registerAgreementRadio">我同意《用户服务条款》</label>
                 </div>
                 <br><br>
-                <p>&nbsp;</p>
+                <div class="form-actions">
+                    <button type="submit" class="ml-btn" id="registerSubmitButton" disabled>注册</button>
+                    <a href="login.html" class="ml-btn secondary">取消</a>
+                </div>
+                <p class="auth-hint">已有账号？<a href="login.html">直接登录</a>。用户名和密码没有长度限制（例如 1 / 1 即可），账号信息仅保存在当前浏览器中。</p>
             </form>
-        </div>
+        </main>
+
     <script src="../js/login.js"></script>
     <script>
-        const registerForm = document.getElementById('registerForm');
-        const registerUsernameInput = document.getElementById('registerUsernameInput');
-        const registerPasswordInput = document.getElementById('registerPasswordInput');
-        const confirmPasswordInput = document.getElementById('confirmPasswordInput');
-        const registerUsernameError = document.getElementById('registerUsernameError');
-        const registerPasswordError = document.getElementById('registerPasswordError');
-        const confirmPasswordError = document.getElementById('confirmPasswordError');
-        const registerAgreementRadio = document.getElementById('registerAgreementRadio');
-        const registerAgreementRow = document.getElementById('registerAgreementRow');
-        const registerSubmitButton = document.getElementById('registerSubmitButton');
+        (() => {
+            const ML = window.MusicLab;
+            const registerForm = document.getElementById('registerForm');
+            const registerUsernameInput = document.getElementById('registerUsernameInput');
+            const registerPasswordInput = document.getElementById('registerPasswordInput');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const registerUsernameError = document.getElementById('registerUsernameError');
+            const registerPasswordError = document.getElementById('registerPasswordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            const registerAgreementRadio = document.getElementById('registerAgreementRadio');
+            const registerAgreementRow = document.getElementById('registerAgreementRow');
+            const registerSubmitButton = document.getElementById('registerSubmitButton');
 
-        const clearFieldError = (fieldError) => {
-            fieldError.textContent = '';
-            fieldError.style.display = 'none';
-        };
+            const clearFieldError = (fieldError, input) => {
+                fieldError.textContent = '';
+                input.removeAttribute('aria-invalid');
+            };
 
-        const showFieldError = (fieldError, message) => {
-            fieldError.textContent = message;
-            fieldError.style.display = 'block';
-        };
+            const showFieldError = (fieldError, input, message) => {
+                fieldError.textContent = message;
+                input.setAttribute('aria-invalid', 'true');
+            };
 
-        const validateRegisterFields = () => {
-            const username = registerUsernameInput.value.trim();
-            const password = registerPasswordInput.value.trim();
-            const confirmPassword = confirmPasswordInput.value.trim();
-            let hasError = false;
+            const validateRegisterFields = () => {
+                const username = registerUsernameInput.value.trim();
+                const password = registerPasswordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                let hasError = false;
 
-            clearFieldError(registerUsernameError);
-            clearFieldError(registerPasswordError);
-            clearFieldError(confirmPasswordError);
+                clearFieldError(registerUsernameError, registerUsernameInput);
+                clearFieldError(registerPasswordError, registerPasswordInput);
+                clearFieldError(confirmPasswordError, confirmPasswordInput);
 
-            if (!username) {
-                showFieldError(registerUsernameError, '用户名未填写');
-                hasError = true;
-            }
+                if (!username) {
+                    showFieldError(registerUsernameError, registerUsernameInput, '用户名未填写');
+                    hasError = true;
+                }
 
-            if (!password) {
-                showFieldError(registerPasswordError, '密码未填写');
-                hasError = true;
-            }
+                if (!password) {
+                    showFieldError(registerPasswordError, registerPasswordInput, '密码未填写');
+                    hasError = true;
+                }
 
-            if (!confirmPassword) {
-                showFieldError(confirmPasswordError, '请确认密码');
-                hasError = true;
-            } else if (password && confirmPassword && password !== confirmPassword) {
-                showFieldError(confirmPasswordError, '两次密码不一致');
-                hasError = true;
-            }
+                if (!confirmPassword) {
+                    showFieldError(confirmPasswordError, confirmPasswordInput, '请确认密码');
+                    hasError = true;
+                } else if (password && password !== confirmPassword) {
+                    showFieldError(confirmPasswordError, confirmPasswordInput, '两次密码不一致');
+                    hasError = true;
+                }
 
-            return !hasError;
-        };
+                return !hasError;
+            };
 
-        const updateRegisterAgreementState = () => {
-            const isAgreed = registerAgreementRadio.checked;
-            registerSubmitButton.disabled = !isAgreed;
-            registerSubmitButton.classList.toggle('is-disabled', !isAgreed);
-        };
+            const updateRegisterAgreementState = () => {
+                const isAgreed = registerAgreementRadio.checked;
+                registerSubmitButton.disabled = !isAgreed;
+                if (isAgreed) registerAgreementRow.classList.remove('warning');
+            };
 
-        registerUsernameInput.addEventListener('input', () => {
-            if (registerUsernameInput.value.trim()) clearFieldError(registerUsernameError);
-        });
+            registerUsernameInput.addEventListener('input', () => {
+                if (registerUsernameInput.value.trim()) clearFieldError(registerUsernameError, registerUsernameInput);
+            });
+            registerPasswordInput.addEventListener('input', () => {
+                if (registerPasswordInput.value) clearFieldError(registerPasswordError, registerPasswordInput);
+            });
+            confirmPasswordInput.addEventListener('input', () => {
+                if (confirmPasswordInput.value) clearFieldError(confirmPasswordError, confirmPasswordInput);
+            });
+            registerAgreementRadio.addEventListener('change', updateRegisterAgreementState);
 
-        registerPasswordInput.addEventListener('input', () => {
-            if (registerPasswordInput.value.trim()) clearFieldError(registerPasswordError);
-        });
+            registerForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
 
-        confirmPasswordInput.addEventListener('input', () => {
-            if (confirmPasswordInput.value.trim()) clearFieldError(confirmPasswordError);
-        });
+                if (!registerAgreementRadio.checked) {
+                    registerAgreementRow.classList.add('warning');
+                    ML && ML.toast('请先同意《用户服务条款》', { type: 'warning' });
+                    return;
+                }
+                if (!validateRegisterFields()) return;
 
-        registerAgreementRadio.addEventListener('change', updateRegisterAgreementState);
+                registerSubmitButton.disabled = true;
+                registerSubmitButton.textContent = '注册中…';
 
-        registerForm.addEventListener('submit', (event) => {
-            event.preventDefault();
+                const result = await ML.auth.register(registerUsernameInput.value, registerPasswordInput.value);
 
-            if (!registerAgreementRadio.checked) {
-                return;
-            }
+                if (!result.ok) {
+                    registerSubmitButton.disabled = false;
+                    registerSubmitButton.textContent = '注册';
+                    showFieldError(registerUsernameError, registerUsernameInput, result.message);
+                    ML.toast(result.message, { type: 'error' });
+                    return;
+                }
 
-            if (!validateRegisterFields()) {
-                return;
-            }
+                ML.toastAfterReload(`注册成功，欢迎加入 MusicLab，${result.name}！`, 'success');
+                window.location.href = '../index.html';
+            });
 
-            localStorage.setItem('musiclab_client_name', registerUsernameInput.value.trim());
-            localStorage.setItem('musiclab_login_state', 'true');
-            window.location.href = '../index.html';
-        });
-
-        updateRegisterAgreementState();
+            updateRegisterAgreementState();
+        })();
     </script>
     </body>
 </html>

@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | 开发组介绍</title>
     <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
 <body class="main">
     <div class="top">
         <div class="Logo">
             <a href="../index.html" aria-label="返回主页"></a>
-            <img src="../images/MusicLabBlackLogo.png" width="250">
+            <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
         </div>
         <ul class="nav">
             <li id="nav1"><a href="../index.html"> 主页 </a></li>
@@ -58,21 +60,6 @@
         </div>
     </div>
 
-    <script>
-        const root = document.documentElement;
-        const updateMouseGlow = (event) => {
-            const x = (event.clientX / window.innerWidth) * 100;
-            const y = (event.clientY / window.innerHeight) * 100;
-            root.style.setProperty('--mx', x + '%');
-            root.style.setProperty('--my', y + '%');
-        };
-
-        window.addEventListener('pointermove', updateMouseGlow);
-        window.addEventListener('load', () => {
-            root.style.setProperty('--mx', '50%');
-            root.style.setProperty('--my', '50%');
-        });
-    </script>
     <script src="../js/login.js"></script>
 </body>
 </html>

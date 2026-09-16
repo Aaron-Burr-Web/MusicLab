@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | Start Learning</title>
-    <link rel="stylesheet" href="../css/Home.css">  
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
-    <body class="main">
+    <body class="main" data-lesson="chords">
         <div class="top">
 			<div class="Logo">
                 <a href="../index.html" aria-label="返回主页"></a>
-                <img src="../images/MusicLabBlackLogo.png" width="250">
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
             </div>
             <ul class="nav">
                 <li id="nav1"><a href="../index.html"> 主页 </a></li>
@@ -27,71 +29,13 @@
 
          <div class="sidebar">
             <div class="directory-panel">
-                <div class="directory-header">
+                <div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录">
                     <img src="../icons/directory.png" alt="Directory" class="directory-icon">
                 </div>
 
-                <div class="directory-tree">
-                    <details class="directory-group">
-                        <summary><h3>音符与记谱</h3></summary>
-                        <div class="directory-links">
-                            <a href="pitches.html"><h3>音符与记谱</h3></a>
-                            <a href="pitches.html"><h3>音名与唱名</h3></a>
-                            <a href="pitches.html"><h3>钢琴键盘</h3></a>
-                            <a href="pitches.html"><h3>谱与音符</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>节奏基础</h3></summary>
-                        <div class="directory-links">
-                            <a href="beat.html"><h3>节奏基础</h3></a>
-                            <a href="beat.html"><h3>小试一下</h3></a>
-                            <a href="beat.html"><h3>乐器介绍</h3></a>
-                            <a href="beat.html#in-song"><h3>在乐曲中</h3></a>
-                            <a href="beat.html"><h3>Beat音轨</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group" open>
-                        <summary><h3>音程与和弦</h3></summary>
-                        <div class="directory-links">
-                            <a href="chords.html#chord-basics"><h3>音程与和弦</h3></a>
-                            <a href="chords.html#chord-practice"><h3>小试一下</h3></a>
-                            <a href="chords.html#chord-instruments"><h3>乐器介绍</h3></a>
-                            <a href="chords.html#intervals"><h3>音程</h3></a>
-                            <a href="chords.html#chords"><h3>和弦</h3></a>
-                            <a href="chords.html#chord-tracks"><h3>音轨</h3></a>
-                            <a href="chords.html#chords-track"><h3>Chords音轨</h3></a>
-                            <a href="chords.html#basslines-track"><h3>Basslines音轨</h3></a>
-                            <a href="chords.html#melodies-track"><h3>Melodies音轨</h3></a>
-                            <a href="chords.html#ensemble"><h3>合奏</h3></a>
-                            <a href="chords.html#pitch-test"><h3>单音听辨测试</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>调式基础</h3></summary>
-                        <div class="directory-links">
-                            <a href="tones.html"><h3>调式基础</h3></a>
-                            <a href="tones.html"><h3>小试一下</h3></a>
-                            <a href="tones.html"><h3>常见调式</h3></a>
-                            <a href="tones.html"><h3>民族调式</h3></a>
-                            <a href="tones.html"><h3>更多调式</h3></a>
-                            <a href="tones.html"><h3>多音和弦听辨测试</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>拓展与其他</h3></summary>
-                        <div class="directory-links">
-                            <a href="others.html"><h3>拓展与其他</h3></a>
-                            <a href="others.html"><h3>扩展内容</h3></a>
-                            <a href="others.html"><h3>更多乐理知识</h3></a>
-                        </div>
-                    </details>
-                </div>
-             </div>
+                <!-- 目录由 js/musiclab-ui.js 根据课程列表统一渲染 -->
+                <div class="directory-tree"></div>
+            </div>
         </div>
 
         <div class="box_with_side">
@@ -115,13 +59,16 @@
                     <h2 id="melodies-track">Melodies音轨</h2><p>Melodies音轨在和声上方发展旋律，负责表达主要的音乐动机。</p>
                     <h2 id="ensemble">合奏</h2><p>合奏是多个音轨同时配合，练习时要注意各声部的节奏和音域不要互相遮挡。</p>
                     <h2 id="pitch-test">单音听辨测试</h2><p>通过反复比较音高，训练耳朵对音符位置和音程大小的判断能力。</p>
+                    <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
+                    <section class="lesson-quiz" data-lesson-quiz></section>
                     <div class="learning-nav">
-                        <a href="beat.html" class="learning-nav-button prev">上一页：节奏基础</a>
+                        <a href="beat-track.html" class="learning-nav-button prev">上一页：节奏基础（三）</a>
                         <a href="tones.html" class="learning-nav-button next">下一页：调式基础</a>
                     </div>
                 </div>
             </div>
         </div>
     <script src="../js/login.js"></script>
+    <script src="../js/lesson-quiz.js"></script>
     </body>
 </html>
