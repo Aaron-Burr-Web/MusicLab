@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | Start Learning</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
     <link rel="stylesheet" href="../css/Home.css">
     <link rel="stylesheet" href="../css/ui.css">
     <script src="../js/musiclab-ui.js"></script>
@@ -54,6 +55,7 @@
                     <h2 id="folk-modes">民族调式</h2><p>民族调式常使用独特的音阶结构，能够表现地域文化和传统音乐的色彩。</p>
                     <h2 id="more-modes">更多调式</h2><p>多利亚、弗里几亚和利底亚等调式，可以为旋律带来更鲜明的明暗和张力变化。</p>
                     <h2 id="chord-test">多音和弦听辨测试</h2><p>通过聆听多个音同时出现的组合，训练对和弦性质和调式色彩的判断。</p>
+                    <div data-ear-training="chord" data-title="和弦听辨练习" data-rounds="8"></div>
                     <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
                     <section class="lesson-quiz" data-lesson-quiz></section>
                     <div class="learning-nav">
@@ -63,6 +65,8 @@
                 </div>
             </div>
         </div>
+    <script src="../js/audio-engine.js"></script>
+    <script src="../js/ear-training.js"></script>
     <script src="../js/login.js"></script>
     <script src="../js/lesson-quiz.js"></script>
     </body>

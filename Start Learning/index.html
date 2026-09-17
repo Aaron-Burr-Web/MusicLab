@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | Start Learning</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
     <link rel="stylesheet" href="../css/Home.css">
     <link rel="stylesheet" href="../css/ui.css">
     <script src="../js/musiclab-ui.js"></script>
@@ -46,7 +47,7 @@
                     <!-- 子项名称：文字 -->
                     <h2 id="learningSubtitle">引入</h2>
                     <!-- 子项名称：内容说明 -->
-                    <p id="learningText">这个网站将在教你音乐基础知识的同时，给你个人DAW创作的机会，下面是不同使用者创作的示例，你可以点击三角播放按钮来试听。下面展示了节奏、和弦、贝斯、旋律四个音轨，尝试着把他们组合起来，可以达到不同的效果。</p>
+                    <p id="learningText">这个网站将在教你音乐基础知识的同时，给你个人 DAW 创作的机会。下面展示了节奏、贝斯、和弦、旋律四个音轨——示例试听正在制作中，等游乐园与教学内容完工后开放，届时每列可以各选一个自由组合。现在可以先去<a href="../The Playground/index.html">游乐园</a>动手试试。</p>
 
                     <div class="audio-demo-panel" aria-label="音轨演示区">
                         <div class="audio-demo-header">
@@ -55,26 +56,27 @@
                             <div class="audio-demo-column">和弦</div>
                             <div class="audio-demo-column">旋律</div>
                         </div>
+                        <p class="audio-demo-soon">敬请期待</p>
                         <div class="audio-demo-grid">
-                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 1">1</button>
-                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 1">1</button>
-                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 1">1</button>
-                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 1">1</button>
+                            <button class="audio-demo-button rhythm" type="button" data-track="rhythm" data-variant="0" aria-label="节奏音轨 1（敬请期待）" disabled>1</button>
+                            <button class="audio-demo-button bass" type="button" data-track="bass" data-variant="0" aria-label="贝斯音轨 1（敬请期待）" disabled>1</button>
+                            <button class="audio-demo-button chords" type="button" data-track="chords" data-variant="0" aria-label="和弦音轨 1（敬请期待）" disabled>1</button>
+                            <button class="audio-demo-button melody" type="button" data-track="melody" data-variant="0" aria-label="旋律音轨 1（敬请期待）" disabled>1</button>
 
-                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 2">2</button>
-                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 2">2</button>
-                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 2">2</button>
-                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 2">2</button>
+                            <button class="audio-demo-button rhythm" type="button" data-track="rhythm" data-variant="1" aria-label="节奏音轨 2（敬请期待）" disabled>2</button>
+                            <button class="audio-demo-button bass" type="button" data-track="bass" data-variant="1" aria-label="贝斯音轨 2（敬请期待）" disabled>2</button>
+                            <button class="audio-demo-button chords" type="button" data-track="chords" data-variant="1" aria-label="和弦音轨 2（敬请期待）" disabled>2</button>
+                            <button class="audio-demo-button melody" type="button" data-track="melody" data-variant="1" aria-label="旋律音轨 2（敬请期待）" disabled>2</button>
 
-                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 3">3</button>
-                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 3">3</button>
-                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 3">3</button>
-                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 3">3</button>
+                            <button class="audio-demo-button rhythm" type="button" data-track="rhythm" data-variant="2" aria-label="节奏音轨 3（敬请期待）" disabled>3</button>
+                            <button class="audio-demo-button bass" type="button" data-track="bass" data-variant="2" aria-label="贝斯音轨 3（敬请期待）" disabled>3</button>
+                            <button class="audio-demo-button chords" type="button" data-track="chords" data-variant="2" aria-label="和弦音轨 3（敬请期待）" disabled>3</button>
+                            <button class="audio-demo-button melody" type="button" data-track="melody" data-variant="2" aria-label="旋律音轨 3（敬请期待）" disabled>3</button>
 
-                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 4">4</button>
-                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 4">4</button>
-                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 4">4</button>
-                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 4">4</button>
+                            <button class="audio-demo-button rhythm" type="button" data-track="rhythm" data-variant="3" aria-label="节奏音轨 4（敬请期待）" disabled>4</button>
+                            <button class="audio-demo-button bass" type="button" data-track="bass" data-variant="3" aria-label="贝斯音轨 4（敬请期待）" disabled>4</button>
+                            <button class="audio-demo-button chords" type="button" data-track="chords" data-variant="3" aria-label="和弦音轨 4（敬请期待）" disabled>4</button>
+                            <button class="audio-demo-button melody" type="button" data-track="melody" data-variant="3" aria-label="旋律音轨 4（敬请期待）" disabled>4</button>
                         </div>
                     </div>
 
@@ -195,31 +197,40 @@
             .audio-demo-button.melody {
                 background: linear-gradient(145deg, rgba(240, 231, 255, 1), rgba(208, 188, 247, 0.9));
             }
+
+            .audio-demo-button.is-beat {
+                transform: scale(0.72);
+                filter: brightness(1.15);
+            }
+
+            .audio-demo-bar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-top: 14px;
+                padding-top: 12px;
+                border-top: 1px solid rgba(90, 104, 126, 0.14);
+            }
+
+            .audio-demo-status {
+                font-size: 13px;
+                color: var(--ml-text-2, #374152);
+                line-height: 1.5;
+            }
+
+            .audio-demo-panel.is-playing .audio-demo-column {
+                color: var(--ml-accent, #4141f3);
+            }
+
+            @media (max-width: 720px) {
+                .audio-demo-panel { width: 100%; }
+            }
         </style>
         <script src="../js/login.js"></script>
     <script src="../js/lesson-quiz.js"></script>
-        <script>
-            // 音频文件放置位置：
-            // 1. 把真实音频文件放到项目目录下的 /audio/ 文件夹，例如：/audio/beat-demo-01.mp3
-            // 2. 或放到 /assets/audio/；例如：/assets/audio/beat-demo-01.mp3
-            // 3. 之后把下面 data-audio 的空字符串替换成对应的外部音源地址，例如：
-            //    document.querySelector('.audio-demo-button.rhythm').dataset.audio = '../audio/beat-demo-01.mp3';
-            // 4. 链接尾部先保留空字符串，后续你把实际音频文件放进 /audio/ 后再逐一补上即可。
-            const demoButtons = document.querySelectorAll('.audio-demo-button');
-            demoButtons.forEach((button) => {
-                button.addEventListener('click', () => {
-                    demoButtons.forEach((item) => {
-                        item.classList.toggle('is-active', item === button);
-                    });
-
-                    const src = button.dataset.audio;
-                    if (!src) {
-                        return;
-                    }
-                    const audio = new Audio(src);
-                    audio.play().catch(() => {});
-                });
-            });
-        </script>
+        <!-- 示例音轨播放器：等游乐园与教学内容完工后再启用 -->
+        <!-- <script src="../js/track-demo.js"></script> -->
     </body>
 </html>

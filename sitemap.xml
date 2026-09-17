@@ -1,5 +1,6 @@
 
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- TODO：域名与最终页面清单等全部前端内容完工后再确定，现在的 example.com 只是占位 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://example.com/index.html</loc>
@@ -96,16 +97,15 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://example.com/login/terms.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
 
   <url>
     <loc>https://example.com/contact/contact.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://example.com/sitemap.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
 </urlset>

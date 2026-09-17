@@ -120,11 +120,18 @@ body,
 }
 
 /* ---------- header / navigation ---------- */
+/* Home.css 末尾的 `.main, .top, .box { position: relative; z-index: 1 }` 把头部压回了普通层级，
+   导致小屏下拉菜单被内容卡片盖住；这里统一层级：头部 50 > 侧栏 40 > 内容 1 */
 .top {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   background: var(--ml-header-bg);
   border-bottom-color: var(--ml-border);
   gap: 12px;
 }
+.sidebar { z-index: 40; }
+.box, .box_with_side { z-index: 1; }
 
 .top .nav {
   gap: 6px;
@@ -316,7 +323,7 @@ body,
   .top .nav li a { padding: 12px 14px; font-size: 15px; }
 
   .box,
-  .box_with_side { margin: 96px auto 40px; width: min(100% - 28px, 720px); left: 0; }
+  .box_with_side { margin: 20px auto 40px; width: min(100% - 28px, 720px); left: 0; }
   /* collapse the directory into a floating button so it no longer covers the text */
   .sidebar {
     top: 84px;
@@ -621,6 +628,11 @@ a.learning-nav-button { text-decoration: none; display: inline-block; }
   margin: 24px 24px 40px calc(max(24px, (100% - 1200px) / 2) + 92px);
 }
 
+@media (max-width: 900px) {
+  /* 小屏没有固定侧栏偏移，恢复居中 */
+  .box_with_side { margin: 20px auto 40px; width: min(100% - 28px, 720px); }
+}
+
 /* footer on learning pages sits to the right of the fixed sidebar, like the content */
 .box_with_side + .site-footer {
   /* box left edge = max(24px, (100% - 1200px) / 2) + 92px offset; panel has 8px margin-left */
@@ -631,6 +643,7 @@ a.learning-nav-button { text-decoration: none; display: inline-block; }
 
 @media (max-width: 900px) {
   .box_with_side + .site-footer { margin-left: auto; margin-right: auto; width: min(100% - 28px, 720px); }
+  .top .nav { position: absolute; top: 100%; }
 }
 
 /* ---------- learning progress tracker ---------- */
@@ -739,7 +752,12 @@ a.learning-nav-button { text-decoration: none; display: inline-block; }
 }
 
 .settings-grid > .content-card { margin: 0; }
-.settings-grid > .progress-panel { grid-column: 1 / -1; }
+.settings-grid > .account-card { grid-column: 1 / -1; }
+.account-progress { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--ml-border); }
+.account-progress h3 { margin: 0; font-size: 18px; }
+.learning-progress-strip .strip-spacer { flex: 1; }
+.learning-progress-strip .strip-link { font-size: 12px; color: var(--ml-accent); text-decoration: none; }
+.learning-progress-strip .strip-link:hover { text-decoration: underline; }
 
 .contact-grid { grid-template-columns: 1fr 1fr; }
 .contact-grid > .span-all { grid-column: 1 / -1; }
@@ -1050,6 +1068,17 @@ a.learning-nav-button { text-decoration: none; display: inline-block; }
 :root[data-theme="dark"] .sequencer-cell,
 :root[data-theme="dark"] .beat-demo-cell,
 :root[data-theme="dark"] .beat-instrument-button { background: #2a3045; }
+/* 深色下点亮的格子必须保持可见（否则切换主题时会“消失”） */
+:root[data-theme="dark"] .sequencer-cell.active,
+:root[data-theme="dark"] .sequencer-cell.is-divider.active { background: var(--panel-accent); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset; }
+:root[data-theme="dark"] .sequencer-cell.is-divider { border-left-color: rgba(255, 255, 255, 0.35); }
+:root[data-theme="dark"] .beat-demo-cell.active { background: #e53935; }
+:root[data-theme="dark"] .beat-demo-cell.is-current { outline-color: #e8eaf2; }
+:root[data-theme="dark"] .beat-demo-divider,
+:root[data-theme="dark"] .divider-line { background: rgba(255, 255, 255, 0.35); }
+:root[data-theme="dark"] .beat-instrument-button.is-flashing { background: #e53935; color: #fff; }
+:root[data-theme="dark"] .bpm-slider,
+:root[data-theme="dark"] .beat-demo-slider { filter: saturate(1.1) brightness(1.1); }
 :root[data-theme="dark"] .beat-demo-shell { background: rgba(31, 36, 54, 0.9); }
 :root[data-theme="dark"] .beat-demo-label-cell,
 :root[data-theme="dark"] .beat-instrument-button { color: var(--ml-text-2); }
@@ -1237,3 +1266,75 @@ a.learning-nav-button { text-decoration: none; display: inline-block; }
 .ml-confirm p { margin: 0; color: var(--ml-text-2); line-height: 1.7; }
 .ml-confirm-actions { justify-content: flex-end; margin-top: 20px; }
 body.ml-confirm-open { overflow: hidden; }
+
+/* ---------- 用户服务条款 ---------- */
+.terms h2 { margin: 26px 0 8px; font-size: 20px; }
+.terms p, .terms li { color: var(--ml-text-2); line-height: 1.85; font-size: 15px; }
+.terms ul { padding-left: 22px; display: grid; gap: 6px; }
+.agreement-row a { color: var(--ml-accent); }
+
+/* ---------- 听音练习 ---------- */
+.ear-training {
+  margin: 14px 0 6px;
+  padding: 20px 22px;
+  border-radius: 18px;
+  border: 1px solid var(--ml-border);
+  background: var(--ml-surface-2);
+}
+
+.ear-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.ear-head h3 { margin: 0 0 4px; font-size: 18px; }
+.ear-head .settings-note { margin: 0; }
+
+.ear-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ear-progress { font-size: 13px; color: var(--ml-text-3); }
+
+.ear-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 14px; }
+
+.ear-option {
+  appearance: none;
+  padding: 12px 10px;
+  border: 1px solid var(--ml-border-strong);
+  border-radius: 12px;
+  background: var(--ml-surface);
+  color: var(--ml-text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.ear-option:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--ml-accent); background: var(--ml-accent-soft); }
+.ear-option:disabled { cursor: default; opacity: 0.85; }
+.ear-option.is-correct { border-color: var(--ml-success); background: rgba(31, 157, 85, 0.14); color: var(--ml-text); opacity: 1; }
+.ear-option.is-wrong { border-color: var(--ml-danger); background: rgba(217, 48, 37, 0.12); }
+
+.ear-feedback { min-height: 22px; margin: 12px 0 0; font-size: 14px; line-height: 1.6; color: var(--ml-text-2); }
+.ear-feedback.is-correct { color: var(--ml-success); }
+.ear-feedback.is-wrong { color: var(--ml-danger); }
+
+@media (max-width: 600px) {
+  .ear-training { padding: 16px 14px; }
+  .ear-head { flex-direction: column; }
+}
+
+/* ---------- 条款弹窗 ---------- */
+.terms-overlay .terms-modal { width: min(680px, 100%); max-height: min(80vh, 720px); display: flex; flex-direction: column; padding: 0; }
+.terms-modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 24px 12px; border-bottom: 1px solid var(--ml-border); }
+.terms-modal-head h2 { margin: 0; font-size: 20px; }
+.terms-modal-body { overflow-y: auto; padding: 16px 24px 4px; }
+.terms-modal-body h3 { margin: 20px 0 6px; font-size: 16px; }
+.terms-modal-body p, .terms-modal-body li { color: var(--ml-text-2); font-size: 14px; line-height: 1.8; }
+.terms-modal-body ul { padding-left: 20px; display: grid; gap: 4px; }
+.terms-modal-foot { justify-content: flex-end; padding: 12px 24px 20px; margin-top: 0; border-top: 1px solid var(--ml-border); }
+
+/* ---------- 示例音轨占位（等内容完工后启用） ---------- */
+.audio-demo-soon {
+  margin: 0 0 10px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--ml-text-3);
+  letter-spacing: 0.08em;
+}
+.audio-demo-button:disabled { cursor: not-allowed; filter: grayscale(0.75); opacity: 0.55; }
+.audio-demo-button:disabled:hover { transform: scale(0.6); }

@@ -108,16 +108,26 @@
     scrubbing: false
   };
 
+  // .beat-demo-track：横向滚动的内容区（标尺 + 网格 + 播放线），小屏时不再把格子挤变形
+  let beatTrack = beatShell.querySelector('.beat-demo-track');
+  if (!beatTrack) {
+    beatTrack = document.createElement('div');
+    beatTrack.className = 'beat-demo-track';
+    while (beatShell.firstChild) beatTrack.appendChild(beatShell.firstChild);
+    beatShell.appendChild(beatTrack);
+  }
+
   // 步进标尺：每一格对应一拍，点击 / 拖动可以定位播放线
   let ruler = wrapper.querySelector('.beat-demo-ruler');
   if (!ruler) {
     ruler = document.createElement('div');
     ruler.className = 'beat-demo-ruler';
     ruler.setAttribute('aria-label', '播放位置标尺：点击或拖动可移动播放线');
-    beatShell.insertBefore(ruler, beatGrid);
+    beatTrack.insertBefore(ruler, beatGrid);
   }
 
   const renderRuler = () => {
+    beatTrack.style.setProperty('--beat-step-count', String(beatSteps));
     ruler.style.setProperty('--beat-step-count', String(beatSteps));
     ruler.innerHTML = `<div class="beat-demo-ruler-label">拍</div>${Array.from({ length: beatSteps }, (_, index) =>
       `<button class="beat-demo-ruler-cell${index % 4 === 0 ? ' is-beat' : ''}" type="button" data-step="${index}" aria-label="跳到第 ${index + 1} 格">${index % 4 === 0 ? index / 4 + 1 : '·'}</button>`
@@ -158,7 +168,7 @@
   };
 
   const measureBeatPlayhead = () => {
-    const shellRect = beatShell.getBoundingClientRect();
+    const shellRect = beatTrack.getBoundingClientRect();
     const firstCell = beatCells[0]?.[0];
     const secondCell = beatCells[0]?.[1];
     if (!firstCell || !secondCell) return;

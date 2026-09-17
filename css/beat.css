@@ -124,7 +124,17 @@
     padding: 18px 14px 18px;
     border-radius: 20px;
     background: rgba(255, 236, 236, 0.92);
-    overflow: hidden;
+    /* 小屏时横向滚动，而不是把格子挤变形 */
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.beat-demo-track {
+    position: relative;
+    /* 每格至少 14px + 间距，保证 16 / 24 格都有可点的宽度 */
+    min-width: calc(64px + var(--beat-step-count, 16) * 18px);
 }
 
 .beat-demo-grid {
@@ -304,10 +314,17 @@
 }
 
 @media (max-width: 720px) {
+    /* 小屏：控制栏换行，不再把页面撑宽 */
+    .beat-demo-header { flex-wrap: wrap; row-gap: 10px; }
+    .beat-demo-transport { flex-wrap: wrap; }
+    .beat-demo-meter-switcher { margin-left: 0; }
+    .beat-demo-slider { width: min(220px, 60vw); }
+
     .beat-demo-row {
         grid-template-columns: 58px repeat(var(--beat-step-count), minmax(12px, 1fr));
         gap: 6px;
     }
+    .beat-demo-label-cell { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     .beat-instrument-buttons {
         gap: 5px;
