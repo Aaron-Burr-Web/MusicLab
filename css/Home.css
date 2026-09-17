@@ -169,6 +169,15 @@
     font-size: small;
     text-decoration: none;
 }
+
+ a,
+ a:link,
+ a:visited,
+ a:hover,
+ a:active {
+    font-family: 'MusicLabFont', -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+ }
+
 .content a:hover{
     color:rgb(0, 0, 0);
     text-decoration: underline;
@@ -464,24 +473,41 @@
     color: #111111;
     padding: 10px 16px;
     border-radius: 999px;
-    border: 1px solid rgba(17,17,17,0.08);
+    border: none;
     backdrop-filter: blur(6px);
 }
 
 .nav a:link{
-    color:#111111;
+    color: #333333;
+    display: block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
     text-decoration: none;
-    transition: color 180ms ease, opacity 180ms ease;
+    transition: color 260ms ease, background-color 260ms ease, transform 260ms ease, opacity 260ms ease;
 }
 
 .nav a:visited{
-    color:#111111;
+    color: #333333;
     text-decoration: none;
 }
 
 .nav a:hover {
-    color: #3d5afe;
+    color: #555555;
+    background: rgba(100, 100, 100, 0.1);
+    transform: translateY(-1px);
     text-decoration: none;
+}
+
+.nav a:focus-visible {
+  outline: 2px solid #777777;
+  outline-offset: 2px;
+}
+
+.nav a.active {
+  color: #444444;
+  background: rgba(100, 100, 100, 0.16);
+  font-weight: 600;
 }
 
 .open-QA{
@@ -768,6 +794,13 @@
     --playhead: #ff5a5f;
   }
 
+  @font-face {
+    font-family: 'MusicLabFont';
+    src: url('../fonts/330.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   body{
     position: relative;
     background:
@@ -775,14 +808,13 @@
       radial-gradient(circle at calc(var(--mx) * 0.8) calc(var(--my) * 1.25), rgba(137, 222, 214, 0.14), rgba(137, 222, 214, 0) 30%),
       linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);
     color: #111111;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: 'MusicLabFont', -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     user-select: none;
     -webkit-user-select: none;
-    transition: background 0.35s ease;
-    animation: pageGlowShift 12s ease-in-out infinite alternate;
+    transition: background 0.35s ease, color 0.35s ease;
   }
 
   body::before {

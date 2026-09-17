@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="联系 MusicLab 开发组，提交问题反馈与改进建议。">
+    <title>MusicLab | 联系我们</title>
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
+</head>
+<body class="main">
+    <div class="top">
+        <div class="Logo">
+            <a href="../index.html" aria-label="返回主页"></a>
+            <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
+        </div>
+        <ul class="nav">
+            <li id="nav1"><a href="../index.html"> 主页 </a></li>
+            <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
+            <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+            <li id="nav6"><a href="../Start Learning/index.html"> 初学者教程 </a></li>
+            <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
+            <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+        </ul>
+        <div><hr></div>
+    </div>
+
+    <main class="box">
+        <div class="content-card">
+            <h1>联系我们 / 反馈</h1>
+            <p class="settings-note" style="margin:8px 0 0">发现了 Bug、有新的功能想法，或者只是想说声你好？填写下面的表单，我们会认真阅读每一条反馈。</p>
+        </div>
+
+        <div class="settings-grid contact-grid">
+            <section class="content-card span-all" aria-labelledby="feedbackTitle">
+                <h2 id="feedbackTitle">反馈表单</h2>
+                <br>
+                <form class="ml-form" id="contactForm" novalidate>
+                    <div class="ml-form-row">
+                        <div class="ml-field">
+                            <label for="contactName">姓名 / 昵称 <span class="required" aria-hidden="true">*</span></label>
+                            <input type="text" id="contactName" name="name" autocomplete="name" required maxlength="40" aria-required="true" aria-describedby="contactNameError">
+                            <span class="field-error" id="contactNameError" role="alert"></span>
+                        </div>
+                        <div class="ml-field">
+                            <label for="contactEmail">邮箱 <span class="required" aria-hidden="true">*</span></label>
+                            <input type="email" id="contactEmail" name="email" autocomplete="email" required inputmode="email" placeholder="name@example.com" aria-required="true" aria-describedby="contactEmailError">
+                            <span class="field-error" id="contactEmailError" role="alert"></span>
+                        </div>
+                    </div>
+
+                    <div class="ml-field">
+                        <label for="contactTopic">反馈类型 <span class="required" aria-hidden="true">*</span></label>
+                        <select id="contactTopic" name="topic" required aria-required="true" aria-describedby="contactTopicError">
+                            <option value="">请选择…</option>
+                            <option value="bug">问题反馈（Bug）</option>
+                            <option value="feature">功能建议</option>
+                            <option value="content">教程内容纠错</option>
+                            <option value="cooperation">合作与其他</option>
+                        </select>
+                        <span class="field-error" id="contactTopicError" role="alert"></span>
+                    </div>
+
+                    <div class="ml-field">
+                        <label for="contactMessage">详细描述 <span class="required" aria-hidden="true">*</span></label>
+                        <textarea id="contactMessage" name="message" required minlength="10" maxlength="1000" aria-required="true" aria-describedby="contactMessageHint contactMessageError" placeholder="请尽量描述你遇到的情况、所在页面以及期望的效果…"></textarea>
+                        <div class="field-hint" id="contactMessageHint">至少 10 个字符。<span class="char-count" id="contactCharCount">0 / 1000</span></div>
+                        <span class="field-error" id="contactMessageError" role="alert"></span>
+                    </div>
+
+                    <div class="agreement-row">
+                        <input type="checkbox" id="contactConsent" name="consent">
+                        <label for="contactConsent">希望收到回复（我们会通过邮箱联系你）</label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="ml-btn" id="contactSubmit">提交反馈</button>
+                        <button type="reset" class="ml-btn secondary">清空</button>
+                        <span class="form-status" id="contactStatus" aria-live="polite"></span>
+                    </div>
+                </form>
+            </section>
+
+            <section class="content-card" aria-labelledby="contactInfoTitle">
+                <h2 id="contactInfoTitle">其他联系方式</h2>
+                <br>
+                <div class="contact-info">
+                    <div><strong>开发团队</strong><br>北京理工大学 · 软件工程 · 联创小组</div>
+                    <div><strong>项目仓库</strong><br><a href="https://github.com/Aaron-Burr-Web/MusicLab" target="_blank" rel="noopener">github.com/Aaron-Burr-Web/MusicLab</a></div>
+                    <div><strong>回复时间</strong><br>通常在 3 个工作日内回复带邮箱的反馈。</div>
+                    <div><a class="ml-btn secondary small" href="../introduction/intro.html">认识开发组</a></div>
+                </div>
+            </section>
+
+            <section class="content-card" aria-labelledby="recentTitle">
+                <h2 id="recentTitle">你最近提交的反馈</h2>
+                <p class="settings-note" style="margin-top:6px">仅显示保存在当前浏览器中的记录。</p>
+                <ul class="recent-feedback" id="recentFeedback"></ul>
+            </section>
+        </div>
+    </main>
+
+    <script src="../js/login.js"></script>
+    <script>
+        (() => {
+            const ML = window.MusicLab;
+            const form = document.getElementById('contactForm');
+            const status = document.getElementById('contactStatus');
+            const submitButton = document.getElementById('contactSubmit');
+            const messageInput = document.getElementById('contactMessage');
+            const charCount = document.getElementById('contactCharCount');
+            const recentList = document.getElementById('recentFeedback');
+            const FEEDBACK_KEY = ML.storage.feedback;
+            const TOPIC_LABELS = { bug: '问题反馈', feature: '功能建议', content: '内容纠错', cooperation: '合作与其他' };
+
+            const fields = {
+                name: { input: document.getElementById('contactName'), error: document.getElementById('contactNameError') },
+                email: { input: document.getElementById('contactEmail'), error: document.getElementById('contactEmailError') },
+                topic: { input: document.getElementById('contactTopic'), error: document.getElementById('contactTopicError') },
+                message: { input: messageInput, error: document.getElementById('contactMessageError') }
+            };
+
+            const setError = (field, message) => {
+                field.error.textContent = message || '';
+                if (message) field.input.setAttribute('aria-invalid', 'true');
+                else field.input.removeAttribute('aria-invalid');
+            };
+
+            const validators = {
+                name: (v) => (!v.trim() ? '请填写姓名或昵称' : ''),
+                email: (v) => (!v.trim() ? '请填写邮箱'
+                    : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? '邮箱格式不正确' : ''),
+                topic: (v) => (!v ? '请选择反馈类型' : ''),
+                message: (v) => (!v.trim() ? '请填写详细描述'
+                    : v.trim().length < 10 ? `再多写一点吧，至少 10 个字符（当前 ${v.trim().length}）` : '')
+            };
+
+            const validateField = (key) => {
+                const message = validators[key](fields[key].input.value);
+                setError(fields[key], message);
+                return !message;
+            };
+
+            Object.keys(fields).forEach((key) => {
+                fields[key].input.addEventListener('blur', () => validateField(key));
+                fields[key].input.addEventListener('input', () => {
+                    if (fields[key].input.getAttribute('aria-invalid')) validateField(key);
+                });
+            });
+
+            const updateCount = () => { charCount.textContent = `${messageInput.value.length} / 1000`; };
+            messageInput.addEventListener('input', updateCount);
+
+            const readFeedback = () => {
+                try { return JSON.parse(localStorage.getItem(FEEDBACK_KEY) || '[]'); } catch (_) { return []; }
+            };
+
+            const renderRecent = () => {
+                const items = readFeedback().slice(-5).reverse();
+                if (!items.length) {
+                    recentList.innerHTML = '<li>还没有提交过反馈。</li>';
+                    return;
+                }
+                recentList.innerHTML = items.map((item) => `
+                    <li>
+                        <strong>${ML.escapeHTML(TOPIC_LABELS[item.topic] || item.topic)}</strong> · ${ML.escapeHTML(item.message.slice(0, 60))}${item.message.length > 60 ? '…' : ''}
+                        <time datetime="${item.createdAt}">${new Date(item.createdAt).toLocaleString('zh-CN')}</time>
+                    </li>`).join('');
+            };
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const results = Object.keys(fields).map(validateField);
+                const firstInvalid = Object.keys(fields).find((key, i) => !results[i]);
+                if (firstInvalid) {
+                    fields[firstInvalid].input.focus();
+                    status.className = 'form-status error';
+                    status.textContent = '请检查标红的字段';
+                    ML.toast('表单还有未完成的内容', { type: 'warning' });
+                    return;
+                }
+
+                submitButton.disabled = true;
+                submitButton.textContent = '提交中…';
+                status.className = 'form-status';
+                status.textContent = '正在提交…';
+
+                // No backend yet: persist locally so the flow is complete end-to-end.
+                const record = {
+                    name: fields.name.input.value.trim(),
+                    email: fields.email.input.value.trim(),
+                    topic: fields.topic.input.value,
+                    message: messageInput.value.trim(),
+                    wantsReply: document.getElementById('contactConsent').checked,
+                    user: ML.auth.currentUser(),
+                    page: document.referrer || '',
+                    createdAt: new Date().toISOString()
+                };
+
+                setTimeout(() => {
+                    const all = readFeedback();
+                    all.push(record);
+                    try { localStorage.setItem(FEEDBACK_KEY, JSON.stringify(all.slice(-50))); } catch (_) { /* ignore */ }
+
+                    form.reset();
+                    updateCount();
+                    Object.values(fields).forEach((field) => setError(field, ''));
+                    submitButton.disabled = false;
+                    submitButton.textContent = '提交反馈';
+                    status.className = 'form-status success';
+                    status.textContent = `已收到，谢谢 ${record.name}！`;
+                    ML.toast('反馈提交成功，感谢你的帮助！', { type: 'success' });
+                    renderRecent();
+                }, 500);
+            });
+
+            form.addEventListener('reset', () => {
+                setTimeout(() => {
+                    updateCount();
+                    Object.values(fields).forEach((field) => setError(field, ''));
+                    status.className = 'form-status';
+                    status.textContent = '';
+                }, 0);
+            });
+
+            // Pre-fill the name for signed-in users.
+            const user = ML.auth.currentUser();
+            if (user && !fields.name.input.value) fields.name.input.value = user;
+
+            updateCount();
+            renderRecent();
+        })();
+    </script>
+</body>
+</html>

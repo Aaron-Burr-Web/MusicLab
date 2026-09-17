@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLab | 节奏基础 · 乐器介绍</title>
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <link rel="stylesheet" href="../css/beat.css">
+    <script src="../js/musiclab-ui.js"></script>
+</head>
+    <body class="main" data-lesson="beat-instruments">
+        <div class="top">
+            <div class="Logo">
+                <a href="../index.html" aria-label="返回主页"></a>
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
+            </div>
+            <ul class="nav">
+                <li id="nav1"><a href="../index.html"> 主页 </a></li>
+                <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
+                <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav6"><a href="index.html"> 初学者教程 </a></li>
+                <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
+                <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+            </ul>
+            <div>
+            <hr>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="directory-panel">
+                <div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录">
+                    <img src="../icons/directory.png" alt="Directory" class="directory-icon">
+                </div>
+                <!-- 目录由 js/musiclab-ui.js 根据课程列表统一渲染 -->
+                <div class="directory-tree"></div>
+            </div>
+        </div>
+
+        <div class="box_with_side">
+            <div class="learning-content-panel">
+                <div class="learning-content-header">
+                    <h1>节奏基础（二）：乐器介绍</h1>
+                </div>
+                <div class="learning-content-body">
+                    <h2 id="instrument-introductions">乐器介绍</h2>
+                    <p>这些乐器共同构成了 Beat 音轨。每种乐器承担不同的节奏角色，把它们按照拍点组合起来，就能形成完整的节奏模式。</p>
+                    <div class="beat-instrument-introductions">
+                        <section class="beat-instrument-introduction">
+                            <h3>Kick（底鼓）</h3>
+                            <p>Kick 是鼓组中最厚重、最低沉的声音，通常负责强调每小节的根基和主要重拍，让节奏听起来更稳定、更有推动力。
+                            </p>
+                            <img src="../images/Kick.png" alt="Kick 底鼓">
+                            <button class="beat-instrument-button" type="button" data-audio="../audio/kick.wav">Kick</button>
+                        </section>
+                        <section class="beat-instrument-introduction">
+                            <h3>Snare（军鼓）</h3>
+                            <p>Snare 的声音清脆、有明显的击打感，常用于强调第二拍和第四拍，是流行、摇滚和电子音乐中常见的节奏骨架。</p>
+                            <img src="../images/snare.png" alt="Snare 军鼓">
+                            <button class="beat-instrument-button" type="button" data-audio="../audio/snare.wav">Snare</button>
+                        </section>
+                        <section class="beat-instrument-introduction">
+                            <h3>Tom（通鼓）</h3>
+                            <p>Tom 的音高通常介于底鼓和军鼓之间，不同尺寸的 Tom 能产生不同音高，常用于填充、过门和连接段落。</p>
+                            <img src="../images/Tom.png" alt="Tom 通鼓">
+                            <button class="beat-instrument-button" type="button" data-audio="../audio/Tom.wav">Tom</button>
+                        </section>
+                        <section class="beat-cymbals-introduction">
+                            <img src="../images/cymbals.jpg" alt="镲类乐器">
+                            <div class="beat-cymbals-content">
+                                <div class="beat-cymbal-buttons">
+                                    <button class="beat-instrument-button" type="button" data-audio="../audio/open-hat.wav">Open-Hat</button>
+                                    <button class="beat-instrument-button" type="button" data-audio="../audio/closed-hat.wav">Closed-Hat</button>
+                                    <button class="beat-instrument-button" type="button" data-audio="../audio/crash.wav">Crash</button>
+                                    <button class="beat-instrument-button" type="button" data-audio="../audio/ride.wav">Ride</button>
+                                </div>
+                                <div class="beat-cymbal-copy">
+                                    <h3>Open-Hat（开镲）</h3>
+                                    <p>Open-Hat 是打开镲片后的明亮延音，声音比闭镲更长，常用来制造开放感、连接不同节拍或推动段落变化。</p>
+                                    <h3>Closed-Hat（闭镲）</h3>
+                                    <p>Closed-Hat 是镲片闭合时产生的短促声音，适合连续演奏八分音符或十六分音符，用来维持稳定而细密的律动。</p>
+                                    <h3>Crash（碎音镲）</h3>
+                                    <p>Crash 的声音响亮、爆发力强，适合在段落开始、重拍或音乐高潮处使用，用来突出结构变化。</p>
+                                    <h3>Ride（叮叮镲）</h3>
+                                    <p>Ride 的声音清晰、延音较长，通常用于持续标记节拍。敲击镲面和镲边会产生不同的音色。</p>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="beat-instrument-introduction">
+                            <h3>Clap（拍手）</h3>
+                            <p>Clap 模拟多人拍手的声音，具有鲜明的律动感，常用于加强军鼓位置，让节奏更有舞曲和现场表演的感觉。</p>
+                            <img src="../images/clap.png" alt="Clap 拍手">
+                            <button class="beat-instrument-button" type="button" data-audio="../audio/clap.wav">Clap</button>
+                        </section>
+                    </div>
+                    <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
+                    <section class="lesson-quiz" data-lesson-quiz></section>
+                    <div class="learning-nav">
+                        <a href="beat.html" class="learning-nav-button prev">上一页：节拍和拍子</a>
+                        <a href="beat-track.html" class="learning-nav-button next">下一页：Beat 音轨</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <script src="../js/login.js"></script>
+    <script src="../js/beat-demo.js"></script>
+    <script src="../js/lesson-quiz.js"></script>
+    </body>
+</html>

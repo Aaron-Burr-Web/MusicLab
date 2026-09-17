@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLab | 节奏基础 · Beat 音轨</title>
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <link rel="stylesheet" href="../css/beat.css">
+    <script src="../js/musiclab-ui.js"></script>
+</head>
+    <body class="main" data-lesson="beat-track">
+        <div class="top">
+            <div class="Logo">
+                <a href="../index.html" aria-label="返回主页"></a>
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
+            </div>
+            <ul class="nav">
+                <li id="nav1"><a href="../index.html"> 主页 </a></li>
+                <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
+                <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav6"><a href="index.html"> 初学者教程 </a></li>
+                <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
+                <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+            </ul>
+            <div>
+            <hr>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="directory-panel">
+                <div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录">
+                    <img src="../icons/directory.png" alt="Directory" class="directory-icon">
+                </div>
+                <!-- 目录由 js/musiclab-ui.js 根据课程列表统一渲染 -->
+                <div class="directory-tree"></div>
+            </div>
+        </div>
+
+        <div class="box_with_side">
+            <div class="learning-content-panel">
+                <div class="learning-content-header">
+                    <h1>节奏基础（三）：在乐曲中与 Beat 音轨</h1>
+                </div>
+                <div class="learning-content-body">
+                    <h2 id="in-song">在乐曲中</h2>
+                    <p>节奏是音乐的骨架，大多类型的乐曲中，你都能听到明显的鼓点，尤其是摇滚等近现代音乐类型中。但大多数舒缓的音乐并不需要强烈的鼓点，但这并不代表节奏不存在。它决定着乐曲的快慢和强弱，根植于乐曲结构之中。有关其与其他声道的配合，你会在后续的学习中逐渐了解到。</p>
+                    <p>节奏的核心是节拍与速度，但是不同类型的音乐有着不同的节奏特点和表现方式。在长期的音乐演变中，多种丰富的节奏型逐渐形成了。例如下面的这些音频，你可以试听一下，来看看不同的节奏型是什么样的。</p>
+                    <div class="beat-instrument-buttons" aria-label="节奏类型试听">
+                        <button class="beat-instrument-button" type="button" data-rhythm="jazz">爵士</button>
+                        <button class="beat-instrument-button" type="button" data-rhythm="samba">桑巴</button>
+                        <button class="beat-instrument-button" type="button" data-rhythm="tango">探戈</button>
+                        <button class="beat-instrument-button" type="button" data-rhythm="waltz">华尔兹</button>
+                        <button class="beat-instrument-button" type="button" data-rhythm="funk">放克</button>
+                        <button class="beat-instrument-button" type="button" data-rhythm="rock">摇滚</button>
+                    </div>
+                    <br><br>
+                    <h2 id="beat-track">Beat音轨</h2>
+                    <p>下面就是一个简化版的 Beat 音轨：横向是时间（每 4 格为一拍），纵向是 8 种乐器。点亮方块后按 ▶ 播放，播放中也可以随时增删方块。顶部的标尺可以点击或拖动，把红色播放线直接移到任意一格；❚❚ 暂停会停在原地，■ 则回到开头。</p>
+                    <div class="beat-demo-wrapper">
+                        <div class="beat-demo-header">
+                            <div class="beat-demo-transport">
+                                <button class="beat-demo-play" type="button" aria-label="播放/暂停">▶</button>
+                                <button class="beat-demo-stop" type="button" aria-label="停止并回到开头">■</button>
+                                <div class="beat-demo-bpm">
+                                    <span class="beat-demo-label">BPM</span>
+                                    <span class="beat-demo-value">60</span>
+                                    <input class="beat-demo-slider" type="range" min="40" max="240" step="1" value="60" aria-label="BPM 调节">
+                                </div>
+                            </div>
+                            <div class="beat-demo-meter-switcher" aria-label="拍号切换">
+                                <button class="beat-demo-meter-button active" type="button" data-steps="16">2/4、4/4</button>
+                                <button class="beat-demo-meter-button" type="button" data-steps="24">3/4、6/8</button>
+                            </div>
+                            <button class="beat-demo-clear" type="button" aria-label="清空全部交互块">Clear</button>
+                        </div>
+                        <div class="beat-demo-shell">
+                            <!-- 标尺与网格由 js/beat-demo.js 渲染 -->
+                            <div class="beat-demo-grid"></div>
+                            <div class="beat-demo-playhead" aria-hidden="true"></div>
+                        </div>
+                        <p class="beat-demo-hint">提示：点击 / 拖动标尺可移动播放线；Clear 只清空方块，不会打断播放。</p>
+                    </div>
+                    <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
+                    <section class="lesson-quiz" data-lesson-quiz></section>
+                    <div class="learning-nav">
+                        <a href="beat-instruments.html" class="learning-nav-button prev">上一页：乐器介绍</a>
+                        <a href="chords.html" class="learning-nav-button next">下一页：音程与和弦</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <script src="../js/login.js"></script>
+    <script src="../js/beat-demo.js"></script>
+    <script src="../js/lesson-quiz.js"></script>
+    </body>
+</html>

@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicLab | Start Learning</title>
-    <link rel="stylesheet" href="../css/Home.css">  
+    <title>MusicLab | 节奏基础 · 节拍和拍子</title>
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <link rel="stylesheet" href="../css/beat.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
+<<<<<<< HEAD
     <body class="main">
         <div>
 			<div class="top">
@@ -13,53 +17,72 @@
                     <a href="../index.html" aria-label="返回主页"></a>
                     <img src="../images/MusicLabBlackLogo.png" width="250">
                 </div>
+=======
+    <body class="main" data-lesson="beat">
+        <div class="top">
+            <div class="Logo">
+                <a href="../index.html" aria-label="返回主页"></a>
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
+>>>>>>> main
             </div>
             <ul class="nav">
                 <li id="nav1"><a href="../index.html"> 主页 </a></li>
                 <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
                 <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav6"><a href="index.html"> 初学者教程 </a></li>
                 <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
                 <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
             </ul>
-        </div>
-        <hr>
-         <div class="sidebar">
-             <div class="content">
-                <a href="pitches.html"><h3>音符与记谱</h3></a>
-                <a href=""><p>音名与唱名</p></a>
-                <a href=""><p>钢琴键盘</p></a>
-                <a href=""><p>谱与音符</p></a>
-                <a href="beat.html"><h3>节奏基础</h3></a>
-                <a href=""><p>小试一下</p></a>
-                <a href=""><p>乐器介绍</p></a>
-                <a href=""><p>类型</p></a>
-                <a href=""><p>Beat音轨</p></a>
-                <a href="chords.html"><h3>音程与和弦</h3></a>
-                <a href=""><p>小试一下</p></a>
-                <a href=""><p>乐器介绍</p></a>
-                <a href=""><p>音程</p></a>
-                <a href=""><p>和弦</p></a>
-                <a href=""><h4>音轨</h4></a>
-                <a href=""><p>Chords音轨</p></a>
-                <a href=""><p>Basslines音轨</p></a>
-                <a href=""><p>Melodies音轨</p></a>
-                <a href=""><p>合奏</p></a>
-                <a href=""><p>单音听辨测试</p></a>
-                <a href="tones.html"><h3>调式基础</h3></a>
-                <a href=""><p>小试一下</p></a>
-                <a href=""><p>常见调式</p></a>
-                <a href=""><p>民族调式</p></a>
-                <a href=""><p>更多调式</p></a>
-                <a href=""><p>多音和弦听辨测试</p></a>
-                <a href="others.html"><h3>拓展与其他</h3></a>
-             </div>
-        </div>
-        <div class="box">
-            <h1>BEAT</h1> 
             <div>
-                <h1>文字</h1>
+            <hr>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="directory-panel">
+                <div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录">
+                    <img src="../icons/directory.png" alt="Directory" class="directory-icon">
+                </div>
+                <!-- 目录由 js/musiclab-ui.js 根据课程列表统一渲染 -->
+                <div class="directory-tree"></div>
+            </div>
+        </div>
+
+        <div class="box_with_side">
+            <div class="learning-content-panel">
+                <div class="learning-content-header">
+                    <h1>节奏基础（一）：节拍和拍子</h1>
+                </div>
+                <div class="learning-content-body">
+                    <h2 id="rhythm-basics">节拍和拍子</h2>
+                    <p>节奏是音乐中最容易感受到、也最能打动人的部分。拍子决定每小节中有多少个强弱不同的节拍，而节奏则告诉我们这些拍子如何分配和延长。</p>
+                    <p>常见的节拍有 2/4、3/4、4/4 等。2/4 更有推进感，常用于快速行进的音乐；3/4 常见于华尔兹，带有轻盈转身的舞步感；4/4 是最常见的基础节拍，很多流行、摇滚和古典作品都采用它。</p>
+                    <p>理解节奏时，最关键的是感受到“强拍”和“弱拍”的交替。强拍通常更明显，像音乐的落脚点；弱拍则让音乐有流动感。你可以通过敲击桌面、拍手、踩点来感受不同节拍的感觉。</p>
+                    <p>真正的节奏训练不是死记数字，而是让身体跟上音乐。练习时，先从慢速四拍开始，再尝试在 2/4 或 3/4 中保持稳定，逐渐增强对重音和间隔的感知。</p>
+                    <br><br>
+                    <h2 id="try-it">小试一下</h2>
+                    <p>下面是Beat音轨里面会用到的八种常见乐器，分别为：Kick、Snare、Open-Hat、Closed-Hat、Tom、Crash、Ride和Clap；你可以依次点按下面的块来试听他们的音色</p>
+                    <div class="beat-instrument-buttons" aria-label="乐器试听">
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/kick.wav">Kick</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/snare.wav">Snare</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/open-hat.wav">Open-Hat</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/closed-hat.wav">Closed-Hat</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/Tom.wav">Tom</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/crash.wav">Crash</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/ride.wav">Ride</button>
+                        <button class="beat-instrument-button" type="button" data-audio="../audio/clap.wav">Clap</button>
+                    </div><!--试听块-->
+                    <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
+                    <section class="lesson-quiz" data-lesson-quiz></section>
+                    <div class="learning-nav">
+                        <a href="pitches.html" class="learning-nav-button prev">上一页：音符与记谱</a>
+                        <a href="beat-instruments.html" class="learning-nav-button next">下一页：乐器介绍</a>
+                    </div>
+                </div>
             </div>
         </div>
     <script src="../js/login.js"></script>
+    <script src="../js/beat-demo.js"></script>
+    <script src="../js/lesson-quiz.js"></script>
     </body>
 </html>

@@ -1,21 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | Start Learning</title>
-    <link rel="stylesheet" href="../css/Home.css">  
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
-    <body class="main">
+    <body class="main" data-lesson="index">
         <div class="top">
 			<div class="Logo">
                 <a href="../index.html" aria-label="返回主页"></a>
+<<<<<<< HEAD
                 <img src="../images/MusicLabBlackLogo.png" width="250">
+=======
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
+>>>>>>> main
             </div>
             <ul class="nav">
                 <li id="nav1"><a href="../index.html"> 主页 </a></li>
                 <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
                 <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav6"><a href="index.html"> 初学者教程 </a></li>
                 <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
                 <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
             </ul>
@@ -26,66 +33,13 @@
         
          <div class="sidebar">
             <div class="directory-panel">
-                <div class="directory-header">
+                <div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录">
                     <img src="../icons/directory.png" alt="Directory" class="directory-icon">
                 </div>
 
-                <div class="directory-tree">
-                    <details class="directory-group">
-                        <summary><h3>音符与记谱</h3></summary>
-                        <div class="directory-links">
-                            <a href=""><h3>音名与唱名</h3></a>
-                            <a href=""><h3>钢琴键盘</h3></a>
-                            <a href=""><h3>谱与音符</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>节奏基础</h3></summary>
-                        <div class="directory-links">
-                            <a href=""><h3>小试一下</h3></a>
-                            <a href=""><h3>乐器介绍</h3></a>
-                            <a href=""><h3>类型</h3></a>
-                            <a href=""><h3>Beat音轨</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>音程与和弦</h3></summary>
-                        <div class="directory-links">
-                            <a href=""><h3>小试一下</h3></a>
-                            <a href=""><h3>乐器介绍</h3></a>
-                            <a href=""><h3>音程</h3></a>
-                            <a href=""><h3>和弦</h3></a>
-                            <a href=""><h3>音轨</h3></a>
-                            <a href=""><h3>Chords音轨</h3></a>
-                            <a href=""><h3>Basslines音轨</h3></a>
-                            <a href=""><h3>Melodies音轨</h3></a>
-                            <a href=""><h3>合奏</h3></a>
-                            <a href=""><h3>单音听辨测试</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>调式基础</h3></summary>
-                        <div class="directory-links">
-                            <a href=""><h3>小试一下</h3></a>
-                            <a href=""><h3>常见调式</h3></a>
-                            <a href=""><h3>民族调式</h3></a>
-                            <a href=""><h3>更多调式</h3></a>
-                            <a href=""><h3>多音和弦听辨测试</h3></a>
-                        </div>
-                    </details>
-
-                    <details class="directory-group">
-                        <summary><h3>拓展与其他</h3></summary>
-                        <div class="directory-links">
-                            <a href=""><h3>扩展内容</h3></a>
-                            <a href=""><h3>更多乐理知识</h3></a>
-                        </div>
-                    </details>
-                </div>
-             </div>
+                <!-- 目录由 js/musiclab-ui.js 根据课程列表统一渲染 -->
+                <div class="directory-tree"></div>
+            </div>
         </div>
         <div class="box_with_side">
             <div class="learning-content-panel">
@@ -97,121 +51,179 @@
                     <h2 id="learningSubtitle">引入</h2>
                     <!-- 子项名称：内容说明 -->
                     <p id="learningText">这个网站将在教你音乐基础知识的同时，给你个人DAW创作的机会，下面是不同使用者创作的示例，你可以点击三角播放按钮来试听。下面展示了节奏、和弦、贝斯、旋律四个音轨，尝试着把他们组合起来，可以达到不同的效果。</p>
-                    <div></div><!--这里加入4个音轨的4种不同音频-->
+
+                    <div class="audio-demo-panel" aria-label="音轨演示区">
+                        <div class="audio-demo-header">
+                            <div class="audio-demo-column">节奏</div>
+                            <div class="audio-demo-column">贝斯</div>
+                            <div class="audio-demo-column">和弦</div>
+                            <div class="audio-demo-column">旋律</div>
+                        </div>
+                        <div class="audio-demo-grid">
+                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 1">1</button>
+                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 1">1</button>
+                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 1">1</button>
+                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 1">1</button>
+
+                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 2">2</button>
+                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 2">2</button>
+                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 2">2</button>
+                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 2">2</button>
+
+                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 3">3</button>
+                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 3">3</button>
+                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 3">3</button>
+                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 3">3</button>
+
+                            <button class="audio-demo-button rhythm" type="button" data-audio="" aria-label="节奏音轨 4">4</button>
+                            <button class="audio-demo-button bass" type="button" data-audio="" aria-label="贝斯音轨 4">4</button>
+                            <button class="audio-demo-button chords" type="button" data-audio="" aria-label="和弦音轨 4">4</button>
+                            <button class="audio-demo-button melody" type="button" data-audio="" aria-label="旋律音轨 4">4</button>
+                        </div>
+                    </div>
+
                     <p id="learningTextSecondary">怎么样？你一定会认为这些创作会很难。实际上，只需要通过一定的尝试，你就可以写出一样的乐曲！<br>
                     接下来，你可以点击下面的“下一节：”按钮，开始第一个内容的学习，也可以先看看左侧的目录，寻找自己感兴趣的内容。</p>
+                    <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
+                    <section class="lesson-quiz" data-lesson-quiz></section>
                     <div class="learning-nav">
-                        <button type="button" class="learning-nav-button prev is-hidden">上一页：无</button>
-                        <button type="button" class="learning-nav-button next">下一页：音名与唱名</button>
+                        <span class="learning-nav-button prev is-hidden" aria-hidden="true">上一页：无</span>
+                        <a href="pitches.html" class="learning-nav-button next">下一页：音符与记谱</a>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="../js/login.js"></script>
-        <script>
-            const learningTitle = document.getElementById('learningTitle');
-            const learningSubtitle = document.getElementById('learningSubtitle');
-            const learningText = document.getElementById('learningText');
-            const learningTextSecondary = document.getElementById('learningTextSecondary');
-            const prevButton = document.querySelector('.learning-nav-button.prev');
-            const nextButton = document.querySelector('.learning-nav-button.next');
-
-            const sidebar = document.querySelector('.sidebar');
-            const contentBox = document.querySelector('.box_with_side');
-
-            const syncContentToSidebar = () => {
-                if (!sidebar || !contentBox) return;
-                const actualWidth = sidebar.offsetWidth || 80;
-                const offset = actualWidth + 12;
-                contentBox.style.left = `${offset}px`;
-            };
-
-            syncContentToSidebar();
-            sidebar?.addEventListener('mouseenter', syncContentToSidebar);
-            sidebar?.addEventListener('mouseleave', syncContentToSidebar);
-            sidebar?.addEventListener('focusin', syncContentToSidebar);
-            sidebar?.addEventListener('focusout', syncContentToSidebar);
-            window.addEventListener('resize', syncContentToSidebar);
-
-            if (window.ResizeObserver && sidebar) {
-                const sidebarObserver = new ResizeObserver(syncContentToSidebar);
-                sidebarObserver.observe(sidebar);
+        <style>
+            .audio-demo-panel {
+                width: 50%;
+                margin: 22px auto 18px;
+                padding: 14px 16px 16px;
+                border: 1px solid rgba(90, 104, 126, 0.18);
+                border-radius: 16px;
+                background: rgba(248, 250, 255, 0.9);
             }
 
-            const directoryLinks = Array.from(document.querySelectorAll('.directory-links a'));
-            const pageTitles = directoryLinks.map((link) => link.textContent.trim());
-            let currentIndex = -1;
+            .audio-demo-header {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+                margin-bottom: 12px;
+            }
 
-            const updateNavButtons = () => {
-                const hasPrev = currentIndex > 0;
-                const hasNext = currentIndex >= 0 && currentIndex < pageTitles.length - 1;
+            .audio-demo-column {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 32px;
+                border-radius: 10px;
+                background: transparent;
+                border: none;
+                font-size: 14px;
+                font-weight: 700;
+                color: #374152;
+            }
 
-                prevButton.classList.toggle('is-hidden', !hasPrev);
-                nextButton.classList.toggle('is-hidden', !hasNext && currentIndex !== -1);
+            .audio-demo-grid {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 8px;
+                justify-items: center;
+                align-items: center;
+                width: min(100%, 360px);
+                margin: 0 auto;
+            }
 
-                if (currentIndex === -1) {
-                    prevButton.classList.add('is-hidden');
-                    nextButton.textContent = `下一页：${pageTitles[0]}`;
-                    return;
-                }
+            .audio-demo-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: min(100%, 58px);
+                aspect-ratio: 1;
+                min-width: 40px;
+                max-width: 58px;
+                border: 1px solid rgba(144, 154, 172, 0.24);
+                border-radius: 12px;
+                font-size: 0;
+                line-height: 0;
+                background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(233, 239, 249, 0.94));
+                box-shadow:
+                    inset 1px 1px 0 rgba(255,255,255,0.9),
+                    inset -1px -1px 0 rgba(170, 179, 197, 0.18),
+                    6px 8px 16px rgba(52, 65, 90, 0.07);
+                cursor: pointer;
+                transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+                transform: scale(0.6);
+            }
 
-                prevButton.textContent = hasPrev ? `上一页：${pageTitles[currentIndex - 1]}` : '上一页：无';
-                nextButton.textContent = hasNext ? `下一页：${pageTitles[currentIndex + 1]}` : '下一页：无';
-            };
+            .audio-demo-button::before {
+                content: "";
+                width: 0;
+                height: 0;
+                border-left: 12px solid #ffffff;
+                border-top: 8px solid transparent;
+                border-bottom: 8px solid transparent;
+                filter: drop-shadow(0 0 0 rgba(0,0,0,0));
+            }
 
-            const renderCurrentContent = () => {
-                if (currentIndex === -1) {
-                    learningTitle.textContent = '开始音乐之旅';
-                    learningSubtitle.textContent = '引入';
-                    learningText.textContent = '这个网站将在教你音乐基础知识的同时，给你个人DAW创作的机会，下面是不同使用者创作的示例，你可以点击三角播放按钮来试听。下面展示了节奏、和弦、贝斯、旋律四个音轨，尝试着把他们组合起来，可以达到不同的效果。';
-                    learningTextSecondary.textContent = '怎么样？你一定会认为这些创作会很难。实际上，只需要通过一定的尝试，你就可以写出一样的乐曲！接下来，你可以点击下面的“下一节：”按钮，开始第一个内容的学习，也可以先看看左侧的目录，寻找自己感兴趣的内容。';
-                    updateNavButtons();
-                    return;
-                }
+            .audio-demo-button:hover {
+                transform: scale(0.6) translateY(-1px);
+                filter: brightness(0.99);
+            }
 
-                const title = pageTitles[currentIndex];
-                learningTitle.textContent = title;
-                learningSubtitle.textContent = title;
-                learningText.textContent = `${title}：此处为子项内容区域，暂时展示子项名称。`;
-                learningTextSecondary.textContent = '这里可以填入该子项的详细内容和说明，后续你可以直接替换为完整文字。';
-                updateNavButtons();
-            };
+            .audio-demo-button:active,
+            .audio-demo-button.is-active {
+                background: linear-gradient(145deg, rgba(92, 101, 116, 0.97), rgba(66, 75, 88, 0.97));
+                box-shadow:
+                    inset 1px 1px 0 rgba(255,255,255,0.14),
+                    inset -1px -1px 0 rgba(20, 24, 31, 0.22),
+                    6px 8px 16px rgba(34, 42, 56, 0.12);
+            }
 
-            const goToIndex = (index) => {
-                if (index < -1) return;
-                if (index > pageTitles.length - 1) return;
-                currentIndex = index;
-                renderCurrentContent();
-            };
+            .audio-demo-button:active::before,
+            .audio-demo-button.is-active::before {
+                border-left-color: #d4d7dd;
+            }
 
-            prevButton.addEventListener('click', () => {
-                if (currentIndex > 0) {
-                    goToIndex(currentIndex - 1);
-                }
-            });
+            .audio-demo-button.rhythm {
+                background: linear-gradient(145deg, rgba(255, 248, 214, 1), rgba(245, 220, 142, 0.9));
+            }
 
-            nextButton.addEventListener('click', () => {
-                if (currentIndex === -1) {
-                    goToIndex(0);
-                    return;
-                }
-                if (currentIndex < pageTitles.length - 1) {
-                    goToIndex(currentIndex + 1);
-                }
-            });
+            .audio-demo-button.bass {
+                background: linear-gradient(145deg, rgba(227, 245, 234, 1), rgba(176, 216, 191, 0.9));
+            }
 
-            directoryLinks.forEach((link) => {
-                const title = link.textContent.trim();
-                link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const index = pageTitles.indexOf(title);
-                    if (index >= 0) {
-                        goToIndex(index);
+            .audio-demo-button.chords {
+                background: linear-gradient(145deg, rgba(217, 232, 255, 1), rgba(167, 196, 247, 0.9));
+            }
+
+            .audio-demo-button.melody {
+                background: linear-gradient(145deg, rgba(240, 231, 255, 1), rgba(208, 188, 247, 0.9));
+            }
+        </style>
+        <script src="../js/login.js"></script>
+    <script src="../js/lesson-quiz.js"></script>
+        <script>
+            // 音频文件放置位置：
+            // 1. 把真实音频文件放到项目目录下的 /audio/ 文件夹，例如：/audio/beat-demo-01.mp3
+            // 2. 或放到 /assets/audio/；例如：/assets/audio/beat-demo-01.mp3
+            // 3. 之后把下面 data-audio 的空字符串替换成对应的外部音源地址，例如：
+            //    document.querySelector('.audio-demo-button.rhythm').dataset.audio = '../audio/beat-demo-01.mp3';
+            // 4. 链接尾部先保留空字符串，后续你把实际音频文件放进 /audio/ 后再逐一补上即可。
+            const demoButtons = document.querySelectorAll('.audio-demo-button');
+            demoButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    demoButtons.forEach((item) => {
+                        item.classList.toggle('is-active', item === button);
+                    });
+
+                    const src = button.dataset.audio;
+                    if (!src) {
+                        return;
                     }
+                    const audio = new Audio(src);
+                    audio.play().catch(() => {});
                 });
             });
-
-            renderCurrentContent();
         </script>
     </body>
 </html>

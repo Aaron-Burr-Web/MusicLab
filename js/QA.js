@@ -11,7 +11,7 @@
     },
     {
       question: '您希望通过本网站获取什么能力？',
-      options: ['乐理知识', '识谱技巧', '音乐制作能力']
+      options: ['乐理知识', '识谱技巧', '音乐制作能力','我全都要']
     }
   ];
   const firstQuestionResultMessages = [

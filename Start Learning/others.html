@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | Start Learning</title>
-    <link rel="stylesheet" href="../css/Home.css">  
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
+<<<<<<< HEAD
     <body class="main">
         <div>
 			<div class="top">
@@ -13,53 +16,61 @@
                     <a href="../index.html" aria-label="返回主页"></a>
                     <img src="../images/MusicLabBlackLogo.png" width="250">
                 </div>
+=======
+    <body class="main" data-lesson="others">
+        <div class="top">
+			<div class="Logo">
+                <a href="../index.html" aria-label="返回主页"></a>
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
+>>>>>>> main
             </div>
             <ul class="nav">
                 <li id="nav1"><a href="../index.html"> 主页 </a></li>
                 <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
                 <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav6"><a href="index.html"> 初学者教程 </a></li>
                 <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
                 <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
             </ul>
-        </div>
-        <hr>
-         <div class="sidebar">
-             <div class="content">
-                <a href="pitches.html"><h3>音符与记谱</h3></a>
-                <a href=""><p>音名与唱名</p></a>
-                <a href=""><p>钢琴键盘</p></a>
-                <a href=""><p>谱与音符</p></a>
-                <a href="beat.html"><h3>节奏基础</h3></a>
-                <a href=""><p>小试一下</p></a>
-                <a href=""><p>乐器介绍</p></a>
-                <a href=""><p>类型</p></a>
-                <a href=""><p>Beat音轨</p></a>
-                <a href="chords.html"><h3>音程与和弦</h3></a>
-                <a href=""><p>小试一下</p></a>
-                <a href=""><p>乐器介绍</p></a>
-                <a href=""><p>音程</p></a>
-                <a href=""><p>和弦</p></a>
-                <a href=""><h4>音轨</h4></a>
-                <a href=""><p>Chords音轨</p></a>
-                <a href=""><p>Basslines音轨</p></a>
-                <a href=""><p>Melodies音轨</p></a>
-                <a href=""><p>合奏</p></a>
-                <a href=""><p>单音听辨测试</p></a>
-                <a href="tones.html"><h3>调式基础</h3></a>
-                <a href=""><p>小试一下</p></a>
-                <a href=""><p>常见调式</p></a>
-                <a href=""><p>民族调式</p></a>
-                <a href=""><p>更多调式</p></a>
-                <a href=""><p>多音和弦听辨测试</p></a>
-                <a href="others.html"><h3>拓展与其他</h3></a>
-             </div>
-        </div>
-        <div class="box">
-            <h1>Extension</h1> 
             <div>
-                <h1>文字</h1>
+            <hr>
+            </div>
+        </div>
+
+         <div class="sidebar">
+            <div class="directory-panel">
+                <div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录">
+                    <img src="../icons/directory.png" alt="Directory" class="directory-icon">
+                </div>
+
+                <!-- 目录由 js/musiclab-ui.js 根据课程列表统一渲染 -->
+                <div class="directory-tree"></div>
+            </div>
+        </div>
+
+        <div class="box_with_side">
+            <div class="learning-content-panel">
+                <div class="learning-content-header">
+                    <h1>拓展与其他</h1>
+                </div>
+                <div class="learning-content-body">
+                    <h2 id="extension-basics">拓展学习</h2>
+                    <p>音乐是一个不断发展的系统，初学者往往会发现自己越学越想深入。除了基本音高、节奏和和弦以外，配器、录音、编曲与歌曲结构也都是有趣且实用的内容。</p>
+                    <p>如果你已经能听出不同的旋律和和弦，那么下一步就可以开始尝试自己做节奏、写旋律或做一个短小乐段。最好的学习方式，就是把理论和实践结合起来：听一首歌、分析它的节奏和和弦、再模仿其中的基本结构。</p>
+                    <p>不要害怕犯错，音乐创作的本质就是尝试、调整和重构。每一次小小的修改，都会让你的作品更符合你自己的表达方式。真正重要的，不是追求“完美”，而是持续观察和改进。</p>
+                    <p>你已经学完了基础部分，接下来可以通过做简单练习来巩固理解。例如：选一首喜欢的歌，试着按拍子打节奏；或者用一组简单和弦写出四小节旋律。实践越多，你对音乐的感受就越深。</p>
+                    <h2 id="extension-content">扩展内容</h2><p>你可以继续学习配器、录音、混音和编曲，把基础乐理应用到完整作品中。</p>
+                    <h2 id="more-theory">更多乐理知识</h2><p>进一步了解曲式、调性、复节奏和音色设计，可以帮助你建立更完整的音乐创作方法。</p>
+                    <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
+                    <section class="lesson-quiz" data-lesson-quiz></section>
+                    <div class="learning-nav">
+                        <a href="tones.html" class="learning-nav-button prev">上一页：调式基础</a>
+                        <a href="index.html" class="learning-nav-button next">回到首页</a>
+                    </div>
+                </div>
             </div>
         </div>
     <script src="../js/login.js"></script>
+    <script src="../js/lesson-quiz.js"></script>
     </body>
 </html>

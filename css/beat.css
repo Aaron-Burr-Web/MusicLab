@@ -1,0 +1,418 @@
+/* 节奏基础章节（beat*.html）共用样式：乐器试听块、乐器介绍、Beat 音轨演示 */
+.beat-demo-wrapper {
+    width: min(1100px, calc(100% - 20px));
+    margin: 18px auto 0;
+    padding: 20px 14px 18px;
+    border-radius: 24px;
+    background: linear-gradient(145deg, rgba(255,245,245,0.97) 0%, rgba(255,233,233,0.98) 38%, rgba(255,246,247,0.98) 100%);
+    box-shadow:
+        inset 1px 1px 0 rgba(255,255,255,0.9),
+        inset -1px -1px 0 rgba(176,182,201,0.16),
+        12px 16px 24px rgba(94, 30, 30, 0.08),
+        -3px -4px 8px rgba(255,255,255,0.7);
+}
+
+.beat-demo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 6px 14px;
+}
+
+.beat-demo-transport {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.beat-demo-play {
+    width: 50px;
+    height: 50px;
+    border: none;
+    background: linear-gradient(135deg, #e53935 0%, #d32f2f 100%);
+    color: #1f1b15;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.beat-demo-bpm {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.beat-demo-label {
+    color: #484a59;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.beat-demo-value {
+    min-width: 52px;
+    color: #111827;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.beat-demo-slider {
+    width: min(220px, 45vw);
+    height: 12px;
+    appearance: none;
+    background: linear-gradient(90deg, #fca5a5 0%, #e53935 100%);
+    border-radius: 999px;
+}
+
+.beat-demo-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(76, 0, 0, 0.9);
+    background: #e53935;
+}
+
+.beat-demo-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(76, 0, 0, 0.9);
+    background: #e53935;
+}
+
+.beat-demo-clear {
+    border: 1px solid rgba(107, 114, 128, 0.24);
+    background: rgba(255, 255, 255, 0.7);
+    color: #3f475c;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 9px 12px;
+    cursor: pointer;
+}
+
+.beat-demo-meter-switcher {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.beat-demo-meter-button {
+    border: 1px solid rgba(107, 114, 128, 0.24);
+    background: rgba(255, 255, 255, 0.7);
+    color: #3f475c;
+    padding: 9px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.beat-demo-meter-button.active {
+    border-color: transparent;
+    background: #e53935;
+    color: #ffffff;
+}
+
+.beat-demo-shell {
+    position: relative;
+    padding: 18px 14px 18px;
+    border-radius: 20px;
+    background: rgba(255, 236, 236, 0.92);
+    overflow: hidden;
+}
+
+.beat-demo-grid {
+    position: relative;
+    display: grid;
+    gap: 4px;
+    z-index: 1;
+}
+
+.beat-demo-playhead {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    display: none;
+    background: #e53935;
+    box-shadow: 0 0 8px rgba(229, 57, 53, 0.65);
+    pointer-events: none;
+    z-index: 3;
+    will-change: transform;
+}
+
+.beat-demo-divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(89, 99, 116, 0.75);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.beat-demo-row {
+    display: grid;
+    grid-template-columns: 64px repeat(var(--beat-step-count), minmax(10px, 1fr));
+    gap: 4px;
+    align-items: center;
+    min-height: 18px;
+}
+
+.beat-demo-label-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 18px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4e586d;
+    letter-spacing: 0.05em;
+}
+
+.beat-demo-cell {
+    width: 100%;
+    height: 18px;
+    border: 0;
+    background: #dfe4eb;
+    cursor: pointer;
+}
+
+.beat-demo-cell.active {
+    background: #e53935;
+}
+
+.beat-demo-cell.is-current {
+    outline: 2px solid #1f2937;
+    outline-offset: -2px;
+}
+
+.beat-instrument-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin: 16px 0 24px;
+}
+
+.beat-instrument-button {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 80px;
+    border: 0;
+    border-radius: 0;
+    background: #dfe4eb;
+    color: #4e586d;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 100ms ease;
+}
+
+.beat-instrument-button.is-flashing {
+    background: #e53935;
+    color: #ffffff;
+}
+
+.beat-instrument-introductions {
+    margin-top: 20px;
+}
+
+.beat-instrument-introduction {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    column-gap: 28px;
+    margin: 0 auto 30px;
+    padding-bottom: 30px;
+    text-align: left;
+    border-bottom: 1px solid rgba(89, 99, 116, 0.28);
+}
+
+.beat-instrument-introduction h3 {
+    grid-column: 2;
+    margin-bottom: 8px;
+}
+
+.beat-instrument-introduction p {
+    grid-column: 2;
+    margin-bottom: 14px;
+}
+
+.beat-instrument-introduction img {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    display: block;
+    width: 100%;
+    max-height: 300px;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+.beat-instrument-introduction .beat-instrument-button {
+    grid-column: 2;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.beat-cymbals-introduction {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 18px 28px;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(89, 99, 116, 0.28);
+}
+
+.beat-cymbals-introduction > img {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 100%;
+    max-height: 360px;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+.beat-cymbals-content {
+    grid-column: 2;
+}
+
+.beat-cymbal-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.beat-cymbal-copy h3 {
+    margin: 16px 0 6px;
+}
+
+.beat-cymbal-copy h3:first-child {
+    margin-top: 0;
+}
+
+.beat-cymbal-copy p {
+    margin-bottom: 10px;
+}
+
+@media (max-width: 720px) {
+    .beat-demo-row {
+        grid-template-columns: 58px repeat(var(--beat-step-count), minmax(12px, 1fr));
+        gap: 6px;
+    }
+
+    .beat-instrument-buttons {
+        gap: 5px;
+    }
+
+    .beat-instrument-button {
+        height: 68px;
+        font-size: 13px;
+    }
+
+    .beat-instrument-introduction img {
+        width: 80%;
+    }
+
+    .beat-instrument-introduction,
+    .beat-cymbals-introduction {
+        display: block;
+    }
+
+    .beat-instrument-introduction img,
+    .beat-cymbals-introduction > img {
+        width: 80%;
+        margin-bottom: 16px;
+    }
+
+    .beat-instrument-introduction .beat-instrument-button {
+        width: 100%;
+    }
+}
+
+/* ---------- 播放控制：步进标尺 + 停止按钮 ---------- */
+.beat-demo-stop {
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgba(229, 57, 53, 0.35);
+    background: rgba(255, 255, 255, 0.7);
+    color: #7f1d1d;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.beat-demo-stop:hover,
+.beat-demo-play:hover { filter: brightness(1.08); }
+
+.beat-demo-ruler {
+    display: grid;
+    grid-template-columns: 64px repeat(var(--beat-step-count), minmax(10px, 1fr));
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 6px;
+    user-select: none;
+    touch-action: none;
+}
+
+.beat-demo-ruler-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    text-align: center;
+}
+
+.beat-demo-ruler-cell {
+    height: 18px;
+    border: 0;
+    border-radius: 3px 3px 0 0;
+    background: rgba(255, 255, 255, 0.55);
+    color: #6b7280;
+    font-size: 10px;
+    line-height: 18px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+}
+
+.beat-demo-ruler-cell.is-beat {
+    font-weight: 700;
+    color: #7f1d1d;
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.beat-demo-ruler-cell:hover,
+.beat-demo-ruler-cell.is-current {
+    background: #e53935;
+    color: #fff;
+}
+
+.beat-demo-hint {
+    margin: 10px 6px 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+@media (max-width: 720px) {
+    .beat-demo-ruler {
+        grid-template-columns: 58px repeat(var(--beat-step-count), minmax(12px, 1fr));
+        gap: 6px;
+    }
+    .beat-demo-ruler-cell { font-size: 9px; }
+}
+
+:root[data-theme="dark"] .beat-demo-ruler-cell { background: rgba(255, 255, 255, 0.06); color: #8b92a6; }
+:root[data-theme="dark"] .beat-demo-ruler-cell.is-beat { background: rgba(255, 255, 255, 0.12); color: #e8eaf2; }
+:root[data-theme="dark"] .beat-demo-ruler-cell:hover,
+:root[data-theme="dark"] .beat-demo-ruler-cell.is-current { background: #e53935; color: #fff; }
+:root[data-theme="dark"] .beat-demo-stop { background: rgba(255, 255, 255, 0.08); color: #fca5a5; }
+:root[data-theme="dark"] .beat-demo-hint { color: #8b92a6; }

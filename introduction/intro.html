@@ -5,17 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | 开发组介绍</title>
     <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
 <body class="main">
     <div class="top">
         <div class="Logo">
             <a href="../index.html" aria-label="返回主页"></a>
+<<<<<<< HEAD
             <img src="../images/MusicLabBlackLogo.png" width="250">
+=======
+            <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
+>>>>>>> main
         </div>
         <ul class="nav">
             <li id="nav1"><a href="../index.html"> 主页 </a></li>
             <li id="nav2"><a href="intro.html"> 开发组介绍 </a></li>
             <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+            <li id="nav6"><a href="../Start Learning/index.html"> 初学者教程 </a></li>
             <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
             <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
         </ul>
@@ -57,21 +64,6 @@
         </div>
     </div>
 
-    <script>
-        const root = document.documentElement;
-        const updateMouseGlow = (event) => {
-            const x = (event.clientX / window.innerWidth) * 100;
-            const y = (event.clientY / window.innerHeight) * 100;
-            root.style.setProperty('--mx', x + '%');
-            root.style.setProperty('--my', y + '%');
-        };
-
-        window.addEventListener('pointermove', updateMouseGlow);
-        window.addEventListener('load', () => {
-            root.style.setProperty('--mx', '50%');
-            root.style.setProperty('--my', '50%');
-        });
-    </script>
     <script src="../js/login.js"></script>
 </body>
 </html>

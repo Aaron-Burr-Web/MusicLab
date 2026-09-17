@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | Start Learning</title>
-    <link rel="stylesheet" href="../css/Home.css">  
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
+<<<<<<< HEAD
     <body class="main">
         <div>
 			<div class="top">
@@ -13,53 +16,64 @@
                     <a href="../index.html" aria-label="返回主页"></a>
                     <img src="../images/MusicLabBlackLogo.png" width="250">
                 </div>
+=======
+    <body class="main" data-lesson="tones">
+        <div class="top">
+			<div class="Logo">
+                <a href="../index.html" aria-label="返回主页"></a>
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
+>>>>>>> main
             </div>
             <ul class="nav">
                 <li id="nav1"><a href="../index.html"> 主页 </a></li>
                 <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
                 <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav6"><a href="index.html"> 初学者教程 </a></li>
                 <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
                 <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
             </ul>
-        </div>
-        <hr>
-         <div class="sidebar">
-             <div class="content">
-                <a href="pitches.html"><h3>音符与记谱</h3></a>
-                <a href=""><p>音名与唱名</p></a>
-                <a href=""><p>钢琴键盘</p></a>
-                <a href=""><p>谱与音符</p></a>
-                <a href="beat.html"><h3>节奏基础</h3></a>
-                <a href=""><p>小试一下</p></a>
-                <a href=""><p>乐器介绍</p></a>
-                <a href=""><p>类型</p></a>
-                <a href=""><p>Beat音轨</p></a>
-                <a href="chords.html"><h3>音程与和弦</h3></a>
-                <a href=""><p>小试一下</p></a>
-                <a href=""><p>乐器介绍</p></a>
-                <a href=""><p>音程</p></a>
-                <a href=""><p>和弦</p></a>
-                <a href=""><h4>音轨</h4></a>
-                <a href=""><p>Chords音轨</p></a>
-                <a href=""><p>Basslines音轨</p></a>
-                <a href=""><p>Melodies音轨</p></a>
-                <a href=""><p>合奏</p></a>
-                <a href=""><p>单音听辨测试</p></a>
-                <a href="tones.html"><h3>调式基础</h3></a>
-                <a href=""><p>小试一下</p></a>
-                <a href=""><p>常见调式</p></a>
-                <a href=""><p>民族调式</p></a>
-                <a href=""><p>更多调式</p></a>
-                <a href=""><p>多音和弦听辨测试</p></a>
-                <a href="others.html"><h3>拓展与其他</h3></a>
-             </div>
-        </div>
-        <div class="box">
-            <h1>Tones</h1> 
             <div>
-                <h1>文字</h1>
+            <hr>
+            </div>
+        </div>
+
+         <div class="sidebar">
+            <div class="directory-panel">
+                <div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录">
+                    <img src="../icons/directory.png" alt="Directory" class="directory-icon">
+                </div>
+
+                <!-- 目录由 js/musiclab-ui.js 根据课程列表统一渲染 -->
+                <div class="directory-tree"></div>
+            </div>
+        </div>
+
+        <div class="box_with_side">
+            <div class="learning-content-panel">
+                <div class="learning-content-header">
+                    <h1>调式基础</h1>
+                </div>
+                <div class="learning-content-body">
+                    <h2 id="mode-basics">调式与音阶</h2>
+                    <p>调式是音乐中组织音高的系统，它决定了某一段音乐的整体情绪与归属感。常见的调式包括大调和小调，它们在旋律和和声上有明显区别。</p>
+                    <p>大调常给人明亮、稳定和积极的感觉，而小调更容易表达忧郁、内敛和深沉。了解调式之后，你会更容易判断一首歌为什么听起来“开朗”或者“压抑”。</p>
+                    <p>从乐理角度看，音阶是调式的基础。音阶按固定顺序排列，形成了可预测的音高结构。大调音阶往往给人“自然稳定”的印象，而小调音阶则更偏向情绪延伸与弦乐感。</p>
+                    <p>在创作中，选择不同调式会直接改变歌曲的气氛。比如曲子在大调中更适合表达喜悦与展开，而小调更适合抒情、故事性和回忆式情绪。</p>
+                    <h2 id="mode-practice">小试一下</h2><p>先用同一组音符切换不同调式，比较它们在情绪和归属感上的差异。</p>
+                    <h2 id="common-modes">常见调式</h2><p>大调、自然小调、和声小调与旋律小调是最常用的基础调式。</p>
+                    <h2 id="folk-modes">民族调式</h2><p>民族调式常使用独特的音阶结构，能够表现地域文化和传统音乐的色彩。</p>
+                    <h2 id="more-modes">更多调式</h2><p>多利亚、弗里几亚和利底亚等调式，可以为旋律带来更鲜明的明暗和张力变化。</p>
+                    <h2 id="chord-test">多音和弦听辨测试</h2><p>通过聆听多个音同时出现的组合，训练对和弦性质和调式色彩的判断。</p>
+                    <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
+                    <section class="lesson-quiz" data-lesson-quiz></section>
+                    <div class="learning-nav">
+                        <a href="chords.html" class="learning-nav-button prev">上一页：音程与和弦</a>
+                        <a href="others.html" class="learning-nav-button next">下一页：拓展与其他</a>
+                    </div>
+                </div>
             </div>
         </div>
     <script src="../js/login.js"></script>
+    <script src="../js/lesson-quiz.js"></script>
     </body>
 </html>

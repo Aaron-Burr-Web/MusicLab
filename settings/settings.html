@@ -1,51 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | 设置</title>
     <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
 </head>
 <body class="main">
     <div class="top">
         <div class="Logo">
             <a href="../index.html" aria-label="返回主页"></a>
+<<<<<<< HEAD
             <img src="../images/MusicLabBlackLogo.png" width="250">
+=======
+            <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
+>>>>>>> main
         </div>
         <ul class="nav">
             <li id="nav1"><a href="../index.html"> 主页 </a></li>
             <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
             <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+            <li id="nav6"><a href="../Start Learning/index.html"> 初学者教程 </a></li>
             <li id="nav5"><a href="settings.html"> 设置 </a></li>
             <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
         </ul>
         <div><hr></div>
     </div>
 
-    <div class="box">
+    <main class="box">
         <div class="content-card">
             <h1>设置</h1>
+            <p class="settings-note" style="margin:8px 0 0">管理账户状态、外观偏好与学习进度。所有设置只保存在当前浏览器中。</p>
+        </div>
+
+        <div class="settings-grid">
+            <!-- 账户状态 -->
+            <section class="content-card" id="account" aria-labelledby="accountTitle">
+                <h2 id="accountTitle">账户状态</h2>
+                <div class="status-row" id="accountStatusRow"></div>
+                <div class="form-actions" id="accountActions"></div>
+            </section>
+
+            <!-- 外观 -->
+            <section class="content-card" id="appearance" aria-labelledby="appearanceTitle">
+                <h2 id="appearanceTitle">外观</h2>
+                <p class="settings-note">选择浅色、深色或跟随系统。偏好会被记住，并在所有页面生效。</p>
+                <div class="segmented" role="group" aria-label="主题模式">
+                    <button type="button" data-theme-option="light" aria-pressed="false">浅色</button>
+                    <button type="button" data-theme-option="dark" aria-pressed="false">深色</button>
+                    <button type="button" data-theme-option="system" aria-pressed="false">跟随系统</button>
+                </div>
+                <p class="settings-note" style="margin-top:12px" id="themeStatus"></p>
+            </section>
+
+            <!-- 学习进度 -->
+            <section class="content-card progress-panel" id="progress" data-progress-card aria-label="学习进度"></section>
         </div>
 
         <div class="content-card">
-            <h2>账户状态</h2>
-            <p>当前页面用于演示新增导航项的样式和结构，后续可以继续补充个人设置、偏好、通知与隐私配置。</p>
-            <div class="logout-area">
-                <button type="button" class="logout-button" id="logoutButton">退出登录</button>
-            </div>
+            <h2>反馈与帮助</h2>
+            <p class="settings-note">遇到问题或有改进建议？欢迎通过反馈表单告诉我们。</p>
+            <a class="ml-btn secondary" href="../contact/contact.html">前往联系 / 反馈页面</a>
         </div>
-    </div>
+    </main>
 
     <script src="../js/login.js"></script>
     <script>
-        const logoutButton = document.getElementById('logoutButton');
-        if (logoutButton) {
-            logoutButton.addEventListener('click', () => {
-                localStorage.removeItem('musiclab_login_state');
-                localStorage.removeItem('musiclab_client_name');
-                window.location.href = '../index.html';
+        (() => {
+            const ML = window.MusicLab;
+
+            /* ---------------- account ---------------- */
+            const statusRow = document.getElementById('accountStatusRow');
+            const actions = document.getElementById('accountActions');
+
+            const renderAccount = () => {
+                const user = ML.auth.currentUser();
+                if (user) {
+                    statusRow.innerHTML = `
+                        <span class="avatar-circle" aria-hidden="true">${ML.escapeHTML(user.charAt(0).toUpperCase())}</span>
+                        <div>
+                            <div><strong>${ML.escapeHTML(user)}</strong></div>
+                            <span class="status-badge online">已登录</span>
+                        </div>`;
+                    actions.innerHTML = '<button type="button" class="ml-btn danger" id="logoutButton">退出登录</button>';
+                    document.getElementById('logoutButton').addEventListener('click', async () => {
+                        const ok = await ML.confirm(
+                            `退出后将看不到学习进度，重新登录「${user}」即可找回。确定要退出吗？`,
+                            { title: '退出登录？', confirmText: '退出登录', cancelText: '再想想', danger: true }
+                        );
+                        if (!ok) return;
+                        ML.auth.logout();
+                        renderAccount();
+                        ML.toast('你已退出登录', { type: 'success' });
+                    });
+                } else {
+                    statusRow.innerHTML = `
+                        <span class="status-badge offline">未登录</span>
+                        <span>登录后可以同步学习进度与个性化推荐。</span>`;
+                    actions.innerHTML = `
+                        <a class="ml-btn" href="../login/login.html">登录</a>
+                        <a class="ml-btn secondary" href="../login/registration.html">注册</a>`;
+                }
+            };
+            renderAccount();
+            window.addEventListener('storage', renderAccount);
+
+            /* ---------------- appearance ---------------- */
+            const themeStatus = document.getElementById('themeStatus');
+            const describeTheme = () => {
+                const pref = ML.theme.get();
+                const resolved = ML.theme.resolved();
+                themeStatus.textContent = pref === 'system'
+                    ? `当前跟随系统：${resolved === 'dark' ? '深色' : '浅色'}`
+                    : `当前：${resolved === 'dark' ? '深色模式' : '浅色模式'}`;
+            };
+            document.querySelectorAll('[data-theme-option]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    ML.theme.set(button.dataset.themeOption);
+                    ML.toast('外观偏好已保存', { type: 'success', duration: 1800 });
+                });
             });
-        }
+            ML.theme.apply();
+            describeTheme();
+            window.addEventListener('musiclab:theme', describeTheme);
+        })();
     </script>
 </body>
 </html>
