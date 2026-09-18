@@ -1112,14 +1112,70 @@ a.learning-nav-button { text-decoration: none; display: inline-block; }
 .directory-links a.is-current h3 { color: var(--ml-accent); font-weight: 700; }
 .directory-links a.is-done h3::after { content: " ✓"; color: var(--ml-success); }
 
-/* ---------- 章节小测 ---------- */
+/* ---------- 章节小测（折叠面板） ---------- */
 .lesson-quiz {
   margin-top: 28px;
-  padding: 22px 22px 18px;
+  padding: 0;
   border-radius: 18px;
   border: 1px solid var(--ml-border);
   background: var(--ml-surface-2);
+  overflow: hidden;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
+.lesson-quiz.is-open { border-color: rgba(65, 65, 243, 0.28); box-shadow: var(--ml-shadow); }
+
+.lesson-quiz-toggle {
+  appearance: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border: 0;
+  background: transparent;
+  color: var(--ml-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.lesson-quiz-toggle:hover { background: var(--ml-accent-soft); }
+.lesson-quiz-toggle:focus-visible { outline: 2px solid var(--ml-accent); outline-offset: -2px; }
+.lesson-quiz-toggle-main { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.lesson-quiz-toggle-main h2 { margin: 0; font-size: 20px; }
+.lesson-quiz-toggle-side { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.lesson-quiz-toggle-hint { font-size: 13px; color: var(--ml-text-3); }
+.lesson-quiz-arrow {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: var(--ml-text-3);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease;
+}
+.lesson-quiz.is-open .lesson-quiz-arrow { transform: rotate(180deg); color: var(--ml-accent); }
+
+/* 用 grid-template-rows 0fr → 1fr 做高度过渡，不需要测量内容高度 */
+.lesson-quiz-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lesson-quiz.is-open .lesson-quiz-body { grid-template-rows: 1fr; }
+.lesson-quiz-body-inner {
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 20px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.25s ease, transform 0.3s ease, padding 0.3s ease;
+}
+.lesson-quiz.is-open .lesson-quiz-body-inner { padding: 4px 20px 20px; opacity: 1; transform: none; }
+.lesson-quiz-intro { margin: 0 0 14px; }
 
 .lesson-quiz-header {
   display: flex;
@@ -1188,8 +1244,10 @@ a.learning-nav-button { text-decoration: none; display: inline-block; }
 .quiz-question.is-wrong .quiz-feedback { color: var(--ml-danger); }
 
 @media (max-width: 600px) {
-  .lesson-quiz { padding: 16px 14px; }
-  .lesson-quiz-header { flex-direction: column; }
+  .lesson-quiz-toggle { padding: 14px 14px; flex-wrap: wrap; }
+  .lesson-quiz-toggle-hint { display: none; }
+  .lesson-quiz-body-inner { padding: 0 14px; }
+  .lesson-quiz.is-open .lesson-quiz-body-inner { padding: 4px 14px 16px; }
 }
 
 /* ---------- 未登录时的进度卡片 ---------- */
@@ -1338,3 +1396,6 @@ body.ml-confirm-open { overflow: hidden; }
 }
 .audio-demo-button:disabled { cursor: not-allowed; filter: grayscale(0.75); opacity: 0.55; }
 .audio-demo-button:disabled:hover { transform: scale(0.6); }
+
+.strip-quiz-link { text-decoration: none; cursor: pointer; }
+.strip-quiz-link:hover { background: var(--ml-accent-soft); color: var(--ml-accent); }
