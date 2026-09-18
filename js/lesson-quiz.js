@@ -77,16 +77,40 @@
   const nextLesson = ML.progress.lessons[lessonIndex + 1] || null;
   const esc = ML.escapeHTML;
 
+  // 折叠面板：默认收起，不把页面撑长；通过 #lessonQuiz 锚点进入时自动展开
+  mount.id = mount.id || 'lessonQuiz';
+  const ui = { open: window.location.hash === `#${mount.id}` };
+
+  const setOpen = (open, { focus = false } = {}) => {
+    ui.open = open;
+    mount.classList.toggle('is-open', open);
+    const toggle = mount.querySelector('.lesson-quiz-toggle');
+    const body = mount.querySelector('.lesson-quiz-body');
+    if (toggle) toggle.setAttribute('aria-expanded', String(open));
+    if (body) body.setAttribute('aria-hidden', String(!open));
+    if (open && focus) {
+      const first = mount.querySelector('.lesson-quiz-form input');
+      if (first) setTimeout(() => first.focus({ preventScroll: true }), 320);
+    }
+  };
+
   const render = () => {
     const record = ML.progress.completed()[key];
+    const badgeText = record ? '已完成' : ML.progress.owner() ? '未完成' : '未登录';
     mount.innerHTML = `
-      <div class="lesson-quiz-header">
-        <div>
+      <button type="button" class="lesson-quiz-toggle" aria-expanded="${ui.open}" aria-controls="lessonQuizBody">
+        <span class="lesson-quiz-toggle-main">
           <h2 id="lessonQuizTitle">章节小测</h2>
-          <p class="settings-note">答对全部 ${questions.length} 题即可完成本章并计入学习进度。答错可以立刻重试。${ML.progress.owner() ? '' : `当前未登录：可以先做题，<a href="${ML.url('login/login.html')}">登录</a>后自动计入。`}</p>
-        </div>
-        <span class="status-badge ${record ? 'online' : 'offline'}" id="lessonQuizBadge">${record ? '已完成' : ML.progress.owner() ? '未完成' : '未登录'}</span>
-      </div>
+          <span class="status-badge ${record ? 'online' : 'offline'}" id="lessonQuizBadge">${badgeText}</span>
+        </span>
+        <span class="lesson-quiz-toggle-side">
+          <span class="lesson-quiz-toggle-hint">${questions.length} 道选择题 · ${record ? '可重做' : '答对全部即完成本章'}</span>
+          <svg class="lesson-quiz-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </span>
+      </button>
+      <div class="lesson-quiz-body" id="lessonQuizBody" aria-hidden="${!ui.open}">
+      <div class="lesson-quiz-body-inner">
+      <p class="settings-note lesson-quiz-intro">答对全部 ${questions.length} 题即可完成本章并计入学习进度。答错可以立刻重试。${ML.progress.owner() ? '' : `当前未登录：可以先做题，<a href="${ML.url('login/login.html')}">登录</a>后自动计入。`}</p>
       <form class="lesson-quiz-form" id="lessonQuizForm" novalidate>
         ${questions.map((item, qi) => `
           <fieldset class="quiz-question" data-question="${qi}">
@@ -106,7 +130,12 @@
           ${record && nextLesson ? `<a class="ml-btn secondary" href="${nextLesson.file}">下一章：${esc(nextLesson.title)} →</a>` : ''}
           <span class="form-status" id="lessonQuizStatus" aria-live="polite">${record ? `上次通过：${new Date(record.at).toLocaleString('zh-CN')}` : ''}</span>
         </div>
-      </form>`;
+      </form>
+      </div>
+      </div>`;
+
+    mount.classList.toggle('is-open', ui.open);
+    mount.querySelector('.lesson-quiz-toggle').addEventListener('click', () => setOpen(!ui.open, { focus: true }));
 
     const form = mount.querySelector('#lessonQuizForm');
     const status = mount.querySelector('#lessonQuizStatus');
@@ -121,6 +150,7 @@
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
+      if (!ui.open) setOpen(true);
       clearMarks();
       let answered = 0;
       let correct = 0;
@@ -193,6 +223,9 @@
 
   mount.setAttribute('aria-labelledby', 'lessonQuizTitle');
   render();
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === `#${mount.id}`) setOpen(true, { focus: true });
+  });
   // 进度与账号绑定：登录 / 退出 / 重置后按当前账号的记录重新渲染
   window.addEventListener('musiclab:progress', (event) => {
     if (event.detail && event.detail.key === key) return;

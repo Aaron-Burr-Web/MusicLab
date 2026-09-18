@@ -583,7 +583,7 @@
       strip.innerHTML = `
         <span>章节 ${index + 1} / ${LESSONS.length}</span>
         <span class="strip-spacer"></span>
-        <span class="status-badge ${done ? 'online' : 'offline'}">${done ? '本章已完成' : '完成小测后计入进度'}</span>
+        ${done ? '<span class="status-badge online">本章已完成</span>' : '<a class="status-badge offline strip-quiz-link" href="#lessonQuiz">完成小测后计入进度 ↓</a>'}
         <a class="strip-link" href="${url('settings/settings.html#account')}">查看我的进度 →</a>`;
     };
     renderStrip();

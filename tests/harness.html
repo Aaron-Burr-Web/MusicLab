@@ -22,6 +22,11 @@ const loaded = (id) => new Promise((resolve) => { const f = document.getElementB
     check(!!ML && !!ld.querySelector('.header-tools .theme-toggle'), '共享层加载并注入头部工具');
     check(ld.querySelectorAll('.directory-tree .directory-group').length === 6, '课程目录由 LESSONS 渲染出 6 组');
     check(/未登录/.test(ld.querySelector('.learning-progress-strip').textContent), '未登录时教程页不显示进度');
+    const quiz = ld.getElementById('lessonQuiz');
+    check(!!quiz && !quiz.classList.contains('is-open') && quiz.querySelector('.lesson-quiz-toggle').getAttribute('aria-expanded') === 'false', '章节小测默认收起');
+    check(/章节小测/.test(quiz.querySelector('.lesson-quiz-toggle').textContent) && !!quiz.querySelector('#lessonQuizBadge') && !!quiz.querySelector('.lesson-quiz-arrow'), '折叠头显示标题 / 状态 / 箭头');
+    quiz.querySelector('.lesson-quiz-toggle').click();
+    check(quiz.classList.contains('is-open') && quiz.querySelector('.lesson-quiz-toggle').getAttribute('aria-expanded') === 'true', '点击折叠头展开');
     const form = ld.getElementById('lessonQuizForm');
     check(form && form.querySelectorAll('.quiz-question').length === 3, '章节小测渲染 3 题');
     form.querySelector('input[name="q0"][value="0"]').checked = true;
