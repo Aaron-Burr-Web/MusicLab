@@ -3,77 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicLab | Start Learning</title>
+    <title>MusicLab | 音程与和弦 · 导入</title>
     <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
     <link rel="stylesheet" href="../css/Home.css">
     <link rel="stylesheet" href="../css/ui.css">
     <script src="../js/musiclab-ui.js"></script>
 </head>
-    <body class="main" data-lesson="chords">
-        <div class="top">
-			<div class="Logo">
-                <a href="../index.html" aria-label="返回主页"></a>
-                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
-            </div>
-            <ul class="nav">
-                <li id="nav1"><a href="../index.html"> 主页 </a></li>
-                <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
-                <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
-                <li id="nav6"><a href="index.html"> 初学者教程 </a></li>
-                <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
-                <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
-            </ul>
-            <div>
-            <hr>
-            </div>
-        </div>
-
-         <div class="sidebar">
-            <div class="directory-panel">
-                <div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录">
-                    <img src="../icons/directory.png" alt="Directory" class="directory-icon">
-                </div>
-
-                <!-- 目录由 js/musiclab-ui.js 根据课程列表统一渲染 -->
-                <div class="directory-tree"></div>
-            </div>
-        </div>
-
-        <div class="box_with_side">
-            <div class="learning-content-panel">
-                <div class="learning-content-header">
-                    <h1>音程与和弦</h1>
-                </div>
-                <div class="learning-content-body">
-                    <h2 id="chord-basics">音程与和弦</h2>
-                    <p>音程决定两个音之间的距离，决定它们听起来是否稳定、紧张、明亮或柔和。相邻音之间的关系非常重要，它能影响旋律与和声的情绪。</p>
-                    <p>例如，C 到 E 的距离较大，听起来更明亮；C 到 E♭ 的距离会更紧张。不同的音程组合，不同的和声色彩也会随之变化。学习音程就像学习用“距离”来控制情绪。</p>
-                    <p>和弦是三个或更多音同时发声时形成的组合。大三和弦通常给人明亮、稳定的感觉，小三和弦更常带来忧郁或柔和的色彩。理解了音程，就很容易理解为什么不同和弦会让人有不同的感觉。</p>
-                    <p>从初学者角度看，先掌握三和弦是最有效的入门方法。你可以从 C 大三和弦、A 小三和弦等简单结构开始，逐步感受稳定与张力的变化，再尝试把它们加入旋律中。</p>
-                    <h2 id="chord-practice">小试一下</h2><p>先听辨两个音的距离，再尝试判断它们组合后产生的稳定或紧张感。</p>
-                    <div data-ear-training="interval" data-title="音程听辨练习" data-rounds="8"></div>
-                    <h2 id="chord-instruments">乐器介绍</h2><p>钢琴、吉他和合成器都可以演奏音程与和弦，不同音色会改变和声的质感。</p>
-                    <h2 id="intervals">音程</h2><p>音程是两个音之间的距离，可以用度数和半音数来描述。</p>
-                    <h2 id="chords">和弦</h2><p>和弦由多个音同时发声组成，常见类型包括大三和弦、小三和弦与七和弦。</p>
-                    <h2 id="chord-tracks">音轨</h2><p>在音轨中安排不同声部，可以让和声从单个和弦发展为连续的音乐结构。</p>
-                    <h2 id="chords-track">Chords音轨</h2><p>Chords音轨负责提供和声支撑，通常在关键拍点上改变和弦。</p>
-                    <h2 id="basslines-track">Basslines音轨</h2><p>Basslines音轨连接低音与和弦，为音乐提供律动和重心。</p>
-                    <h2 id="melodies-track">Melodies音轨</h2><p>Melodies音轨在和声上方发展旋律，负责表达主要的音乐动机。</p>
-                    <h2 id="ensemble">合奏</h2><p>合奏是多个音轨同时配合，练习时要注意各声部的节奏和音域不要互相遮挡。</p>
-                    <h2 id="pitch-test">单音听辨测试</h2><p>通过反复比较音高，训练耳朵对音符位置和音程大小的判断能力。</p>
-                    <div data-ear-training="note" data-title="单音听辨练习" data-rounds="8"></div>
-                    <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
-                    <section class="lesson-quiz" data-lesson-quiz></section>
-                    <div class="learning-nav">
-                        <a href="beat-track.html" class="learning-nav-button prev">上一页：节奏基础（三）</a>
-                        <a href="tones.html" class="learning-nav-button next">下一页：调式基础</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <script src="../js/audio-engine.js"></script>
-    <script src="../js/ear-training.js"></script>
-    <script src="../js/login.js"></script>
-    <script src="../js/lesson-quiz.js"></script>
-    </body>
+<body class="main" data-lesson="chords">
+    <div class="top"><div class="Logo"><a href="../index.html" aria-label="返回主页"></a><img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab"></div><ul class="nav"><li id="nav1"><a href="../index.html"> 主页 </a></li><li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li><li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li><li id="nav6"><a href="index.html"> 初学者教程 </a></li><li id="nav5"><a href="../settings/settings.html"> 设置 </a></li><li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li></ul><div><hr></div></div>
+    <div class="sidebar"><div class="directory-panel"><div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录"><img src="../icons/directory.png" alt="Directory" class="directory-icon"></div><div class="directory-tree"></div></div></div>
+    <div class="box_with_side"><div class="learning-content-panel"><div class="learning-content-header"><h1>音程与和弦（一）：导入</h1></div><div class="learning-content-body">
+        <h2 id="chord-practice">小试一下</h2><p>我们以钢琴为例，初步感受音程与和弦的关系。请尝试按下面的按键，听听这几组声音，可以凭直觉判断这些声音让你有什么感受。</p><div></div>
+        <h2 id="chord-instruments">乐器介绍</h2>
+        <section><img src="../images/piano.png" alt="钢琴"><p>钢琴是一种键盘乐器，音域宽广，能够演奏旋律和和声，是学习音乐的基础乐器。</p><div></div></section>
+        <section><img src="../images/Bass.png" alt="贝斯"><p>贝斯是一种低音乐器，通常用于提供和声的低音部分，支撑整个乐曲的节奏和和声结构。</p><div></div></section>
+        <section><img src="../images/guitar.png" alt="吉他"><p>吉他是一种弦乐器，可以用来演奏旋律、和弦和独奏，广泛应用于各种音乐风格。</p><div></div></section>
+        <p>但在很多时候，音乐创作总是以合成器为核心，利用其丰富的音色和灵活的音域来构建整个音乐作品。合成器乐器的音色与现实有一定差别，不过本网站的音轨内容使用的是现实音频素材，合成器的声音，你可以在小测试的音频中听到。</p>
+        <p>接下来将分别学习度与音程、和弦，以及它们在音轨中的实际应用。</p>
+        <section class="lesson-quiz" data-lesson-quiz></section>
+        <div class="learning-nav"><a href="beat-track.html" class="learning-nav-button prev">上一页：节奏基础（三）</a><a href="chords-intervals.html" class="learning-nav-button next">下一页：度与音程</a></div>
+    </div></div></div>
+    <script src="../js/audio-engine.js"></script><script src="../js/login.js"></script><script src="../js/lesson-quiz.js"></script>
+</body>
 </html>

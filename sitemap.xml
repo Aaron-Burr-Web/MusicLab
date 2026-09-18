@@ -60,6 +60,21 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://example.com/Start%20Learning/chords-intervals.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/chords-chords.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/chords-track.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://example.com/Start%20Learning/tones.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

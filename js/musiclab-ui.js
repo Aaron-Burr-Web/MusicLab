@@ -316,14 +316,15 @@
       sections: [{ title: '乐器介绍', hash: 'instrument-introductions' }] },
     { key: 'beat-track', title: 'Beat 音轨', file: 'beat-track.html', group: '节奏基础',
       sections: [{ title: '在乐曲中', hash: 'in-song' }, { title: 'Beat 音轨', hash: 'beat-track' }] },
-    { key: 'chords', title: '音程与和弦', file: 'chords.html', group: '音程与和弦',
-      sections: [
-        { title: '音程与和弦', hash: 'chord-basics' }, { title: '小试一下', hash: 'chord-practice' },
-        { title: '乐器介绍', hash: 'chord-instruments' }, { title: '音程', hash: 'intervals' }, { title: '和弦', hash: 'chords' },
-        { title: '音轨', hash: 'chord-tracks' }, { title: 'Chords 音轨', hash: 'chords-track' },
-        { title: 'Basslines 音轨', hash: 'basslines-track' }, { title: 'Melodies 音轨', hash: 'melodies-track' },
-        { title: '合奏', hash: 'ensemble' }, { title: '单音听辨测试', hash: 'pitch-test' }
-      ] },
+    { key: 'chords', title: '音程与和弦（一）：导入', file: 'chords.html', group: '音程与和弦',
+      sections: [{ title: '小试一下', hash: 'chord-practice' }, { title: '乐器介绍', hash: 'chord-instruments' }] },
+    { key: 'chords-intervals', title: '音程与和弦（二）：度与音程', file: 'chords-intervals.html', group: '音程与和弦',
+      sections: [{ title: '度与音程', hash: 'intervals' }, { title: '单音听辨测试', hash: 'pitch-test' }] },
+    { key: 'chords-chords', title: '音程与和弦（三）：和弦', file: 'chords-chords.html', group: '音程与和弦',
+      sections: [{ title: '和弦', hash: 'chords' }, { title: '和弦听辨测试', hash: 'chord-test' }] },
+    { key: 'chords-track', title: '音程与和弦（四）：音轨', file: 'chords-track.html', group: '音程与和弦',
+      sections: [{ title: '音轨', hash: 'chord-tracks' }, { title: 'Chords 音轨', hash: 'chords-track' },
+        { title: 'Basslines 音轨', hash: 'basslines-track' }, { title: 'Melodies 音轨', hash: 'melodies-track' }] },
     { key: 'tones', title: '调式基础', file: 'tones.html', group: '调式基础',
       sections: [
         { title: '调式与音阶', hash: 'mode-basics' }, { title: '小试一下', hash: 'mode-practice' },
@@ -612,14 +613,13 @@
     { title: '节奏 · 乐器介绍', section: '教程 · 节奏基础', href: 'Start Learning/beat-instruments.html#instrument-introductions', keywords: '底鼓 军鼓 踩镲 通鼓 吊镲 叮叮镲 拍手 乐器' },
     { title: '节奏 · 在乐曲中', section: '教程 · 节奏基础', href: 'Start Learning/beat-track.html#in-song', keywords: '乐曲 律动 groove' },
     { title: 'Beat 音轨', section: '教程 · 节奏基础', href: 'Start Learning/beat-track.html#beat-track', keywords: 'beat track 音轨 鼓机 sequencer' },
-    { title: '音程与和弦', section: '教程 · 第 3 章', href: 'Start Learning/chords.html#chord-basics', keywords: 'chord interval 和声' },
-    { title: '音程', section: '教程 · 音程与和弦', href: 'Start Learning/chords.html#intervals', keywords: 'interval 度数 半音数' },
-    { title: '和弦', section: '教程 · 音程与和弦', href: 'Start Learning/chords.html#chords', keywords: 'chord 大三和弦 小三和弦 七和弦' },
-    { title: 'Chords 音轨', section: '教程 · 音程与和弦', href: 'Start Learning/chords.html#chords-track', keywords: 'chords track 和声支撑' },
-    { title: 'Basslines 音轨', section: '教程 · 音程与和弦', href: 'Start Learning/chords.html#basslines-track', keywords: 'bass 贝斯 低音 律动' },
-    { title: 'Melodies 音轨', section: '教程 · 音程与和弦', href: 'Start Learning/chords.html#melodies-track', keywords: 'melody 旋律 动机' },
-    { title: '合奏', section: '教程 · 音程与和弦', href: 'Start Learning/chords.html#ensemble', keywords: 'ensemble 声部 配合' },
-    { title: '单音听辨测试', section: '教程 · 音程与和弦', href: 'Start Learning/chords.html#pitch-test', keywords: '听辨 ear training 测试' },
+    { title: '音程与和弦', section: '教程 · 第 3 章', href: 'Start Learning/chords.html#chord-practice', keywords: 'chord interval 和声' },
+    { title: '音程', section: '教程 · 音程与和弦', href: 'Start Learning/chords-intervals.html#intervals', keywords: 'interval 度数 半音数' },
+    { title: '和弦', section: '教程 · 音程与和弦', href: 'Start Learning/chords-chords.html#chords', keywords: 'chord 大三和弦 小三和弦 七和弦' },
+    { title: 'Chords 音轨', section: '教程 · 音程与和弦', href: 'Start Learning/chords-track.html#chords-track', keywords: 'chords track 和声支撑' },
+    { title: 'Basslines 音轨', section: '教程 · 音程与和弦', href: 'Start Learning/chords-track.html#basslines-track', keywords: 'bass 贝斯 低音 律动' },
+    { title: 'Melodies 音轨', section: '教程 · 音程与和弦', href: 'Start Learning/chords-track.html#melodies-track', keywords: 'melody 旋律 动机' },
+    { title: '单音听辨测试', section: '教程 · 音程与和弦', href: 'Start Learning/chords-intervals.html#pitch-test', keywords: '听辨 ear training 测试' },
     { title: '调式基础', section: '教程 · 第 4 章', href: 'Start Learning/tones.html#mode-basics', keywords: 'mode scale 音阶 调式 大调 小调' },
     { title: '常见调式', section: '教程 · 调式基础', href: 'Start Learning/tones.html#common-modes', keywords: '大调 自然小调 和声小调 旋律小调' },
     { title: '民族调式', section: '教程 · 调式基础', href: 'Start Learning/tones.html#folk-modes', keywords: '五声 民族 宫商角徵羽' },
@@ -838,6 +838,9 @@
             <li><a href="${url('Start Learning/pitches.html')}">音符与记谱</a></li>
             <li><a href="${url('Start Learning/beat.html')}">节奏基础</a></li>
             <li><a href="${url('Start Learning/chords.html')}">音程与和弦</a></li>
+            <li><a href="${url('Start Learning/chords-intervals.html')}">度与音程</a></li>
+            <li><a href="${url('Start Learning/chords-chords.html')}">和弦</a></li>
+            <li><a href="${url('Start Learning/chords-track.html')}">音轨</a></li>
           </ul>
         </div>
         <div>

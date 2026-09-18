@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLab | 音程与和弦 · 度与音程</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
+</head>
+    <body class="main" data-lesson="chords-intervals">
+        <div class="top">
+            <div class="Logo">
+                <a href="../index.html" aria-label="返回主页"></a>
+                <img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab">
+            </div>
+            <ul class="nav">
+                <li id="nav1"><a href="../index.html"> 主页 </a></li>
+                <li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li>
+                <li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li>
+                <li id="nav6"><a href="index.html"> 初学者教程 </a></li>
+                <li id="nav5"><a href="../settings/settings.html"> 设置 </a></li>
+                <li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+            </ul>
+            <div><hr></div>
+        </div>
+        <div class="sidebar">
+            <div class="directory-panel">
+                <div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录">
+                    <img src="../icons/directory.png" alt="Directory" class="directory-icon">
+                </div>
+                <div class="directory-tree"></div>
+            </div>
+        </div>
+        <div class="box_with_side">
+            <div class="learning-content-panel">
+                <div class="learning-content-header"><h1>音程与和弦（二）：度与音程</h1></div>
+                <div class="learning-content-body">
+                    <h2 id="intervals">度与音程</h2>
+                    <p>在音乐中，度数用来表示两个音之间的相对位置。而音程是两个音之间的距离，可以用度数和半音数来描述。让我们回到钢琴键盘。在你所看到的键盘中，每两个相邻键之间相隔的是一个半音，两个半音为一个全音。</p>
+                    <p>好的，现在我们观察钢琴键盘上的白键，还记得中央C吗？从中央C开始，依次向右数白键，你会发现白键之间有时有黑键，有时没有。没有黑键时，两个键是相邻的，这说明他们之间相隔一个半音；有黑键隔了两个半音，就是一个全音。</p>
+                    <p>接下来，我们把概念在钢琴上找出来。度数可以通过数白键来确定，计算度时，有一个及其简单的方法，就是从第一个音队对应的白键开始，依次数到第二个音，包括首尾两个音在内，这个数字就是度数。例如，从 C 到 E 的距离是三度，从 C 到 G 的距离是五度。</p>
+                    <div></div><!--这里放一个局部键盘-->
+                    <p>音程则较为复杂，需要考虑半音数和度数的关系，音程可以用度数去表示，但在表示音程时，我们通常在前面加一个字，来准确地表示音程关系。</p>
+                    <p>音程推断是音乐基础中一个较难的环节，我们依旧以钢琴键为例，从三度开始。三度通常只有大三度和小三度，找到钢琴键上代表三度的两个音，你可以数一数中间隔了多少个键，例如 C 和 E 之间相隔3个键，而 D 和 F 之间则是2个键，去确认钢琴键上的每一个音你会发现，只有2个或3个键的情况存在。这时我们把2个键的音程称为小三度，而3个键的称为大三度。</p>
+                    <p>按下下面的这些按键听听大、小三度的区别！</p>
+                    <div></div><!--这里放试听块-->
+                    <p>较为不同的是，度数为四时，再数数键盘上的按键数你会发现，会有相隔4个和5个的情况，但是相隔5个只有F 和 B，这时我们把相隔4个键的音程称为纯四度，而相隔5个键的音程称为增四度，但我们也有可能遇到相隔3个键的情况，这时称为减四度，通常只出现在特殊调式或经过音中，大多数时候因为他与大三度的音程数相同，我们不会提及，这些我们要有所区分地去记忆。</p>
+                    <p>按下下面的这些按键听听纯、增、减四度的区别！</p>
+                    <div></div><!--这里放试听块-->
+                    <p>在上面的试听中相信你有所感觉，音程可以决定两个音组合时听起来是否稳定、紧张、明亮或柔和。相邻音之间的关系非常重要，它能影响旋律与和声的情绪。例如，C 到 E 的距离较大，听起来更明亮；C 到 E♭ 的距离会更紧张。不同的音程组合，不同的和声色彩也会随之变化。学习音程就像学习用“距离”来控制情绪。</p>
+                    <p>按照上面的方法以此类推，你可以推断出1、2、5、6、7、8度的音程关系，你会发现2、3、6、7度通常有大、小之分，而1、4、5、8度则相对固定。如此一来，2、3、6、7度有大、小度数，且通常只有大小的修饰；而1、4、5、8度则是纯一度、纯四度、纯五度和纯八度，高于他们则是增，低于则是减。下面在钢琴键上标注了常见的音程关系，你可以通过此来记忆。</p>
+                    <p>以A3（la）为标准音，你可以点按不同的按键，听听它们与标准音之间的音程关系，右侧将会显示音程等更多信息。</p>
+                    <div></div><!--这里放试听块-->
+                    <p>在学习过程中，音程的听觉推断往往不会给你钢琴键盘，所以你要通过反复练习，构建音程的听觉记忆。下面的小测试可以给你提供练习的机会。</p>
+                    <h2 id="chord-listening">小测试</h2>
+                    <h2 id="pitch-test">单音听辨测试</h2><p>通过反复比较音高，训练耳朵对音符位置和音程大小的判断能力。</p>
+                    <div data-ear-training="note" data-title="单音听辨练习" data-rounds="8"></div>
+                    <div data-ear-training="interval" data-title="音程听辨练习" data-rounds="8"></div>
+                    <section class="lesson-quiz" data-lesson-quiz></section>
+                    <div class="learning-nav">
+                        <a href="chords.html" class="learning-nav-button prev">上一页：音程与和弦</a>
+                        <a href="chords-chords.html" class="learning-nav-button next">下一页：和弦</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <script src="../js/audio-engine.js"></script>
+    <script src="../js/ear-training.js"></script>
+    <script src="../js/login.js"></script>
+    <script src="../js/lesson-quiz.js"></script>
+    </body>
+</html>

@@ -38,6 +38,21 @@
       { q: '多个音同时发声组成的是？', options: ['音阶', '节拍', '和弦', '音名'], answer: 2 },
       { q: '连接低音与和弦、为音乐提供律动和重心的是哪条音轨？', options: ['Melodies 音轨', 'Chords 音轨', 'Basslines 音轨', '人声音轨'], answer: 2 }
     ],
+    'chords-intervals': [
+      { q: '「音程」指的是什么？', options: ['一个音的响度', '两个音之间的距离', '乐曲的长度', '乐器的数量'], answer: 1 },
+      { q: '两个半音组成的是？', options: ['一个全音', '一个八度', '一个拍子', '一个和弦'], answer: 0 },
+      { q: '单音听辨练习主要训练什么？', options: ['音符位置和音程大小的判断', '演奏速度', '歌词记忆', '乐器维修'], answer: 0 }
+    ],
+    'chords-chords': [
+      { q: '多个音同时发声组成的是？', options: ['音阶', '节拍', '和弦', '音名'], answer: 2 },
+      { q: '三和弦由根音、三度音和什么组成？', options: ['四度音', '五度音', '七度音', '八度音'], answer: 1 },
+      { q: 'C 小三和弦的简化标记是？', options: ['C', 'Cm', 'Caug', 'Cdim'], answer: 1 }
+    ],
+    'chords-track': [
+      { q: '负责提供和声支撑的是哪条音轨？', options: ['Chords', 'Basslines', 'Melodies', 'Beat'], answer: 0 },
+      { q: '连接低音与和弦、提供律动和重心的是？', options: ['Melodies', 'Chords', 'Basslines', '人声'], answer: 2 },
+      { q: '通常承载作品主题、表达主要音乐动机的是？', options: ['Chords', 'Basslines', 'Melodies', 'Beat'], answer: 2 }
+    ],
     tones: [
       { q: '下面哪一项不属于课文列出的四种基础调式？', options: ['大调', '自然小调', '多利亚调式', '和声小调'], answer: 2 },
       { q: '民族调式的特点是？', options: ['只能用钢琴演奏', '拥有独特的音阶结构，能表现地域文化色彩', '没有固定音高', '必须是 4/4 拍'], answer: 1 },
