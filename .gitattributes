@@ -1,0 +1,9 @@
+* text=auto eol=lf
+*.md text working-tree-encoding=UTF-8
+*.html text
+*.css text
+*.js text
+*.wav binary
+*.png binary
+*.jpg binary
+*.ttf binary

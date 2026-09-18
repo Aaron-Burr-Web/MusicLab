@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | Start Learning</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
     <link rel="stylesheet" href="../css/Home.css">
     <link rel="stylesheet" href="../css/ui.css">
     <script src="../js/musiclab-ui.js"></script>
@@ -50,6 +51,7 @@
                     <p>和弦是三个或更多音同时发声时形成的组合。大三和弦通常给人明亮、稳定的感觉，小三和弦更常带来忧郁或柔和的色彩。理解了音程，就很容易理解为什么不同和弦会让人有不同的感觉。</p>
                     <p>从初学者角度看，先掌握三和弦是最有效的入门方法。你可以从 C 大三和弦、A 小三和弦等简单结构开始，逐步感受稳定与张力的变化，再尝试把它们加入旋律中。</p>
                     <h2 id="chord-practice">小试一下</h2><p>先听辨两个音的距离，再尝试判断它们组合后产生的稳定或紧张感。</p>
+                    <div data-ear-training="interval" data-title="音程听辨练习" data-rounds="8"></div>
                     <h2 id="chord-instruments">乐器介绍</h2><p>钢琴、吉他和合成器都可以演奏音程与和弦，不同音色会改变和声的质感。</p>
                     <h2 id="intervals">音程</h2><p>音程是两个音之间的距离，可以用度数和半音数来描述。</p>
                     <h2 id="chords">和弦</h2><p>和弦由多个音同时发声组成，常见类型包括大三和弦、小三和弦与七和弦。</p>
@@ -59,6 +61,7 @@
                     <h2 id="melodies-track">Melodies音轨</h2><p>Melodies音轨在和声上方发展旋律，负责表达主要的音乐动机。</p>
                     <h2 id="ensemble">合奏</h2><p>合奏是多个音轨同时配合，练习时要注意各声部的节奏和音域不要互相遮挡。</p>
                     <h2 id="pitch-test">单音听辨测试</h2><p>通过反复比较音高，训练耳朵对音符位置和音程大小的判断能力。</p>
+                    <div data-ear-training="note" data-title="单音听辨练习" data-rounds="8"></div>
                     <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
                     <section class="lesson-quiz" data-lesson-quiz></section>
                     <div class="learning-nav">
@@ -68,6 +71,8 @@
                 </div>
             </div>
         </div>
+    <script src="../js/audio-engine.js"></script>
+    <script src="../js/ear-training.js"></script>
     <script src="../js/login.js"></script>
     <script src="../js/lesson-quiz.js"></script>
     </body>

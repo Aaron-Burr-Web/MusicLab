@@ -26,6 +26,7 @@
     progress: 'musiclab_progress_v2',   // 前缀；每个账号一份：`${progress}::user:<name>`。未登录不记录、不显示进度
     pendingPass: 'musiclab_pending_pass', // 访客通过的小测（sessionStorage），登录后自动计入
     lastLesson: 'musiclab_last_lesson',   // 每个账号最近访问的章节：`${lastLesson}::user:<name>`
+    profile: 'musiclab_profile',          // Q&A 问卷结果：访客用本键，账号用 `${profile}::user:<name>`
     justLoggedIn: 'musiclab_just_logged_in', // sessionStorage：刚登录 / 注册，用于首页欢迎体验
     feedback: 'musiclab_feedback',
     pendingToast: 'musiclab_pending_toast'
@@ -278,6 +279,13 @@
       let credited = 0;
       pending.forEach((item) => { if (progress.markCompleted(item.key, item, { silent: true })) credited += 1; });
       sessionStorage.removeItem(STORAGE.pendingPass);
+      // 访客期间填过的问卷带到账号里（账号本身没有时）
+      const userProfileKey = `${STORAGE.profile}::user:${name.toLowerCase()}`;
+      const guestProfile = readJSON(localStorage, STORAGE.profile, null);
+      if (guestProfile && !readJSON(localStorage, userProfileKey, null)) {
+        writeJSON(localStorage, userProfileKey, guestProfile);
+        localStorage.removeItem(STORAGE.profile);
+      }
       writeJSON(sessionStorage, STORAGE.justLoggedIn, { name, isNew, credited, at: Date.now() });
       window.dispatchEvent(new CustomEvent('musiclab:auth', { detail: { loggedIn: true, name, isNew, credited } }));
       window.dispatchEvent(new CustomEvent('musiclab:progress', { detail: { reason: 'auth' } }));
@@ -395,29 +403,45 @@
     }
   };
 
-  const renderLockedProgressCard = (container) => {
-    const pending = progress.pendingCount();
-    container.innerHTML = `
-      <div class="progress-owner">
-        <h2>学习进度</h2>
-        <span class="status-badge offline">未登录</span>
-      </div>
-      <div class="progress-locked">
-        <div class="progress-locked-icon" aria-hidden="true">🔒</div>
-        <div>
-          <p class="settings-note">登录后才能查看和记录学习进度。你的进度与账号绑定，换台设备或重新登录都能找回。</p>
-          ${pending ? `<p class="settings-note progress-pending">本次会话你已通过 ${pending} 个章节的小测，登录后会自动计入。</p>` : ''}
-          <div class="form-actions">
-            <a class="ml-btn small" href="${url('login/login.html')}">登录</a>
-            <a class="ml-btn small secondary" href="${url('login/registration.html')}">注册账号</a>
-            <a class="ml-btn small secondary" href="${url('Start Learning/index.html')}">先逛逛教程</a>
-          </div>
-        </div>
-      </div>`;
+  /* ------------------------------------------------------------------ */
+  /* Q&A 问卷结果 → 学习起点推荐                                            */
+  /* ------------------------------------------------------------------ */
+  const LEVELS = [
+    { key: 'beginner', label: '零基础', start: 'index', startLabel: '从「开始音乐之旅」第一章开始' },
+    { key: 'intermediate', label: '有一定基础', start: 'chords', startLabel: '跳过音符与节奏基础，从「音程与和弦」开始' },
+    { key: 'advanced', label: '基础扎实', start: null, startLabel: '直接去游乐园开始 DAW 创作' }
+  ];
+  const profileKey = () => {
+    const user = auth.currentUser();
+    return user ? `${STORAGE.profile}::user:${user.toLowerCase()}` : STORAGE.profile;
+  };
+  const profile = {
+    levels: LEVELS,
+    get: () => readJSON(localStorage, profileKey(), null),
+    // answers: { level: 0|1|2, interest: n, goal: n }
+    save(answers) {
+      const data = { ...answers, at: new Date().toISOString() };
+      writeJSON(localStorage, profileKey(), data);
+      window.dispatchEvent(new CustomEvent('musiclab:profile', { detail: data }));
+      return data;
+    },
+    clear() { localStorage.removeItem(profileKey()); window.dispatchEvent(new CustomEvent('musiclab:profile', { detail: null })); },
+    level() {
+      const data = profile.get();
+      return data ? LEVELS[Math.min(Math.max(Number(data.level) || 0, 0), LEVELS.length - 1)] : null;
+    },
+    // 推荐起点：{ kind: 'lesson', lesson } | { kind: 'playground' } | null
+    recommendation() {
+      const level = profile.level();
+      if (!level) return null;
+      if (!level.start) return { kind: 'playground', level };
+      return { kind: 'lesson', lesson: LESSONS.find((l) => l.key === level.start), level };
+    }
   };
 
   const renderProgressCard = (container) => {
-    if (!progress.owner()) { renderLockedProgressCard(container); return; }
+    if (!progress.owner()) { container.innerHTML = ''; container.hidden = true; return; }
+    container.hidden = false;
     const completed = progress.completed();
     const done = progress.completedCount();
     const next = progress.nextLesson();
@@ -435,7 +459,7 @@
     const owner = progress.owner();
     container.innerHTML = `
       <div class="progress-owner">
-        <h2>学习进度</h2>
+        <h3>学习进度</h3>
         <span class="status-badge online" title="进度已与该账号绑定">账号：${escapeHTML(owner)}</span>
       </div>
       <p class="settings-note">${done === 0
@@ -557,10 +581,9 @@
       const done = progress.isCompleted(currentKey);
       strip.innerHTML = `
         <span>章节 ${index + 1} / ${LESSONS.length}</span>
-        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress.percent()}" aria-label="学习进度">
-          <div class="progress-bar-fill" style="width:${progress.percent()}%"></div>
-        </div>
-        <span class="status-badge ${done ? 'online' : 'offline'}">${done ? '本章已完成' : '完成小测后计入进度'}</span>`;
+        <span class="strip-spacer"></span>
+        <span class="status-badge ${done ? 'online' : 'offline'}">${done ? '本章已完成' : '完成小测后计入进度'}</span>
+        <a class="strip-link" href="${url('settings/settings.html#account')}">查看我的进度 →</a>`;
     };
     renderStrip();
     panel.insertBefore(strip, panel.firstChild);
@@ -572,7 +595,7 @@
   /* ------------------------------------------------------------------ */
   const SEARCH_INDEX = [
     { title: '主页', section: '网站', href: 'index.html', keywords: 'home 首页 musiclab 音乐 学习 创作' },
-    { title: '学习进度', section: '主页', href: 'index.html#learningProgress', keywords: 'progress 进度 里程碑 dashboard' },
+    { title: '学习进度（账户信息）', section: '设置', href: 'settings/settings.html#account', keywords: 'progress 进度 里程碑 dashboard 账户' },
     { title: '开发组介绍', section: '关于', href: 'introduction/intro.html', keywords: 'team 团队 联创 北京理工大学 成员' },
     { title: '郑雨杭', section: '开发组成员', href: 'introduction/Aaron.html', keywords: 'aaron 项目负责人' },
     { title: '何岚 | HEAK LEANGHAKK', section: '开发组成员', href: 'introduction/Heak.html', keywords: 'heak' },
@@ -607,6 +630,7 @@
     { title: '外观 / 深色模式', section: '设置', href: 'settings/settings.html#appearance', keywords: 'dark mode 深色 浅色 主题 theme 外观' },
     { title: '登录', section: '账户', href: 'login/login.html', keywords: 'login sign in 登录' },
     { title: '注册', section: '账户', href: 'login/registration.html', keywords: 'register sign up 注册 创建账号' },
+    { title: '用户服务条款', section: '账户', href: 'login/terms.html', keywords: 'terms 条款 隐私 privacy 协议' },
     { title: '联系我们 / 反馈', section: '帮助', href: 'contact/contact.html', keywords: 'contact feedback 联系 反馈 建议 bug 问题' },
     { title: 'Q & A 问卷', section: '主页', href: 'index.html#OpenQA', keywords: '问卷 questionnaire 个性化' }
   ];
@@ -820,7 +844,7 @@
           <h4>创作</h4>
           <ul>
             <li><a href="${url('The Playground/index.html')}">游乐园</a></li>
-            <li><a href="${url('index.html#learningProgress')}">学习进度</a></li>
+            <li><a href="${url('settings/settings.html#account')}">我的进度</a></li>
             <li><a href="${url('index.html#OpenQA')}">Q &amp; A 问卷</a></li>
           </ul>
         </div>
@@ -857,7 +881,11 @@
       const justNow = flag && flag.name === name && Date.now() - flag.at < 10 * 60 * 1000;
       const done = progress.completedCount();
       const total = LESSONS.length;
+      // 问卷结果已保存，个性化跳转等教学主页完工后再启用
+      const level = profile.level();
       const rec = progress.recommended();
+      const recHref = rec ? lessonURL(rec) : url('The Playground/index.html');
+      const recTitle = rec ? rec.title : '全部完成';
       const last = progress.lastLesson();
       const hour = new Date().getHours();
       const greeting = hour < 6 ? '夜深了' : hour < 12 ? '早上好' : hour < 14 ? '中午好' : hour < 18 ? '下午好' : '晚上好';
@@ -867,7 +895,7 @@
       if (justNow && flag.isNew) {
         headline = `欢迎加入 MusicLab，${name}！`;
         lead = flag.credited
-          ? `你刚才通过的 ${flag.credited} 个章节小测已经记到你的账号里了。接下来从「${rec ? rec.title : '游乐园'}」继续吧。`
+          ? `你刚才通过的 ${flag.credited} 个章节小测已经记到你的账号里了。接下来从「${recTitle}」继续吧。`
           : '这是一条为你准备的学习路线：先从「开始音乐之旅」了解四个音轨，再一章一章通关小测，最后到游乐园做出自己的曲子。';
       } else if (justNow) {
         headline = `欢迎回来，${name}！`;
@@ -875,18 +903,18 @@
           ? '你还没有完成任何章节，现在就从第一章开始吧。'
           : done === total
             ? '你已经通关全部章节，去游乐园创作吧！'
-            : `上次学到「${last ? last.title : rec.title}」，已完成 ${done} / ${total} 个章节，继续保持！`;
+            : `上次学到「${last ? last.title : rec.title}」，接着往下学吧！详细进度在「账户」里查看。`;
         if (flag.credited) lead += ` 另外，刚才作为访客通过的 ${flag.credited} 个小测也已计入。`;
       } else {
         headline = `${greeting}，${name}`;
-        lead = done === total ? '全部章节已完成，去游乐园创作吧！' : `已完成 ${done} / ${total} 个章节${rec ? `，下一步：「${rec.title}」` : ''}。`;
+        lead = done === total ? '全部章节已完成，去游乐园创作吧！' : rec ? `下一步：「${rec.title}」。` : '继续你的音乐之旅。';
       }
 
       const steps = [
-        { title: '继续学习', desc: rec ? rec.title : '全部完成', href: rec ? lessonURL(rec) : url('Start Learning/index.html'), icon: '📖' },
+        { title: done === 0 ? '推荐起点' : '继续学习', desc: recTitle, href: recHref, icon: '📖' },
         { title: '游乐园创作', desc: '节奏 · 和弦 · 贝斯 · 旋律', href: url('The Playground/index.html'), icon: '🎛️' },
-        { title: '个性化问卷', desc: '告诉我们你的基础', href: '#OpenQA', icon: '📝', qa: true },
-        { title: '账户与外观', desc: '深色模式 · 进度管理', href: url('settings/settings.html'), icon: '⚙️' }
+        { title: '个性化问卷', desc: level ? `已填写：${level.label} · 点击重做` : '告诉我们你的基础', href: '#OpenQA', icon: '📝', qa: true },
+        { title: '我的账户', desc: '学习进度 · 外观设置', href: url('settings/settings.html#account'), icon: '👤' }
       ];
 
       mount.hidden = false;
@@ -899,10 +927,6 @@
           </div>
           ${justNow ? '<button type="button" class="ml-toast-close welcome-close" aria-label="收起欢迎信息">×</button>' : ''}
         </div>
-        <div class="welcome-progress">
-          <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress.percent()}" aria-label="学习进度"><div class="progress-bar-fill" style="width:${progress.percent()}%"></div></div>
-          <span>${progress.percent()}%</span>
-        </div>
         <div class="welcome-steps">
           ${steps.map((step) => `<a class="welcome-step" href="${step.href}"${step.qa ? ' data-open-qa' : ''}>
             <span class="welcome-step-icon" aria-hidden="true">${step.icon}</span>
@@ -913,8 +937,8 @@
 
       const close = mount.querySelector('.welcome-close');
       if (close) close.addEventListener('click', () => { sessionStorage.removeItem(STORAGE.justLoggedIn); render(); });
-      const qa = mount.querySelector('[data-open-qa]');
-      if (qa) qa.addEventListener('click', (event) => {
+      const qaLink = mount.querySelector('[data-open-qa]');
+      if (qaLink) qaLink.addEventListener('click', (event) => {
         const trigger = document.getElementById('OpenQA');
         if (trigger) { event.preventDefault(); trigger.click(); }
       });
@@ -927,6 +951,7 @@
     render();
     window.addEventListener('musiclab:auth', render);
     window.addEventListener('musiclab:progress', render);
+    window.addEventListener('musiclab:profile', render);
   };
 
   /* ------------------------------------------------------------------ */
@@ -960,6 +985,7 @@
     auth,
     progress,
     renderProgressCard,
+    profile,
     directory,
     search
   };

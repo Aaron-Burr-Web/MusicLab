@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!-- 交互用例：由 tests/run.js 复制到临时目录并用无头 Chrome 打开；__ROOT__ 会被替换成项目的 file:// 地址 -->
+<html><body style="margin:0">
+<script>try { localStorage.clear(); sessionStorage.clear(); localStorage.setItem('musiclab_theme', 'light'); } catch (_) {}</script>
+<iframe id="lesson" src="__ROOT__/Start%20Learning/pitches.html" style="width:1200px;height:800px;border:0"></iframe>
+<iframe id="playground" src="__ROOT__/The%20Playground/index.html" style="width:1300px;height:800px;border:0"></iframe>
+<iframe id="home" src="__ROOT__/Start%20Learning/index.html" style="width:1200px;height:800px;border:0"></iframe>
+<pre id="results"></pre>
+<script>
+const results = [];
+const pass = (m) => results.push('PASS ' + m);
+const fail = (m) => results.push('FAIL ' + m);
+const check = (cond, m) => (cond ? pass(m) : fail(m));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const loaded = (id) => new Promise((resolve) => { const f = document.getElementById(id); if (f.contentDocument && f.contentDocument.readyState === 'complete' && f.contentWindow.MusicLab) resolve(f); else f.addEventListener('load', () => resolve(f), { once: true }); });
+
+(async () => {
+  try {
+    /* ---- 教程页：小测、进度、账号 ---- */
+    const lf = await loaded('lesson'); await sleep(400);
+    const lw = lf.contentWindow, ld = lf.contentDocument, ML = lw.MusicLab;
+    check(!!ML && !!ld.querySelector('.header-tools .theme-toggle'), '共享层加载并注入头部工具');
+    check(ld.querySelectorAll('.directory-tree .directory-group').length === 6, '课程目录由 LESSONS 渲染出 6 组');
+    check(/未登录/.test(ld.querySelector('.learning-progress-strip').textContent), '未登录时教程页不显示进度');
+    const form = ld.getElementById('lessonQuizForm');
+    check(form && form.querySelectorAll('.quiz-question').length === 3, '章节小测渲染 3 题');
+    form.querySelector('input[name="q0"][value="0"]').checked = true;
+    form.querySelector('input[name="q1"][value="2"]').checked = true;
+    form.querySelector('input[name="q2"][value="1"]').checked = true;
+    form.dispatchEvent(new lw.Event('submit', { cancelable: true }));
+    check(ML.progress.pendingCount() === 1 && ML.progress.completedCount() === 0, '访客通过小测：暂存、不计入');
+    const reg = await ML.auth.register('tester', '1');
+    check(reg.ok && ML.progress.isCompleted('pitches'), '注册 1 位密码成功并补记暂存的小测');
+    ML.auth.logout();
+    check(ML.progress.completedCount() === 0 && !ML.auth.isLoggedIn(), '退出后进度不可见');
+    const login = await ML.auth.login('tester', '1');
+    check(login.ok && ML.progress.completedCount() === 1, '重新登录找回进度');
+    const bad = await ML.auth.login('tester', 'x');
+    check(!bad.ok && bad.field === 'password', '错误密码被拒绝');
+    ML.profile.save({ level: 2, interest: 1, goal: 3 });
+    check(ML.profile.recommendation().kind === 'playground', '问卷「基础扎实」推荐游乐园');
+    ML.auth.logout();
+
+    /* ---- 游乐园：主时钟、总控、存档 ---- */
+    const pf = await loaded('playground'); await sleep(400);
+    const pw = pf.contentWindow, pd = pf.contentDocument;
+    const panels = [...pd.querySelectorAll('.sequencer-panel')];
+    check(panels.length === 4 && !!pd.getElementById('masterStop'), '四个音轨 + 总控条');
+    check(pw.MusicLabAudio && typeof pw.MusicLabAudio.createClock === 'function', '音频引擎加载');
+    const cell = (pi, r, s) => panels[pi].querySelectorAll('.sequencer-row')[r].querySelectorAll('.sequencer-cell')[s];
+    cell(0, 0, 0).click(); cell(3, 2, 4).click();
+    panels[0].querySelector('.transport-button').click();
+    check(panels[0].querySelector('.transport-button').textContent === '❚❚', '单轨播放');
+    pd.getElementById('masterBpm').value = 110; pd.getElementById('masterBpm').dispatchEvent(new pw.Event('input'));
+    check(panels.every((p) => p.querySelector('.bpm-value').textContent === '110'), '总 BPM 同步到四轨');
+    check(!pd.getElementById('masterPlay'), '总控不再有「全部播放」按钮');
+    check(!!pd.getElementById('masterStop') && !!pd.getElementById('masterBpm') && !!pd.getElementById('masterClear'), '总控保留 回到开头 / BPM / 清空全部');
+    // 第 3 轨单独加入：只有它变成播放中，其他轨不受影响
+    panels[2].querySelector('.transport-button').click();
+    check(panels[2].classList.contains('is-armed') && !panels[1].classList.contains('is-armed') && !panels[3].classList.contains('is-armed'), '单轨播放不会带动其他轨');
+    check(/2 \/ 4/.test(pd.getElementById('masterState').textContent), '总控状态显示 2 / 4 轨同步');
+    // 暂停第 1 轨：其他轨继续
+    panels[0].querySelector('.transport-button').click();
+    check(!panels[0].classList.contains('is-armed') && panels[2].classList.contains('is-armed') && pw.getComputedStyle(panels[2].querySelector('.playhead-line')).display === 'block', '单轨暂停不影响其他轨');
+    // 四轨依次按 ▶ 即可全部播放
+    panels.forEach((p) => { if (!p.classList.contains('is-armed')) p.querySelector('.transport-button').click(); });
+    check(panels.every((p) => p.classList.contains('is-armed')) && /4 \/ 4/.test(pd.getElementById('masterState').textContent), '逐个按 ▶ 可让四轨同步播放');
+    pd.getElementById('masterStop').click();
+    check(panels.every((p) => !p.classList.contains('is-armed')) && /未播放/.test(pd.getElementById('masterState').textContent), '回到开头：全部停止');
+    const ruler = panels[1].querySelector('.sequencer-ruler'); const rc = ruler.querySelectorAll('.ruler-cell'); const r = rc[8].getBoundingClientRect();
+    ruler.dispatchEvent(new pw.PointerEvent('pointerdown', { clientX: r.left + 2, clientY: r.top + 2, button: 0, pointerId: 1, bubbles: true }));
+    ruler.dispatchEvent(new pw.PointerEvent('pointerup', { pointerId: 1, bubbles: true }));
+    check(panels.every((p) => p.querySelectorAll('.ruler-cell')[8].classList.contains('is-current')), '标尺定位对四轨同时生效');
+    await sleep(600);
+    const saved = JSON.parse(pw.localStorage.getItem('musiclab_playground') || 'null');
+    check(saved && saved.bpm === 110 && saved.panels.rhythm.cells.length === 1 && saved.panels.melody.cells.length === 1, '创作自动保存');
+
+    /* ---- 教程首页：四轨示例暂为「敬请期待」禁用态 ---- */
+    const hf = await loaded('home'); await sleep(400);
+    const hd = hf.contentDocument;
+    check(hd.querySelectorAll('.audio-demo-button[data-track]').length === 16, '四轨示例 16 个按钮就位');
+    check([...hd.querySelectorAll('.audio-demo-button')].every((b) => b.disabled) && !!hd.querySelector('.audio-demo-soon'), '示例按钮为敬请期待禁用态');
+
+    /* ---- 听音练习 ---- */
+    const ef = document.createElement('iframe');
+    ef.src = '__ROOT__/Start%20Learning/chords.html';
+    ef.style.cssText = 'width:1200px;height:800px;border:0';
+    document.body.appendChild(ef);
+    await new Promise((r) => ef.addEventListener('load', r, { once: true })); await sleep(500);
+    const ed = ef.contentDocument;
+    const ear = ed.querySelector('[data-ear-training="interval"]');
+    check(!!ear && !!ear.querySelector('[data-ear-play]'), '音程听辨练习已渲染');
+    check(!!ed.querySelector('[data-ear-training="note"] [data-ear-play]'), '单音听辨练习已渲染');
+    ear.querySelector('[data-ear-play]').click(); await sleep(150);
+    const options = ear.querySelectorAll('.ear-option');
+    check(options.length >= 4 && /第 1 \/ 8 题/.test(ear.querySelector('[data-ear-progress]').textContent), '点播放后出题并给出选项');
+    options[0].click(); await sleep(60);
+    check([...ear.querySelectorAll('.ear-option')].some((o) => o.classList.contains('is-correct')) && /正确答案|答对/.test(ear.querySelector('[data-ear-feedback]').textContent), '作答后给出正误与解释');
+
+    /* ---- 服务条款弹窗 ---- */
+    const tf = document.createElement('iframe');
+    tf.src = '__ROOT__/login/login.html';
+    tf.style.cssText = 'width:1200px;height:800px;border:0';
+    document.body.appendChild(tf);
+    await new Promise((r) => tf.addEventListener('load', r, { once: true })); await sleep(400);
+    const td = tf.contentDocument;
+    const termsLink = td.querySelector('[data-terms]');
+    check(!!termsLink, '条款链接使用 data-terms');
+    termsLink.click(); await sleep(150);
+    check(!!td.querySelector('.terms-modal') && /用户服务条款/.test(td.querySelector('.terms-modal').textContent), '条款以弹窗形式打开');
+    td.querySelector('[data-terms-close]').click(); await sleep(300);
+    check(!td.querySelector('.terms-modal'), '条款弹窗可关闭');
+    check(!tf.contentWindow.MusicLab.api, '已移除后端 API 适配层（当前只做前端模拟）');
+  } catch (error) {
+    fail('用例异常：' + (error && error.stack || error));
+  }
+  document.getElementById('results').textContent = results.join('\n');
+})();
+</script>
+</body></html>

@@ -1,0 +1,10 @@
+{
+  "name": "musiclab",
+  "version": "0.3.0",
+  "private": true,
+  "description": "MusicLab —— 面向初学者的音乐学习与 DAW 创作网站（纯静态站点）",
+  "scripts": {
+    "test": "node tests/run.js",
+    "serve": "python -m http.server 8080"
+  }
+}

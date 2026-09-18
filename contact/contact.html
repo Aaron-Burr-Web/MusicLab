@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="联系 MusicLab 开发组，提交问题反馈与改进建议。">
     <title>MusicLab | 联系我们</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
     <link rel="stylesheet" href="../css/Home.css">
     <link rel="stylesheet" href="../css/ui.css">
     <script src="../js/musiclab-ui.js"></script>
@@ -113,6 +114,8 @@
             const recentList = document.getElementById('recentFeedback');
             const FEEDBACK_KEY = ML.storage.feedback;
             const TOPIC_LABELS = { bug: '问题反馈', feature: '功能建议', content: '内容纠错', cooperation: '合作与其他' };
+            // 未接后端时邮件兜底的收件地址（开发组邮箱，可改）
+            const FEEDBACK_MAIL = 'musiclab.bit@outlook.com';
 
             const fields = {
                 name: { input: document.getElementById('contactName'), error: document.getElementById('contactNameError') },
@@ -198,9 +201,9 @@
                     createdAt: new Date().toISOString()
                 };
 
-                setTimeout(() => {
+                const finish = (sentRemotely) => {
                     const all = readFeedback();
-                    all.push(record);
+                    all.push({ ...record, sent: sentRemotely });
                     try { localStorage.setItem(FEEDBACK_KEY, JSON.stringify(all.slice(-50))); } catch (_) { /* ignore */ }
 
                     form.reset();
@@ -209,10 +212,20 @@
                     submitButton.disabled = false;
                     submitButton.textContent = '提交反馈';
                     status.className = 'form-status success';
-                    status.textContent = `已收到，谢谢 ${record.name}！`;
+                    if (sentRemotely) {
+                        status.textContent = `已收到，谢谢 ${record.name}！`;
+                    } else {
+                        // 还没有后端：本地留档 + 提供邮件发送兜底，保证反馈真的能到达我们
+                        const subject = encodeURIComponent(`[MusicLab 反馈] ${TOPIC_LABELS[record.topic] || record.topic}`);
+                        const body = encodeURIComponent(`${record.message}\n\n—— ${record.name} <${record.email}>${record.wantsReply ? '（希望收到回复）' : ''}`);
+                        status.innerHTML = `已保存在本地，谢谢 ${ML.escapeHTML(record.name)}！网站暂未接入服务器，你可以 <a href="mailto:${FEEDBACK_MAIL}?subject=${subject}&body=${body}">点此通过邮件发送给我们</a>。`;
+                    }
                     ML.toast('反馈提交成功，感谢你的帮助！', { type: 'success' });
                     renderRecent();
-                }, 500);
+                };
+
+                // 表单入库需要后端，属于后期内容；当前阶段本地留档 + 邮件兜底
+                setTimeout(() => finish(false), 400);
             });
 
             form.addEventListener('reset', () => {

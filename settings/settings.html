@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | 设置</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
     <link rel="stylesheet" href="../css/Home.css">
     <link rel="stylesheet" href="../css/ui.css">
     <script src="../js/musiclab-ui.js"></script>
@@ -28,15 +29,17 @@
     <main class="box">
         <div class="content-card">
             <h1>设置</h1>
-            <p class="settings-note" style="margin:8px 0 0">管理账户状态、外观偏好与学习进度。所有设置只保存在当前浏览器中。</p>
+            <p class="settings-note" style="margin:8px 0 0">管理账户信息（含学习进度）与外观偏好。所有设置只保存在当前浏览器中。</p>
         </div>
 
         <div class="settings-grid">
             <!-- 账户状态 -->
-            <section class="content-card" id="account" aria-labelledby="accountTitle">
-                <h2 id="accountTitle">账户状态</h2>
+            <section class="content-card account-card" id="account" aria-labelledby="accountTitle">
+                <h2 id="accountTitle">账户信息</h2>
                 <div class="status-row" id="accountStatusRow"></div>
                 <div class="form-actions" id="accountActions"></div>
+                <!-- 学习进度只在这里展示（登录后由 js/musiclab-ui.js 渲染） -->
+                <div class="account-progress progress-panel" id="accountProgress" data-progress-card aria-label="学习进度" hidden></div>
             </section>
 
             <!-- 外观 -->
@@ -51,8 +54,6 @@
                 <p class="settings-note" style="margin-top:12px" id="themeStatus"></p>
             </section>
 
-            <!-- 学习进度 -->
-            <section class="content-card progress-panel" id="progress" data-progress-card aria-label="学习进度"></section>
         </div>
 
         <div class="content-card">
@@ -94,7 +95,7 @@
                 } else {
                     statusRow.innerHTML = `
                         <span class="status-badge offline">未登录</span>
-                        <span>登录后可以同步学习进度与个性化推荐。</span>`;
+                        <span>登录后可以在这里查看并记录你的学习进度。</span>`;
                     actions.innerHTML = `
                         <a class="ml-btn" href="../login/login.html">登录</a>
                         <a class="ml-btn secondary" href="../login/registration.html">注册</a>`;

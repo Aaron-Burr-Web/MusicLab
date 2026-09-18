@@ -236,10 +236,13 @@
 
     let currentIndex = 0;
     let firstQuestionChoice = null;
+    const answers = [];
+    const startLink = wrapper.querySelector('.musiclab-qa-start');
 
     const resetQuizState = () => {
       currentIndex = 0;
       firstQuestionChoice = null;
+      answers.length = 0;
       foot.style.display = 'none';
       resultNode.style.display = 'none';
       resultNode.textContent = '';
@@ -258,6 +261,7 @@
         optionBtn.className = 'musiclab-qa-option';
         optionBtn.textContent = optionText;
         optionBtn.addEventListener('click', () => {
+          answers[currentIndex] = optionIndex;
           if (currentIndex === 0) {
             firstQuestionChoice = optionIndex;
           }
@@ -266,6 +270,15 @@
             currentIndex += 1;
             renderQuestion();
           } else {
+            // 保存到账号（未登录则先存本地，登录后自动带入），供首页欢迎面板推荐起点
+            // 结果先保存下来备用；个性化跳转等教学主页内容完工后再启用（见 MusicLab.profile）
+            const ML = window.MusicLab;
+            if (ML && ML.profile) {
+              ML.profile.save({ level: firstQuestionChoice || 0, interest: answers[1], goal: answers[2] });
+              startLink.href = 'Start Learning/index.html';
+              startLink.textContent = '开始学习';
+              ML.toast(ML.auth.isLoggedIn() ? '问卷结果已保存到你的账号' : '问卷结果已保存，登录后会带入账号', { type: 'success' });
+            }
             resultNode.textContent = firstQuestionResultMessages[firstQuestionChoice] || firstQuestionResultMessages[0];
             resultNode.style.display = 'block';
             foot.style.display = 'flex';
