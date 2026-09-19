@@ -1,13 +1,28 @@
 #!/usr/bin/env node
 /*
- * MusicLab 自动化检查（npm test）
- *  1. 静态检查：所有 HTML 里的本地链接 / 资源 / 锚点是否存在，搜索索引的目标是否存在
+ * MusicLab 自动化检查
+ *  1. 静态检查：所有 HTML 里的本地链接 / 资源 / 锚点是否存在，目录（LESSONS）与搜索索引的目标是否存在
  *  2. 运行时检查：用本机 Chrome / Edge 无头模式打开每个页面，收集控制台错误
- *  3. 交互检查：注册登录、章节小测计入进度、游乐园总控与存档、四轨示例
+ *  3. 交互检查：注册登录、章节小测计入进度、游乐园总控与存档、四轨示例、听辨练习
+ *
+ * 运行方式（两种模式，避免每次普通改动都跑一遍完整的无头浏览器测试）：
+ *   node tests/run.js            → 只跑第 1 步静态检查（秒级、不开浏览器）。开发阶段随时可跑，npm test 也是它。
+ *   node tests/run.js --full     → 三步全跑（无头浏览器 + 交互用例，约 1–3 分钟）。npm run test:full。
+ *
+ * 给 AI Agent 的约定：
+ *   - 修改 HTML / CSS / JS 之后，需要验证时只运行默认的静态模式；不要因为普通改动就自动执行 --full。
+ *   - --full 只在项目维护者明确要求“跑完整测试 / 回归”时执行，由人工决定时机（节省 credits）。
+ *   - 新增页面 / 交互功能时，仍要同步维护本文件的 PAGES 列表和 tests/harness.html 的用例。
+ *   - 静态检查对图片 / 音频 / 字体等多媒体资源（jpg png svg mp3 wav aiff ttf woff…）缺失只记备注、不算失败；
+ *     其他类型（html css js json）缺失才是失败。
  *
  * 只依赖 Node 内置模块 + 本机已安装的 Chrome 或 Edge，不需要 npm install。
  */
 'use strict';
+
+const FULL = process.argv.includes('--full');
+// 多媒体 / 外部资源：缺失只提示（由人工补素材），不作为回归失败
+const MEDIA_EXT = /\.(jpe?g|png|gif|webp|svg|ico|mp3|wav|ogg|aiff?|flac|m4a|mp4|webm|ttf|otf|woff2?|eot)$/i;
 
 const fs = require('fs');
 const path = require('path');
@@ -41,7 +56,11 @@ for (const file of htmlFiles) {
     if (/^(https?:|mailto:|data:|javascript:|#)/.test(raw) || !raw) continue;
     const [target, hash] = raw.split('#');
     const resolved = path.resolve(path.dirname(file), decodeURIComponent(target));
-    if (!fs.existsSync(resolved)) { fail(`${path.relative(ROOT, file)} → 缺少文件 ${raw}`); linkProblems += 1; continue; }
+    if (!fs.existsSync(resolved)) {
+      if (MEDIA_EXT.test(target)) notes.push(`${path.relative(ROOT, file)} → 多媒体资源待补充 ${raw}`);
+      else { fail(`${path.relative(ROOT, file)} → 缺少文件 ${raw}`); linkProblems += 1; }
+      continue;
+    }
     if (hash && resolved.endsWith('.html')) {
       const targetHtml = resolved === file ? html : fs.readFileSync(resolved, 'utf8');
       if (!new RegExp(`id="${hash}"`).test(targetHtml)) { fail(`${path.relative(ROOT, file)} → 缺少锚点 ${raw}`); linkProblems += 1; }
@@ -56,6 +75,19 @@ if (!linkProblems) ok(`${htmlFiles.length} 个页面的链接与锚点全部有�
 // 搜索索引
 const uiSource = fs.readFileSync(path.join(ROOT, 'js/musiclab-ui.js'), 'utf8');
 let indexProblems = 0;
+
+// 课程目录（LESSONS）：每个 file 存在，每个 section.hash 在对应页面里有 id
+let tocProblems = 0;
+const lessonsBlock = (uiSource.match(/const LESSONS = \[([\s\S]*?)\n  \];/) || [])[1] || '';
+for (const lesson of lessonsBlock.matchAll(/file: '([^']+)'[\s\S]*?sections: \[([\s\S]*?)\]/g)) {
+  const page = path.join(ROOT, 'Start Learning', lesson[1]);
+  if (!fs.existsSync(page)) { fail(`目录指向缺失页面 Start Learning/${lesson[1]}`); tocProblems += 1; continue; }
+  const pageHtml = fs.readFileSync(page, 'utf8');
+  for (const sec of lesson[2].matchAll(/hash: '([^']+)'/g)) {
+    if (!new RegExp(`id="${sec[1]}"`).test(pageHtml)) { fail(`目录指向缺失锚点 Start Learning/${lesson[1]}#${sec[1]}`); tocProblems += 1; }
+  }
+}
+if (!tocProblems) ok('课程目录（LESSONS）的页面与锚点全部存在');
 for (const m of uiSource.matchAll(/href: '([^']+)'/g)) {
   const [target, hash] = m[1].split('#');
   if (!target) continue;
@@ -106,7 +138,9 @@ const runHeadless = (url, extraArgs = [], timeout = 60000) => {
   return { dom: result.stdout || '', errors, consoleLines };
 };
 
-if (!browser) {
+if (!FULL) {
+  console.log('\n[2/3][3/3] 跳过：默认只做静态检查。完整测试（无头浏览器 + 交互用例）请手动运行：node tests/run.js --full');
+} else if (!browser) {
   console.log('\n[2/3] 跳过：未找到 Chrome / Edge（可用 CHROME_PATH 指定）');
 } else {
   console.log(`\n[2/3] 页面控制台检查（${path.basename(browser)}）`);

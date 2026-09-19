@@ -5,6 +5,7 @@
   "description": "MusicLab —— 面向初学者的音乐学习与 DAW 创作网站（纯静态站点）",
   "scripts": {
     "test": "node tests/run.js",
+    "test:full": "node tests/run.js --full",
     "serve": "python -m http.server 8080"
   }
 }

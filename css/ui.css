@@ -1096,6 +1096,19 @@ a.learning-nav-button { text-decoration: none; display: inline-block; }
 }
 
 /* ---------- 课程目录（JS 渲染） ---------- */
+/* 目录过长时在侧栏内部滚动：侧栏是 fixed 定位（top: 110px），不限高会让超出窗口的目录项点不到。
+   桌面端高度 = 视口 − 顶栏 110px − 目录图标区约 72px；≤900px 沿用上面的 max-height: 60vh。 */
+.directory-tree {
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+@media (min-width: 901px) {
+  .directory-tree { max-height: calc(100vh - 182px); }
+}
+/* 目录是 flex 纵向容器，分组不能被压缩，否则内容溢出而容器不出现滚动条 */
+.directory-tree > .directory-group { flex-shrink: 0; }
 /* 点击目录图标固定展开（与 Home.css 的 :hover / :focus-within 效果一致） */
 .sidebar.is-open { width: 180px; }
 .sidebar.is-open .directory-tree { opacity: 1; pointer-events: auto; transform: translateY(0); }
