@@ -311,6 +311,7 @@
       cursor: pointer;
       transition: none;
       position: relative;
+      touch-action: none;
     }
 
     .sequencer-cell.is-divider {
@@ -328,6 +329,21 @@
       background: var(--panel-accent);
       border-left: 1px solid rgba(89, 99, 116, 0.75);
       box-shadow: none;
+    }
+
+    .sequencer-cell.is-merged {
+      filter: saturate(1.12) brightness(0.96);
+      margin-right: -4px;
+      width: calc(100% + 4px);
+      z-index: 1;
+    }
+
+    .sequencer-cell.is-merged-start {
+      border-radius: 4px 0 0 4px;
+    }
+
+    .sequencer-cell.is-merged-end {
+      border-radius: 0 4px 4px 0;
     }
 
     .stop-button {
@@ -766,7 +782,7 @@
           <div class="playhead-line"></div>
         </div>
       </div>
-      <p class="sequencer-hint">提示：❚❚ 暂停会停在原地，■ 回到开头；点击 / 拖动上方标尺可把播放线移到任意一格，播放中也可以随时增删方块。</p>
+      <p class="sequencer-hint">提示：❚❚ 暂停会停在原地，■ 回到开头；点击 / 拖动上方标尺可把播放线移到任意一格，播放中也可以随时增删方块。和弦轨长按同一行拖动，可合并连续网格。</p>
     `;
 
     const grid = panel.querySelector('.sequencer-grid');
@@ -793,6 +809,8 @@
 
     const cellMatrix = [];
     const rowCount = theme === 'red' ? drumTracks.length : 15;
+    const canMergeCells = id === 'chords';
+    const blockLengths = new Map();
     const drumLabels = drumTracks.map(([label]) => label);
     let samples = theme === 'red' ? drumTracks.map(([, src]) => src) : rowSamples(state.key, state.mode, baseOctave);
     AUDIO.load(samples.filter(Boolean));
@@ -802,8 +820,42 @@
 
     const updateStatus = () => { if (statusPill) statusPill.textContent = `${state.key} / ${state.mode}`; };
 
+    const blockKey = (rowIndex, step) => `${rowIndex}:${step}`;
+    const clearRowBlocks = (rowIndex) => {
+      [...blockLengths].forEach(([key, length]) => {
+        if (!key.startsWith(`${rowIndex}:`)) return;
+        const startStep = Number(key.split(':')[1]);
+        for (let step = startStep; step < startStep + length; step += 1) {
+          const cell = cellMatrix[rowIndex]?.[step];
+          if (cell) {
+            cell.classList.remove('active');
+            cell.setAttribute('aria-pressed', 'false');
+          }
+        }
+        blockLengths.delete(key);
+      });
+      cellMatrix[rowIndex]?.forEach((cell) => cell.classList.remove('is-merged', 'is-merged-start', 'is-merged-end'));
+    };
+    const paintBlock = (rowIndex, startStep, length) => {
+      const endStep = Math.min(steps - 1, startStep + length - 1);
+      blockLengths.set(blockKey(rowIndex, startStep), endStep - startStep + 1);
+      for (let step = startStep; step <= endStep; step += 1) {
+        const cell = cellMatrix[rowIndex]?.[step];
+        if (!cell) continue;
+        cell.classList.add('active', 'is-merged');
+        cell.setAttribute('aria-pressed', 'true');
+        cell.classList.toggle('is-merged-start', step === startStep);
+        cell.classList.toggle('is-merged-end', step === endStep);
+      }
+    };
+    const applyBlocks = (blocks) => {
+      (blocks || []).forEach(([rowIndex, startStep, length]) => {
+        if (canMergeCells && Number.isInteger(length) && length > 1) paintBlock(rowIndex, startStep, length);
+      });
+    };
+
     const renderGrid = (keepActive = false) => {
-      const previous = keepActive ? api.serialize().cells : null;
+      const previous = keepActive ? api.serialize() : null;
       grid.innerHTML = '';
       cellMatrix.length = 0;
       const pitchNames = allowScaleControls ? getModePitchNames(state.key, state.mode) : drumLabels;
@@ -822,21 +874,31 @@
           cell.type = 'button';
           cell.className = 'sequencer-cell';
           if (dividerStepIndexes.has(step)) cell.classList.add('is-divider');
+          cell.dataset.row = String(rowIndex);
+          cell.dataset.step = String(step);
           cell.setAttribute('aria-label', `${pitchNames[rowIndex]} step ${step + 1}`);
           cell.setAttribute('aria-pressed', 'false');
           cell.addEventListener('click', () => {
+            if (skipCellClickUntil > performance.now()) return;
+            clearRowBlocks(rowIndex);
             const isActive = cell.classList.toggle('active');
             cell.setAttribute('aria-pressed', String(isActive));
             if (isActive && !api.armed) previewRow(rowIndex);
             saveSoon();
           });
+          if (canMergeCells) {
+            cell.addEventListener('pointerdown', beginCellDrag);
+            cell.addEventListener('pointermove', updateCellDrag);
+            cell.addEventListener('pointerup', finishCellDrag);
+            cell.addEventListener('pointercancel', cancelCellDrag);
+          }
           rowButtons.push(cell);
           row.appendChild(cell);
         }
         grid.appendChild(row);
         cellMatrix.push(rowButtons);
       }
-      if (previous) applyCells(previous);
+      if (previous) { applyCells(previous.cells); applyBlocks(previous.blocks); }
     };
 
     const applyCells = (cells) => {
@@ -846,16 +908,82 @@
       });
     };
 
+    let skipCellClickUntil = 0;
+    let cellDrag = null;
+    const beginCellDrag = (event) => {
+      if (event.button !== 0 && event.pointerType === 'mouse') return;
+      const cell = event.currentTarget;
+      cellDrag = { pointerId: event.pointerId, rowIndex: Number(cell.dataset.row), startStep: Number(cell.dataset.step), endStep: Number(cell.dataset.step), startedAt: performance.now(), moved: false };
+      try { cell.setPointerCapture(event.pointerId); } catch (_) { /* ignore */ }
+    };
+    const stepAtPointer = (rowIndex, clientX) => {
+      const row = cellMatrix[rowIndex] || [];
+      let nearestStep = 0;
+      let nearestDistance = Infinity;
+      row.forEach((cell, step) => {
+        const rect = cell.getBoundingClientRect();
+        if (clientX >= rect.left && clientX <= rect.right) {
+          nearestStep = step;
+          nearestDistance = 0;
+          return;
+        }
+        const distance = clientX < rect.left ? rect.left - clientX : clientX - rect.right;
+        if (distance < nearestDistance) {
+          nearestStep = step;
+          nearestDistance = distance;
+        }
+      });
+      return nearestStep;
+    };
+    const updateCellDrag = (event) => {
+      if (!cellDrag || cellDrag.pointerId !== event.pointerId) return;
+      const rowIndex = cellDrag.rowIndex;
+      const row = cellMatrix[rowIndex] || [];
+      const rowRect = row[0]?.parentElement?.getBoundingClientRect();
+      if (!rowRect || event.clientY < rowRect.top || event.clientY > rowRect.bottom) return;
+      const step = stepAtPointer(rowIndex, event.clientX);
+      if (step === cellDrag.startStep || performance.now() - cellDrag.startedAt < 220) return;
+      cellDrag.moved = true;
+      cellDrag.endStep = step;
+      const startStep = Math.min(cellDrag.startStep, step);
+      const length = Math.abs(cellDrag.startStep - step) + 1;
+      clearRowBlocks(rowIndex);
+      paintBlock(rowIndex, startStep, length);
+    };
+    const finishCellDrag = (event) => {
+      if (!cellDrag || cellDrag.pointerId !== event.pointerId) return;
+      if (cellDrag.moved) {
+        skipCellClickUntil = performance.now() + 100;
+        saveSoon();
+        event.preventDefault();
+      }
+      cellDrag = null;
+    };
+    const cancelCellDrag = () => { cellDrag = null; };
+
+    const blockAt = (rowIndex, step) => {
+      for (const [key, length] of blockLengths) {
+        const [blockRow, blockStart] = key.split(':').map(Number);
+        if (blockRow === rowIndex && step >= blockStart && step < blockStart + length) return { start: blockStart, length };
+      }
+      return null;
+    };
+
     const previewRow = (rowIndex) => {
       AUDIO.unlock();
       const src = samples[rowIndex];
-      if (src) AUDIO.play(src, { gain });
+      if (src) AUDIO.play(src, { gain, ...(theme === 'red' ? {} : { duration: 15 / master.bpm }) });
     };
 
     api.onStep = (step, time) => {
       if (!api.armed) return;
       cellMatrix.forEach((row, rowIndex) => {
-        if (row[step]?.classList.contains('active') && samples[rowIndex]) AUDIO.play(samples[rowIndex], { at: time, gain });
+        const block = blockAt(rowIndex, step);
+        if (block && block.start !== step) return;
+        if (row[step]?.classList.contains('active') && samples[rowIndex]) {
+          const duration = theme === 'red' ? undefined : (block?.length || 1) * (15 / master.bpm);
+          AUDIO.play(samples[rowIndex], { at: time, gain, ...(duration ? { duration } : {}) });
+        }
       });
     };
 
@@ -982,7 +1110,9 @@
     api.resetPosition = () => { state.pausedStep = 0; };
 
     api.clear = () => {
+      blockLengths.clear();
       cellMatrix.forEach((row) => row.forEach((cell) => { cell.classList.remove('active'); cell.setAttribute('aria-pressed', 'false'); }));
+      cellMatrix.forEach((row) => row.forEach((cell) => cell.classList.remove('is-merged', 'is-merged-start', 'is-merged-end')));
     };
     clearButton.addEventListener('click', () => { api.clear(); saveSoon(); });
 
@@ -1004,7 +1134,8 @@
     api.serialize = () => {
       const cells = [];
       cellMatrix.forEach((row, r) => row.forEach((cell, s) => { if (cell.classList.contains('active')) cells.push([r, s]); }));
-      return { key: state.key, mode: state.mode, cells };
+      const blocks = [...blockLengths].map(([key, length]) => { const [row, start] = key.split(':').map(Number); return [row, start, length]; });
+      return { key: state.key, mode: state.mode, cells, blocks };
     };
     api.restore = (data) => {
       if (!data) return;
@@ -1019,6 +1150,7 @@
         updateStatus();
       }
       applyCells(data.cells);
+      applyBlocks(data.blocks);
     };
 
     renderRuler();

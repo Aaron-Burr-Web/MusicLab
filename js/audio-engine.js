@@ -85,7 +85,7 @@
     if (context && context.state === 'suspended') context.resume().catch(() => {});
   };
 
-  engine.play = (src, { at, gain = 1 } = {}) => {
+  engine.play = (src, { at, gain = 1, duration } = {}) => {
     const buffer = buffers.get(src);
     if (buffer && ctx) {
       const source = ctx.createBufferSource();
@@ -93,16 +93,27 @@
       const g = ctx.createGain();
       g.gain.value = gain;
       source.connect(g).connect(masterGain);
-      source.start(Math.max(at || 0, ctx.currentTime));
+      const startAt = Math.max(at || 0, ctx.currentTime);
+      source.start(startAt);
+      if (Number.isFinite(duration) && duration > 0) source.stop(startAt + duration);
       return;
     }
     // HTMLAudio 回退：按延迟排队
     const fire = () => {
       const voice = htmlVoice(src);
+      const playToken = {};
+      voice.__musicLabPlayToken = playToken;
       voice.volume = Math.min(1, Math.max(0, gain));
       voice.currentTime = 0;
       const request = voice.play();
       if (request) request.catch(() => { /* 尚无用户手势时被拦截，忽略 */ });
+      if (Number.isFinite(duration) && duration > 0) {
+        setTimeout(() => {
+          if (voice.__musicLabPlayToken !== playToken) return;
+          voice.pause();
+          voice.currentTime = 0;
+        }, duration * 1000);
+      }
     };
     const delay = at ? (at - engine.now()) * 1000 : 0;
     if (delay > 4) setTimeout(fire, delay); else fire();
