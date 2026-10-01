@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLab | 音符与记谱 · 谱与音符</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
+</head>
+<body class="main" data-lesson="pitches-notation">
+    <div class="top">
+        <div class="Logo"><a href="../index.html" aria-label="返回主页"></a><img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab"></div>
+        <ul class="nav">
+            <li id="nav1"><a href="../index.html"> 主页 </a></li><li id="nav2"><a href="../introduction/intro.html"> 开发组介绍 </a></li><li id="nav3"><a href="../The Playground/index.html"> 游乐园 </a></li><li id="nav6"><a href="index.html"> 初学者教程 </a></li><li id="nav5"><a href="../settings/settings.html"> 设置 </a></li><li id="nav4"><a href="../login/login.html"> 登录  |  注册 </a></li>
+        </ul><div><hr></div>
+    </div>
+    <div class="sidebar"><div class="directory-panel"><div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录"><img src="../icons/directory.png" alt="Directory" class="directory-icon"></div><div class="directory-tree"></div></div></div>
+    <div class="box_with_side"><div class="learning-content-panel"><div class="learning-content-header"><h1>音符与记谱（二）：谱与音符</h1></div>
+        <div class="learning-content-body">
+            <section class="notation-intro" id="notation-basics">
+                <p class="pitch-lesson-kicker">看见位置，听见高度</p>
+                <p class="pitch-lesson-lead">一枚四分音符，记录一个音高和一拍时值。</p>
+            </section>
+            <section class="notation-lab" aria-labelledby="notation-lab-title">
+                <div class="notation-lab-head"><div><h2 id="notation-lab-title">五线谱实验台</h2><p>改变左侧设置；点击谱上的四分音符试听。</p></div><span class="status-badge offline" data-notation-status>准备就绪</span></div>
+                <div class="notation-workspace">
+                    <aside class="notation-controls" aria-label="记谱设置">
+                        <div class="notation-control-group"><span>谱号</span><div class="notation-segmented"><button type="button" class="active" data-clef="treble" aria-pressed="true">高音</button><button type="button" data-clef="bass" aria-pressed="false">低音</button></div></div>
+                        <div class="notation-control-group"><span>拍号</span><div class="notation-segmented"><button type="button" class="active" data-meter="4/4" aria-pressed="true">4/4</button><button type="button" data-meter="3/4" aria-pressed="false">3/4</button></div></div>
+                        <label class="notation-tempo"><span>速度 <b data-tempo-value>88</b> BPM</span><input type="range" min="56" max="144" step="1" value="88" data-tempo aria-label="速度 BPM"></label>
+                    </aside>
+                    <div class="notation-stage" aria-label="可互动五线谱">
+                        <div class="notation-meta"><span data-clef-label>高音谱号</span><span data-meter-label>4 / 4</span><span data-tempo-label>Andante · 88 BPM</span></div>
+                        <div class="notation-staff" data-notation-staff>
+                            <span class="notation-clef" data-clef-symbol>𝄞</span>
+                            <span class="notation-meter" data-meter-symbol>4<br>4</span>
+                            <button type="button" class="notation-note" data-note="C4" style="--step: 0" aria-label="中央 C，四分音符"><i></i><small>C</small></button>
+                            <button type="button" class="notation-note" data-note="D4" style="--step: 1" aria-label="D，四分音符"><i></i><small>D</small></button>
+                            <button type="button" class="notation-note" data-note="E4" style="--step: 2" aria-label="E，四分音符"><i></i><small>E</small></button>
+                            <button type="button" class="notation-note" data-note="G4" style="--step: 4" aria-label="G，四分音符"><i></i><small>G</small></button>
+                        </div>
+                        <button class="ml-btn notation-play" type="button">▶ 播放一小节</button>
+                    </div>
+                    <aside class="notation-guide" aria-label="记谱元素介绍">
+                        <article><b>谱号</b><span data-guide-clef>高音谱号让第二线成为 G，适合旋律的中高音区。</span></article>
+                        <article><b>拍号</b><span data-guide-meter>4/4 表示每小节有四拍，四分音符占一拍。</span></article>
+                        <article><b>速度</b><span data-guide-tempo>88 BPM 表示每分钟 88 拍，步伐从容。</span></article>
+                        <article><b>四分音符</b><span>实心符头加符干。点击它，听见它所在的音高。</span></article>
+                    </aside>
+                </div>
+            </section>
+            <section class="pitch-practice notation-check" id="notation-practice">
+                <div class="pitch-practice-head"><div><p class="pitch-step-label">小练习</p><h3>先读，再听</h3><p>听到的四分音符是哪个？</p></div><button class="ml-btn notation-question-play" type="button">▶ 播放题目</button></div>
+                <div class="pitch-answer-keys"><button type="button" data-notation-answer="C">C</button><button type="button" data-notation-answer="D">D</button><button type="button" data-notation-answer="E">E</button><button type="button" data-notation-answer="F">F</button><button type="button" data-notation-answer="G">G</button></div><p class="pitch-practice-feedback" data-notation-feedback aria-live="polite">点击播放开始。</p>
+            </section>
+            <section class="lesson-quiz" data-lesson-quiz></section>
+            <div class="learning-nav"><a href="pitches.html" class="learning-nav-button prev">上一页：音名与键盘（一）</a><a href="pitches-melodies.html" class="learning-nav-button next">下一页：Melodies 音轨（三）</a></div>
+        </div>
+    </div></div>
+    <script src="../js/audio-engine.js"></script><script src="../js/pitch-notation.js"></script><script src="../js/login.js"></script><script src="../js/lesson-quiz.js"></script>
+</body>
+</html>

@@ -37,25 +37,30 @@
             <div class="learning-content-panel">
                 <div class="learning-content-header"><h1>音程与和弦（二）：度与音程</h1></div>
                 <div class="learning-content-body">
-                    <h2 id="intervals">度与音程</h2>
-                    <p>在音乐中，度数用来表示两个音之间的相对位置。而音程是两个音之间的距离，可以用度数和半音数来描述。让我们回到钢琴键盘。在你所看到的键盘中，每两个相邻键之间相隔的是一个半音，两个半音为一个全音。</p>
-                    <p>好的，现在我们观察钢琴键盘上的白键，还记得中央C吗？从中央C开始，依次向右数白键，你会发现白键之间有时有黑键，有时没有。没有黑键时，两个键是相邻的，这说明他们之间相隔一个半音；有黑键隔了两个半音，就是一个全音。</p>
-                    <p>接下来，我们把概念在钢琴上找出来。度数可以通过数白键来确定，计算度时，有一个及其简单的方法，就是从第一个音队对应的白键开始，依次数到第二个音，包括首尾两个音在内，这个数字就是度数。例如，从 C 到 E 的距离是三度，从 C 到 G 的距离是五度。</p>
-                    <div></div><!--这里放一个局部键盘-->
-                    <p>音程则较为复杂，需要考虑半音数和度数的关系，音程可以用度数去表示，但在表示音程时，我们通常在前面加一个字，来准确地表示音程关系。</p>
-                    <p>音程推断是音乐基础中一个较难的环节，我们依旧以钢琴键为例，从三度开始。三度通常只有大三度和小三度，找到钢琴键上代表三度的两个音，你可以数一数中间隔了多少个键，例如 C 和 E 之间相隔3个键，而 D 和 F 之间则是2个键，去确认钢琴键上的每一个音你会发现，只有2个或3个键的情况存在。这时我们把2个键的音程称为小三度，而3个键的称为大三度。</p>
-                    <p>按下下面的这些按键听听大、小三度的区别！</p>
-                    <div></div><!--这里放试听块-->
-                    <p>较为不同的是，度数为四时，再数数键盘上的按键数你会发现，会有相隔4个和5个的情况，但是相隔5个只有F 和 B，这时我们把相隔4个键的音程称为纯四度，而相隔5个键的音程称为增四度，但我们也有可能遇到相隔3个键的情况，这时称为减四度，通常只出现在特殊调式或经过音中，大多数时候因为他与大三度的音程数相同，我们不会提及，这些我们要有所区分地去记忆。</p>
-                    <p>按下下面的这些按键听听纯、增、减四度的区别！</p>
-                    <div></div><!--这里放试听块-->
-                    <p>在上面的试听中相信你有所感觉，音程可以决定两个音组合时听起来是否稳定、紧张、明亮或柔和。相邻音之间的关系非常重要，它能影响旋律与和声的情绪。例如，C 到 E 的距离较大，听起来更明亮；C 到 E♭ 的距离会更紧张。不同的音程组合，不同的和声色彩也会随之变化。学习音程就像学习用“距离”来控制情绪。</p>
-                    <p>按照上面的方法以此类推，你可以推断出1、2、5、6、7、8度的音程关系，你会发现2、3、6、7度通常有大、小之分，而1、4、5、8度则相对固定。如此一来，2、3、6、7度有大、小度数，且通常只有大小的修饰；而1、4、5、8度则是纯一度、纯四度、纯五度和纯八度，高于他们则是增，低于则是减。下面在钢琴键上标注了常见的音程关系，你可以通过此来记忆。</p>
-                    <p>以A3（la）为标准音，你可以点按不同的按键，听听它们与标准音之间的音程关系，右侧将会显示音程等更多信息。</p>
-                    <div></div><!--这里放试听块-->
-                    <p>在学习过程中，音程的听觉推断往往不会给你钢琴键盘，所以你要通过反复练习，构建音程的听觉记忆。下面的小测试可以给你提供练习的机会。</p>
-                    <h2 id="chord-listening">小测试</h2>
-                    <h2 id="pitch-test">单音听辨测试</h2><p>通过反复比较音高，训练耳朵对音符位置和音程大小的判断能力。</p>
+                    <section class="chord-lesson-intro" id="intervals"><div><p class="chord-kicker">数白键，也听半音</p><p class="chord-lead">度数说位置，半音说距离；两者一起才是准确的音程。</p></div><p>相邻琴键相差一个半音，两个半音是一个全音。先在键盘上找到它们。</p></section>
+                    <section class="chord-section">
+                        <div class="chord-section-heading"><span>01</span><h2>从 C 开始数</h2></div>
+                        <p>计算度数时包含首尾两个白键：C 到 E 是三度，C 到 G 是五度。点击下方任意音，先听 C，再听目标音。</p>
+                        <div class="interval-keyboard" data-interval-keyboard aria-label="C 到高音 C 的音程键盘">
+                            <button type="button" data-note="C3" data-name="纯一度" data-degree="一度" data-semitones="0">C</button><button type="button" data-note="Db3" data-name="小二度" data-degree="二度" data-semitones="1">D♭</button><button type="button" data-note="D3" data-name="大二度" data-degree="二度" data-semitones="2">D</button><button type="button" data-note="Eb3" data-name="小三度" data-degree="三度" data-semitones="3">E♭</button><button type="button" data-note="E3" data-name="大三度" data-degree="三度" data-semitones="4">E</button><button type="button" data-note="F3" data-name="纯四度" data-degree="四度" data-semitones="5">F</button><button type="button" data-note="Gb3" data-name="增四度" data-degree="四度" data-semitones="6">F♯</button><button type="button" data-note="G3" data-name="纯五度" data-degree="五度" data-semitones="7">G</button><button type="button" data-note="Ab3" data-name="小六度" data-degree="六度" data-semitones="8">A♭</button><button type="button" data-note="A3" data-name="大六度" data-degree="六度" data-semitones="9">A</button><button type="button" data-note="Bb3" data-name="小七度" data-degree="七度" data-semitones="10">B♭</button><button type="button" data-note="B3" data-name="大七度" data-degree="七度" data-semitones="11">B</button><button type="button" data-note="C4" data-name="纯八度" data-degree="八度" data-semitones="12">C</button>
+                        </div>
+                        <p class="interval-readout" data-interval-readout aria-live="polite">选择一个目标音，查看它与 C 的关系。</p>
+                        <!-- 图片补充建议：可在此键盘背景中叠加中央 C 至高音 C 的实拍琴键图，保持按钮位置不变。 -->
+                    </section>
+                    <section class="chord-section">
+                        <div class="chord-section-heading"><span>02</span><h2>听见大小与纯增减</h2></div>
+                        <p>二、三、六、七度通常有大和小；一、四、五、八度以“纯”为基础，再向上或向下变化为增、减。</p>
+                        <div class="interval-compare-grid">
+                            <article><b>三度</b><p>小三度比大三度少一个半音，色彩更柔和、偏暗。</p><div><button type="button" class="chord-audition" data-chord-audition="C3,Eb3">C + E♭</button><button type="button" class="chord-audition" data-chord-audition="C3,E3">C + E</button></div></article>
+                            <article><b>四度</b><p>纯四度稳定；增四度带有更明显的悬念。减四度在特殊调式或经过音中更常见。</p><div><button type="button" class="chord-audition" data-chord-audition="C3,F3">C + F</button><button type="button" class="chord-audition" data-chord-audition="C3,Gb3">C + F♯</button></div></article>
+                        </div>
+                        <p>音程决定组合的稳定、紧张、明亮或柔和。C 到 E 较明亮，C 到 E♭ 更紧张；练习是在用“距离”控制情绪。</p>
+                    </section>
+                    <section class="chord-section" id="chord-listening">
+                        <div class="chord-section-heading"><span>03</span><h2>把耳朵从键盘上带走</h2></div>
+                        <p>听觉推断不会总给你琴键。反复比较基准音与目标音，逐渐建立音程的听觉记忆。</p>
+                        <h3 id="pitch-test">单音与音程听辨</h3><p>通过反复比较，训练对音符位置和音程大小的判断。</p>
+                    </section>
                     <div data-ear-training="note" data-title="单音听辨练习" data-rounds="8"></div>
                     <div data-ear-training="interval" data-title="音程听辨练习" data-rounds="8"></div>
                     <section class="lesson-quiz" data-lesson-quiz></section>
@@ -67,6 +72,7 @@
             </div>
         </div>
     <script src="../js/audio-engine.js"></script>
+    <script src="../js/chords-learning.js"></script>
     <script src="../js/ear-training.js"></script>
     <script src="../js/login.js"></script>
     <script src="../js/lesson-quiz.js"></script>

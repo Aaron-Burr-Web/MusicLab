@@ -118,9 +118,9 @@ const candidates = [
 const browser = candidates.find((p) => fs.existsSync(p));
 
 const PAGES = [
-  'index.html', 'login/login.html', 'login/registration.html', 'login/terms.html', 'settings/settings.html', 'contact/contact.html',
+  'index.html', 'practice.html', 'login/login.html', 'login/registration.html', 'login/terms.html', 'settings/settings.html', 'contact/contact.html',
   'introduction/intro.html', 'introduction/Aaron.html', 'introduction/Abdulkadir.html', 'introduction/Heak.html', 'introduction/Omar.html',
-  'Start Learning/index.html', 'Start Learning/pitches.html', 'Start Learning/beat.html', 'Start Learning/beat-instruments.html',
+  'Start Learning/index.html', 'Start Learning/pitches.html', 'Start Learning/pitches-notation.html', 'Start Learning/pitches-melodies.html', 'Start Learning/beat.html', 'Start Learning/beat-instruments.html',
   'Start Learning/beat-track.html', 'Start Learning/chords.html', 'Start Learning/chords-intervals.html', 'Start Learning/chords-chords.html',
   'Start Learning/chords-track.html', 'Start Learning/tones.html', 'Start Learning/others.html',
   'The Playground/index.html'

@@ -74,6 +74,11 @@
     { offsets: [0, 4, 8], label: '增三和弦', hint: '悬浮、发飘' },
     { offsets: [0, 4, 7, 10], label: '属七和弦', hint: '想要解决到主和弦' }
   ];
+  const MODE_PATTERNS = [
+    { label: '自然大调', hint: '明亮、稳定', chords: [[48, 52, 55], [53, 57, 60], [55, 59, 62], [48, 52, 55]] },
+    { label: '自然小调', hint: '柔和、内敛', chords: [[48, 51, 55], [53, 56, 60], [55, 58, 62], [48, 51, 55]] },
+    { label: '和声小调', hint: '带有更强的解决倾向', chords: [[48, 51, 55], [53, 56, 60], [55, 59, 62], [48, 51, 55]] }
+  ];
 
   const pick = (list) => list[Math.floor(Math.random() * list.length)];
 
@@ -123,6 +128,20 @@
         };
       },
       preload: () => preload(Array.from({ length: 25 }, (_, i) => C4 + i - 12))
+    },
+    mode: {
+      title: '调式听辨',
+      intro: '听一组简短的和弦进行，判断它更接近哪种调式色彩。',
+      make() {
+        const mode = pick(MODE_PATTERNS);
+        return {
+          play: () => mode.chords.forEach((chord, index) => chord.forEach((midi) => playSrc(srcOf(midi), index * 0.62, 0.52))),
+          options: MODE_PATTERNS.map((item) => item.label),
+          answer: mode.label,
+          explain: `这是${mode.label}，整体听感通常${mode.hint}。`
+        };
+      },
+      preload: () => preload(MODE_PATTERNS.flatMap((mode) => mode.chords.flat()))
     }
   };
 

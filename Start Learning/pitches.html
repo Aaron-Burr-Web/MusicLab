@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicLab | Start Learning</title>
+    <title>MusicLab | 音符与记谱</title>
     <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
     <link rel="stylesheet" href="../css/Home.css">
     <link rel="stylesheet" href="../css/ui.css">
@@ -42,41 +42,95 @@
         <div class="box_with_side">
             <div class="learning-content-panel">
                 <div class="learning-content-header">
-                    <h1 id="pitch-basics">音符与记谱</h1>
+                    <h1>音符与记谱</h1>
                 </div>
                 <div class="learning-content-body">
-                    <h1 id="note-names">音名与唱名</h1>
-                    <p>音符记录声音的高低和长短，记谱法把这些信息整理成可以阅读、演奏和交流的视觉语言。我们通常用音名来描述不同的音，比如 C、D、E、F、G、A、B；而唱名则是 do、re、mi、fa、sol、la、si，它更偏向于演唱和记忆。</p>
-                    <p>我们以中央 C 为例，下面这张图很好地展示了以中央 C 为起点的一个八度的音高分布。</p>
-                    <p><img src="../images/central-c-octave.png" alt="中央 C 八度音高分布"></p>
-                    <p>在练习音高时，要重点记住“音与位置”的关系。钢琴键盘上的每一个白键和黑键，都是固定的音高位置，按顺序排列后就能形成音阶。只有把音高位置建立起来，唱歌和弹奏才不会混乱。</p>
-                    <p>一个简单的练习方法是：先按顺序唱出 do re mi fa sol la si，再对应到键盘上找出 C D E F G A B。这类素养需要反复练习才能真正掌握。从今以后有关素养的学习，我们都会再次重申这句话。</p>
-                    <h1 id="piano-keyboard">钢琴键盘</h1>
-                    <p>钢琴键盘按照半音顺序排列，白键和黑键共同组成完整的音高系统。熟悉键盘上的重复音型，可以帮助你快速找到音符位置。</p>
-                    <p>如果你已经对音高音名熟悉，那么你需要知道：钢琴键盘从低音 A0 开始，一直到小字五组的 C ，覆盖了较为完整的音域，超过这个音域的音很少用在音乐创作中。每一个音都有固定的位置，熟悉这些位置有助于你快速找到所需的音符。</p>
-                    <p></p><!--这里要放一个可交互的钢琴键盘-->
-                    <p>一般的乐曲中不会用太高或者太低的音域，对于大多数演奏者来说，中间音域是最常用的部分。再多试试钢琴键盘吧，这个键盘还会出现在练习区和后续关于音程与和弦的教程中，请务必要熟悉它，对于音高的感知对于音乐创作者来说是非常重要的。</p>
-                    <h1 id="notation">谱与音符</h1>
-                    <p>既然有这么多音高和音符，我们需要一种统一的方式来记录表达他们，那就需要用到乐谱，你可以理解为乐谱是音乐领域的通用语言，就像中文英文与一样，只是它承载的是音符。</p>
-                    <p>常用的乐谱有简谱与五线谱。简谱用数字表示音高，适合快速记录和演唱；五线谱通过谱号、音符位置和节奏符号记录音乐，适合更精确的演奏和创作。由于演奏和创作者主要以五线谱为主，你需要先掌握五线谱的基础。</p>
-                    <p>下面这张图里展示了五线谱上音符与音名的对应关系，更高或更低的音符可以通过上下加线来以此类推。</p>
-                    <p><img src="../images/staff-notes.png" alt="五线谱音符与音名对应关系"></p>
-                    <p>通过对五线谱的学习，你可以更准确地记录和演奏音乐。熟悉音符在五线谱上的位置，是掌握音乐理论和提高演奏能力的重要基础。我们的教程以交互实践为主，后续的教程不会多去应用它，但是它有助于你理解更多关于音乐结构和创作的知识。</p>
-                    <p>学习音乐一定要有能把音乐哼出来的能力，无论是否使用谱，这项能力都很重要。音乐学习有一大素养，叫做视唱。视唱就是在看谱的同时能够准确地唱出音高和节奏，这能在你和其他音乐工作者之间搭建起有效的沟通桥梁。下方是一个你一定熟悉的歌曲示例，当然我不会告诉你它的名字。试着把旋律哼唱出来，哼完之后在播放下面的音频，听听它是什么！</p>
-                    <img src="../images/Tune.png" alt="熟悉的歌曲示例">
-                    <audio controls>
-                        <source src="../audio/familiar-song.mp3" type="audio/mpeg">
-                        你的浏览器不支持音频播放。
-                    </audio>
+                    <section class="pitch-lesson-intro" id="pitch-basics">
+                        <div>
+                            <p class="pitch-lesson-kicker">先听，再定位</p>
+                            <p class="pitch-lesson-lead">声音有高低；音符帮你找到它，乐谱帮你把它留住。</p>
+                        </div>
+                        <div class="pitch-lesson-rule">
+                            <strong>1</strong>
+                            <span>每升高一个八度，听起来更亮；名称会从 C 再次开始。</span>
+                        </div>
+                    </section>
+
+                    <section class="pitch-section" id="note-names">
+                        <div class="pitch-section-heading">
+                            <span class="pitch-section-number">01</span>
+                            <h2>音名与唱名</h2>
+                        </div>
+                        <p>先记住这一圈：字母用于定位，唱名用于开口唱。</p>
+                        <div class="pitch-note-pairs" aria-label="音名与唱名对照：点击卡片试听">
+                            <button class="pitch-note-pair pitch-audition" type="button" data-note="C4"><b>C</b><span>do</span></button>
+                            <button class="pitch-note-pair pitch-audition" type="button" data-note="D4"><b>D</b><span>re</span></button>
+                            <button class="pitch-note-pair pitch-audition" type="button" data-note="E4"><b>E</b><span>mi</span></button>
+                            <button class="pitch-note-pair pitch-audition" type="button" data-note="F4"><b>F</b><span>fa</span></button>
+                            <button class="pitch-note-pair pitch-audition" type="button" data-note="G4"><b>G</b><span>sol</span></button>
+                            <button class="pitch-note-pair pitch-audition" type="button" data-note="A4"><b>A</b><span>la</span></button>
+                            <button class="pitch-note-pair pitch-audition" type="button" data-note="B4"><b>B</b><span>si</span></button>
+                            <button class="pitch-note-pair pitch-audition is-octave" type="button" data-note="C5"><b>C</b><span>高音 do</span></button>
+                        </div>
+                        <!-- 图片交互标记：未来接入八度图片时，在 C4、D4、E4、F4、G4、A4、B4、C5 八个位置覆盖同名热点按钮。 -->
+                        <div class="pitch-octave-map" aria-label="中央 C 到高音 C 的可点音高示意图">
+                            <div class="pitch-map-copy">
+                                <b>中央 C 到高音 C</b>
+                                <span>带圆点的位置就是图片交互热点。</span>
+                            </div>
+                            <div class="pitch-map-track" aria-label="点击圆点试听音高">
+                                <button class="pitch-map-note pitch-audition is-anchor" type="button" data-note="C4"><span>C</span><small>中央 C</small></button>
+                                <button class="pitch-map-note pitch-audition" type="button" data-note="D4"><span>D</span></button>
+                                <button class="pitch-map-note pitch-audition" type="button" data-note="E4"><span>E</span></button>
+                                <button class="pitch-map-note pitch-audition" type="button" data-note="F4"><span>F</span></button>
+                                <button class="pitch-map-note pitch-audition" type="button" data-note="G4"><span>G</span></button>
+                                <button class="pitch-map-note pitch-audition" type="button" data-note="A4"><span>A</span></button>
+                                <button class="pitch-map-note pitch-audition" type="button" data-note="B4"><span>B</span></button>
+                                <button class="pitch-map-note pitch-audition is-anchor" type="button" data-note="C5"><span>C</span><small>高音 C</small></button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="pitch-section" id="piano-keyboard">
+                        <div class="pitch-section-heading">
+                            <span class="pitch-section-number">02</span>
+                            <h2>钢琴键盘</h2>
+                        </div>
+                        <p>找 C 的最快方法：观察两颗黑键，左边紧邻的白键就是 C。</p>
+                        <div class="pitch-keyboard-preview" aria-label="可点击的钢琴键盘">
+                            <button class="pitch-key pitch-audition is-anchor" type="button" data-note="C3">C</button><button class="pitch-key pitch-audition" type="button" data-note="D3">D</button><button class="pitch-key pitch-audition" type="button" data-note="E3">E</button><button class="pitch-key pitch-audition" type="button" data-note="F3">F</button><button class="pitch-key pitch-audition" type="button" data-note="G3">G</button><button class="pitch-key pitch-audition" type="button" data-note="A3">A</button><button class="pitch-key pitch-audition" type="button" data-note="B3">B</button>
+                            <button class="pitch-key pitch-audition is-anchor" type="button" data-note="C4">C</button><button class="pitch-key pitch-audition" type="button" data-note="D4">D</button><button class="pitch-key pitch-audition" type="button" data-note="E4">E</button><button class="pitch-key pitch-audition" type="button" data-note="F4">F</button><button class="pitch-key pitch-audition" type="button" data-note="G4">G</button><button class="pitch-key pitch-audition" type="button" data-note="A4">A</button><button class="pitch-key pitch-audition" type="button" data-note="B4">B</button>
+                            <button class="pitch-key-black pitch-audition" type="button" data-note="Db3" style="--key-position: 1" aria-label="C 升，D 降"></button><button class="pitch-key-black pitch-audition" type="button" data-note="Eb3" style="--key-position: 2" aria-label="D 升，E 降"></button><button class="pitch-key-black pitch-audition" type="button" data-note="Gb3" style="--key-position: 4" aria-label="F 升，G 降"></button><button class="pitch-key-black pitch-audition" type="button" data-note="Ab3" style="--key-position: 5" aria-label="G 升，A 降"></button><button class="pitch-key-black pitch-audition" type="button" data-note="Bb3" style="--key-position: 6" aria-label="A 升，B 降"></button>
+                            <button class="pitch-key-black pitch-audition" type="button" data-note="Db4" style="--key-position: 8" aria-label="C 升，D 降"></button><button class="pitch-key-black pitch-audition" type="button" data-note="Eb4" style="--key-position: 9" aria-label="D 升，E 降"></button><button class="pitch-key-black pitch-audition" type="button" data-note="Gb4" style="--key-position: 11" aria-label="F 升，G 降"></button><button class="pitch-key-black pitch-audition" type="button" data-note="Ab4" style="--key-position: 12" aria-label="G 升，A 降"></button><button class="pitch-key-black pitch-audition" type="button" data-note="Bb4" style="--key-position: 13" aria-label="A 升，B 降"></button>
+                        </div>
+                        <p class="pitch-keyboard-note">点击白键试听。黄色键标出两个 C，帮你快速建立坐标。</p>
+                        <section class="pitch-practice" data-pitch-ear-training aria-labelledby="ear-training-title">
+                            <div class="pitch-practice-head">
+                                <div>
+                                    <p class="pitch-step-label">练习</p>
+                                    <h3 id="ear-training-title">听音找键</h3>
+                                    <p>先播放一个音，再选你听到的音名。</p>
+                                </div>
+                                <button class="ml-btn pitch-play-target" type="button">▶ 播放题目</button>
+                            </div>
+                            <div class="pitch-answer-keys" aria-label="选择听到的音名">
+                                <button type="button" data-answer="C">C</button><button type="button" data-answer="D">D</button><button type="button" data-answer="E">E</button><button type="button" data-answer="F">F</button><button type="button" data-answer="G">G</button><button type="button" data-answer="A">A</button><button type="button" data-answer="B">B</button>
+                            </div>
+                            <p class="pitch-practice-feedback" aria-live="polite">点击播放开始。</p>
+                        </section>
+                    </section>
+
                     <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
                     <section class="lesson-quiz" data-lesson-quiz></section>
                     <div class="learning-nav">
                         <a href="index.html" class="learning-nav-button prev">上一页：开始音乐之旅</a>
-                        <a href="beat.html" class="learning-nav-button next">下一页：节奏基础</a>
+                        <a href="pitches-notation.html" class="learning-nav-button next">下一页：谱与音符（二）</a>
                     </div>
                 </div>
             </div>
         </div>
+    <script src="../js/audio-engine.js"></script>
+    <script src="../js/pitch-learning.js"></script>
     <script src="../js/login.js"></script>
     <script src="../js/lesson-quiz.js"></script>
     </body>

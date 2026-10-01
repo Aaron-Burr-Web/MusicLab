@@ -16,7 +16,17 @@
     pitches: [
       { q: '唱名 do 对应的音名是？', options: ['C', 'D', 'E', 'G'], answer: 0 },
       { q: '音名 G 对应的唱名是？', options: ['la', 'mi', 'sol', 'fa'], answer: 2 },
-      { q: '阅读五线谱时，通常应该先确认什么？', options: ['歌词', '拍号和速度', '作者', '封面'], answer: 1 }
+      { q: '钢琴键盘上，观察哪种黑键组合最容易找到 C？', options: ['一颗黑键', '两颗黑键', '三颗黑键', '没有黑键'], answer: 1 }
+    ],
+    'pitches-notation': [
+      { q: '高音谱号最常用于哪一类音区？', options: ['旋律的中高音区', '最低音区', '只用于鼓组', '只用于人声'], answer: 0 },
+      { q: '4/4 拍中，一个四分音符通常占几拍？', options: ['半拍', '一拍', '两拍', '四拍'], answer: 1 },
+      { q: 'BPM 描述的是什么？', options: ['音高', '每分钟的节拍数', '音色种类', '乐器数量'], answer: 1 }
+    ],
+    'pitches-melodies': [
+      { q: 'Melodies 音轨最常承担什么任务？', options: ['表达主要音乐动机', '只控制速度', '只播放鼓点', '记录歌词'], answer: 0 },
+      { q: '让旋律更容易被记住的常用方法是？', options: ['不断加入更多音', '重复短动机并小幅变化', '每个音都随机变化', '只使用休止'], answer: 1 },
+      { q: '旋律中的休止通常有什么作用？', options: ['让音乐完全停止', '制造呼吸和空间', '改变乐器名称', '让 BPM 翻倍'], answer: 1 }
     ],
     beat: [
       { q: '华尔兹最常使用的拍子是？', options: ['4/4', '2/4', '3/4', '7/8'], answer: 2 },
@@ -51,7 +61,7 @@
     'chords-track': [
       { q: '负责提供和声支撑的是哪条音轨？', options: ['Chords', 'Basslines', 'Melodies', 'Beat'], answer: 0 },
       { q: '连接低音与和弦、提供律动和重心的是？', options: ['Melodies', 'Chords', 'Basslines', '人声'], answer: 2 },
-      { q: '通常承载作品主题、表达主要音乐动机的是？', options: ['Chords', 'Basslines', 'Melodies', 'Beat'], answer: 2 }
+      { q: '双轨工作台中，每条音轨的固定网格规格是？', options: ['8 列 × 8 行', '16 列 × 15 行', '24 列 × 15 行', '16 列 × 8 行'], answer: 1 }
     ],
     tones: [
       { q: '下面哪一项不属于课文列出的四种基础调式？', options: ['大调', '自然小调', '多利亚调式', '和声小调'], answer: 2 },

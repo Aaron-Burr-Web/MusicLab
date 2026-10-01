@@ -1,0 +1,180 @@
+/* 练习区：键盘定位与五线谱提示。 */
+.practice-main {
+  width: min(1100px, calc(100% - 48px));
+}
+
+.practice-main .learning-content-panel {
+  width: 100%;
+  margin-left: 0;
+}
+
+.practice-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.practice-lead {
+  color: #24344a !important;
+  font-size: clamp(19px, 2.3vw, 27px) !important;
+  font-weight: 700;
+  line-height: 1.45 !important;
+}
+
+.practice-intro > p {
+  padding: 18px;
+  background: #294b5d;
+  color: #f6fbff !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+.practice-section {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(38, 55, 74, 0.16);
+}
+
+.practice-keyboard {
+  overflow-x: auto;
+  padding: 2px;
+  border: 1px solid #26374a;
+  border-radius: 8px;
+  background: #26374a;
+}
+
+.practice-keyboard-keys {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--white-count), minmax(36px, 1fr));
+  min-width: 810px;
+  min-height: 174px;
+  gap: 1px;
+}
+
+.practice-white-key {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  min-height: 174px;
+  padding: 0 0 12px;
+  border: 0;
+  background: #fffef9;
+  color: #26374a;
+  cursor: pointer;
+  font: 700 12px Georgia, serif;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.practice-white-key.is-c { background: #fff0c8; }
+.practice-white-key:hover,
+.practice-white-key[aria-pressed="true"] {
+  background: #6cd2c2;
+  color: #123643;
+  transform: translateY(3px);
+}
+
+.practice-black-key {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: calc(var(--black-position) * 100% / var(--white-count) - 13px);
+  width: 26px;
+  height: 100px;
+  padding: 0;
+  border: 1px solid #071420;
+  border-radius: 0 0 5px 5px;
+  background: linear-gradient(135deg, #34485a, #101d2a);
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.practice-black-key:hover,
+.practice-black-key[aria-pressed="true"] {
+  background: #e86b52;
+  transform: translateY(3px);
+}
+
+.practice-note-hint {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.7fr) minmax(230px, 1fr) minmax(180px, 0.8fr);
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid rgba(38, 55, 74, 0.17);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #fff4e9, #effbf6);
+}
+
+.practice-note-hint > div:first-child { display: grid; gap: 4px; }
+.practice-note-hint span { color: #657588; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; }
+.practice-note-hint b { color: #24344a; font: 700 32px Georgia, serif; }
+.practice-note-hint small,
+.practice-note-hint p { color: #526072; font-size: 13px; line-height: 1.6; }
+
+.practice-staff {
+  position: relative;
+  min-height: 290px;
+  overflow: hidden;
+  border: 1px solid rgba(38, 55, 74, 0.17);
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, #26374a 31px, #26374a 33px, transparent 33px, transparent 63px);
+}
+
+.practice-clef {
+  position: absolute;
+  top: 96px;
+  left: 18px;
+  color: #26374a;
+  font-family: serif;
+  font-size: 96px;
+  line-height: 0.8;
+}
+
+.practice-staff-note {
+  position: absolute;
+  top: calc(244px - var(--staff-index) * 8.5px);
+  left: 52%;
+  width: 28px;
+  height: 19px;
+  border-radius: 50%;
+  background: #e86b52;
+  transform: rotate(-18deg);
+  transition: top 0.18s ease;
+}
+
+.practice-staff-note::after {
+  content: "";
+  position: absolute;
+  bottom: 8px;
+  left: 23px;
+  width: 3px;
+  height: 62px;
+  background: #26374a;
+  transform: rotate(18deg);
+  transform-origin: bottom;
+}
+
+.practice-note-hint > p { margin: 0; }
+.practice-keyboard button:focus-visible { outline: 3px solid #4eafa2; outline-offset: 2px; }
+
+@media (max-width: 720px) {
+  .practice-main { width: min(100% - 28px, 720px); }
+  .practice-intro,
+  .practice-note-hint { grid-template-columns: 1fr; }
+  .practice-staff { min-height: 230px; }
+  .practice-staff-note { top: calc(194px - var(--staff-index) * 6px); }
+  .practice-clef { top: 70px; }
+}
+
+:root[data-theme="dark"] .practice-section { border-color: rgba(226, 232, 240, 0.16); }
+:root[data-theme="dark"] .practice-lead,
+:root[data-theme="dark"] .practice-note-hint b { color: #e8edf5 !important; }
+:root[data-theme="dark"] .practice-note-hint { background: #3b2929; border-color: var(--ml-border-strong); }
+:root[data-theme="dark"] .practice-staff { border-color: var(--ml-border-strong); background: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, #cbd5e1 31px, #cbd5e1 33px, transparent 33px, transparent 63px); }
+:root[data-theme="dark"] .practice-clef,
+:root[data-theme="dark"] .practice-staff-note::after { color: #e8edf5; background: #e8edf5; }
+:root[data-theme="dark"] .practice-white-key { background: #202a3a; color: #e8edf5; }
+:root[data-theme="dark"] .practice-white-key.is-c { background: #57441f; }

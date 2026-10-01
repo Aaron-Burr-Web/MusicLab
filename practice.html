@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLab | 练习区</title>
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <link rel="stylesheet" href="css/Home.css">
+    <link rel="stylesheet" href="css/ui.css">
+    <link rel="stylesheet" href="css/practice.css">
+    <script src="js/musiclab-ui.js"></script>
+</head>
+<body class="main practice-page">
+    <div class="top">
+        <div class="Logo"><a href="index.html" aria-label="返回主页"></a><img src="images/MusicLabBlackLogo.png" width="250" alt="MusicLab"></div>
+        <ul class="nav">
+            <li id="nav1"><a href="index.html">主页</a></li>
+            <li id="nav2"><a href="introduction/intro.html">开发组介绍</a></li>
+            <li id="nav3"><a href="The Playground/index.html">游乐园</a></li>
+            <li id="nav6"><a href="Start Learning/index.html">初学者教程</a></li>
+            <li id="nav5"><a href="settings/settings.html">设置</a></li>
+            <li id="nav4"><a href="login/login.html">登录 | 注册</a></li>
+        </ul>
+    </div>
+
+    <main class="box practice-main">
+        <section class="learning-content-panel">
+            <div class="learning-content-header"><h1>练习区</h1></div>
+            <div class="learning-content-body">
+                <section class="practice-intro" id="keyboard-practice">
+                    <div><p class="chord-kicker">识别与定位</p><p class="practice-lead">从键盘找到一个音，再在五线谱上看见它。</p></div>
+                    <p>键盘范围为 C2 至 C5。此处暂不播放音频，点击琴键只用于观察音名与记谱位置。</p>
+                </section>
+
+                <section class="practice-section">
+                    <div class="chord-section-heading"><span>01</span><h2>键盘与五线谱</h2></div>
+                    <div class="practice-keyboard" data-practice-keyboard aria-label="C2 到 C5 的可点击钢琴键盘"></div>
+                    <div class="practice-note-hint" aria-live="polite">
+                        <div><span>已选音</span><b data-practice-note-name>C4</b><small data-practice-note-detail>中央 C</small></div>
+                        <div class="practice-staff" aria-label="所选音的高音谱表位置"><span class="practice-clef" aria-hidden="true">𝄞</span><i class="practice-staff-note" data-practice-staff-note style="--staff-index: 14"></i></div>
+                        <p data-practice-staff-label>五线谱标识：高音谱表 · C4</p>
+                    </div>
+                    <!-- 图片补充建议：可在此键盘下方加入键盘与高低音谱表对照图；现有交互琴键可覆盖在图片热点上。 -->
+                </section>
+
+                <section class="practice-section" id="ear-practice">
+                    <div class="chord-section-heading"><span>02</span><h2>听辨练习</h2></div>
+                    <p>从已学习的听辨类型中任选一项开始；每轮完成后可以立即重练。</p>
+                    <div data-ear-training="note" data-title="听音找键" data-rounds="8"></div>
+                    <div data-ear-training="interval" data-title="音程听辨练习" data-rounds="8"></div>
+                    <div data-ear-training="chord" data-title="和弦听辨练习" data-rounds="8"></div>
+                    <div data-ear-training="mode" data-title="调式听辨练习" data-rounds="8"></div>
+                </section>
+            </div>
+        </section>
+    </main>
+    <script src="js/audio-engine.js"></script>
+    <script src="js/practice-keyboard.js"></script>
+    <script src="js/ear-training.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

@@ -305,11 +305,15 @@
   const LESSONS = [
     { key: 'index', title: '开始音乐之旅', file: 'index.html', group: '开始音乐之旅',
       sections: [{ title: '引入', hash: 'learningSubtitle' }] },
-    { key: 'pitches', title: '音符与记谱', file: 'pitches.html', group: '音符与记谱',
+    { key: 'pitches', title: '音符与记谱（一）：音名与键盘', file: 'pitches.html', group: '音符与记谱',
       sections: [
         { title: '音符与记谱', hash: 'pitch-basics' }, { title: '音名与唱名', hash: 'note-names' },
-        { title: '钢琴键盘', hash: 'piano-keyboard' }, { title: '谱与音符', hash: 'notation' }
+        { title: '钢琴键盘', hash: 'piano-keyboard' }
       ] },
+    { key: 'pitches-notation', title: '音符与记谱（二）：谱与音符', file: 'pitches-notation.html', group: '音符与记谱',
+      sections: [{ title: '谱与音符', hash: 'notation-basics' }, { title: '五线谱实验台', hash: 'notation-practice' }] },
+    { key: 'pitches-melodies', title: '音符与记谱（三）：Melodies 音轨', file: 'pitches-melodies.html', group: '音符与记谱',
+      sections: [{ title: 'Melodies 音轨', hash: 'melodies-track' }, { title: '旋律句编辑器', hash: 'melody-lab' }] },
     { key: 'beat', title: '节拍和拍子', file: 'beat.html', group: '节奏基础',
       sections: [{ title: '节拍和拍子', hash: 'rhythm-basics' }, { title: '小试一下', hash: 'try-it' }] },
     { key: 'beat-instruments', title: '乐器介绍', file: 'beat-instruments.html', group: '节奏基础',
@@ -324,7 +328,7 @@
       sections: [{ title: '和弦', hash: 'chords' }, { title: '和弦听辨测试', hash: 'chord-test' }] },
     { key: 'chords-track', title: '音程与和弦（四）：音轨', file: 'chords-track.html', group: '音程与和弦',
       sections: [{ title: '音轨', hash: 'chord-tracks' }, { title: 'Chords 音轨', hash: 'chords-track' },
-        { title: 'Basslines 音轨', hash: 'basslines-track' }, { title: 'Melodies 音轨', hash: 'melodies-track' }] },
+        { title: 'Basslines 音轨', hash: 'basslines-track' }] },
     { key: 'tones', title: '调式基础', file: 'tones.html', group: '调式基础',
       sections: [
         { title: '调式与音阶', hash: 'mode-basics' }, { title: '小试一下', hash: 'mode-practice' },
@@ -603,11 +607,13 @@
     { title: '李思齐 | ABDULKADIR', section: '开发组成员', href: 'introduction/Abdulkadir.html', keywords: 'lisiqi abdulkadir' },
     { title: '奥马尔 | MOHAMED OMAR A.', section: '开发组成员', href: 'introduction/Omar.html', keywords: 'omar' },
     { title: '游乐园（DAW 音轨创作）', section: '创作', href: 'The Playground/index.html', keywords: 'playground daw sequencer 音序器 节奏 和弦 贝斯 旋律 创作 diy' },
+    { title: '练习区', section: '练习', href: 'practice.html', keywords: 'practice 练习 键盘 五线谱 听辨 音程 和弦 调式' },
     { title: '初学者教程', section: '教程', href: 'Start Learning/index.html', keywords: 'start learning 开始音乐之旅 引入 教程 入门' },
-    { title: '音符与记谱', section: '教程 · 第 1 章', href: 'Start Learning/pitches.html#pitch-basics', keywords: 'pitch 音高 记谱 音符' },
+    { title: '音符与记谱（一）：音名与键盘', section: '教程 · 第 1 章', href: 'Start Learning/pitches.html#pitch-basics', keywords: 'pitch 音高 音符 钢琴键盘' },
     { title: '音名与唱名', section: '教程 · 音符与记谱', href: 'Start Learning/pitches.html#note-names', keywords: 'do re mi C D E 音名 唱名' },
     { title: '钢琴键盘', section: '教程 · 音符与记谱', href: 'Start Learning/pitches.html#piano-keyboard', keywords: 'piano keyboard 白键 黑键 半音' },
-    { title: '谱与音符', section: '教程 · 音符与记谱', href: 'Start Learning/pitches.html#notation', keywords: '五线谱 谱号 拍号 notation' },
+    { title: '谱与音符（二）', section: '教程 · 音符与记谱', href: 'Start Learning/pitches-notation.html#notation-basics', keywords: '五线谱 谱号 拍号 速度 四分音符 notation' },
+    { title: 'Melodies 音轨（三）', section: '教程 · 音符与记谱', href: 'Start Learning/pitches-melodies.html#melodies-track', keywords: 'melody 旋律 音轨 动机 主题' },
     { title: '节奏基础 · 节拍和拍子', section: '教程 · 第 2 章', href: 'Start Learning/beat.html#rhythm-basics', keywords: 'beat rhythm 节拍 拍子 2/4 3/4 4/4 强拍 弱拍' },
     { title: '节奏 · 小试一下', section: '教程 · 节奏基础', href: 'Start Learning/beat.html#try-it', keywords: 'kick snare hat tom crash ride clap 试听 鼓' },
     { title: '节奏 · 乐器介绍', section: '教程 · 节奏基础', href: 'Start Learning/beat-instruments.html#instrument-introductions', keywords: '底鼓 军鼓 踩镲 通鼓 吊镲 叮叮镲 拍手 乐器' },
@@ -618,7 +624,6 @@
     { title: '和弦', section: '教程 · 音程与和弦', href: 'Start Learning/chords-chords.html#chords', keywords: 'chord 大三和弦 小三和弦 七和弦' },
     { title: 'Chords 音轨', section: '教程 · 音程与和弦', href: 'Start Learning/chords-track.html#chords-track', keywords: 'chords track 和声支撑' },
     { title: 'Basslines 音轨', section: '教程 · 音程与和弦', href: 'Start Learning/chords-track.html#basslines-track', keywords: 'bass 贝斯 低音 律动' },
-    { title: 'Melodies 音轨', section: '教程 · 音程与和弦', href: 'Start Learning/chords-track.html#melodies-track', keywords: 'melody 旋律 动机' },
     { title: '单音听辨测试', section: '教程 · 音程与和弦', href: 'Start Learning/chords-intervals.html#pitch-test', keywords: '听辨 ear training 测试' },
     { title: '调式基础', section: '教程 · 第 4 章', href: 'Start Learning/tones.html#mode-basics', keywords: 'mode scale 音阶 调式 大调 小调' },
     { title: '常见调式', section: '教程 · 调式基础', href: 'Start Learning/tones.html#common-modes', keywords: '大调 自然小调 和声小调 旋律小调' },
@@ -688,6 +693,14 @@
     const top = document.querySelector('.top');
     if (!top || top.querySelector('.header-tools')) return;
     const nav = top.querySelector('.nav');
+    if (nav && !nav.querySelector('[data-practice-link]')) {
+      const practiceItem = document.createElement('li');
+      practiceItem.dataset.practiceLink = '';
+      practiceItem.innerHTML = `<a href="${url('practice.html')}">练习区</a>`;
+      const settingsItem = nav.querySelector('#nav5');
+      if (settingsItem) settingsItem.before(practiceItem);
+      else nav.appendChild(practiceItem);
+    }
 
     const tools = document.createElement('div');
     tools.className = 'header-tools';
@@ -847,6 +860,7 @@
           <h4>创作</h4>
           <ul>
             <li><a href="${url('The Playground/index.html')}">游乐园</a></li>
+            <li><a href="${url('practice.html')}">练习区</a></li>
             <li><a href="${url('settings/settings.html#account')}">我的进度</a></li>
             <li><a href="${url('index.html#OpenQA')}">Q &amp; A 问卷</a></li>
           </ul>

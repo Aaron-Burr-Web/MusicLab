@@ -22,18 +22,22 @@
             <div class="learning-content-panel">
                 <div class="learning-content-header"><h1>音程与和弦（四）：音轨</h1></div>
                 <div class="learning-content-body">
-                    <h2 id="chord-tracks">音轨</h2>
-                    <h2 id="chords-track">Chords音轨</h2><p>和弦音轨负责提供和声支撑，通常在关键拍点上改变和弦，这是乐曲的血肉。</p>
-                    <h2 id="basslines-track">Basslines音轨</h2><p>贝斯音轨连接低音与和弦，为音乐提供律动和重心，这是乐曲的灵魂所在。</p>
-                    <h2 id="melodies-track">Melodies音轨</h2><p>旋律音轨在和声上方发展旋律，负责表达主要的音乐动机，通常承载作品的主题，即乐曲的外貌。</p>
-                    <p>下面是三个音轨的简化示例，你可以实践创作自己的乐曲。同时与节奏章节类似，这里有一些示例供参考。</p>
-                    <div></div><!--这里放入示例按钮-->
-                    <div></div><!--这里放入三个音轨组合，16列/24列x15行，暂时不做调式切换，但要有节奏切换和其他基础按钮-->
+                    <section class="chord-lesson-intro" id="chord-tracks"><div><p class="chord-kicker">让两条线一起工作</p><p class="chord-lead">和弦定颜色，贝斯定重心；它们共同建立和声与律动。</p></div><p>两条音轨共享一段时间，但各自承担不同角色。先听懂，再动手组织。</p></section>
+                    <section class="chord-section">
+                        <div class="chord-section-heading"><span>01</span><h2 id="chords-track">两个角色</h2></div>
+                        <div class="track-role-grid"><article><b>Chords</b><p>在关键拍点改变和弦，提供和声支撑，是乐曲的血肉。</p></article><article><b id="basslines-track">Basslines</b><p>连接低音与和弦，提供律动和重心，是乐曲的灵魂。</p></article></div>
+                    </section>
+                    <section class="chord-section">
+                        <div class="chord-section-heading"><span>02</span><h2>双轨工作台</h2></div>
+                        <p>每条音轨固定为 16 列 × 15 行：横向是时间，纵向是从 C3 到 C5 的自然音阶。每格只放一个音，点击后可分别播放、调节 BPM 或清空。</p>
+                        <div class="chord-track-lab" data-chord-track-lab aria-label="和弦与贝斯双轨音序器"></div>
+                        <!-- 图片补充建议：若后续加入 DAW 截图，可放在工作台上方展示真实工程中的和弦与贝斯轨道布局。 -->
+                    </section>
                     <section class="lesson-quiz" data-lesson-quiz></section>
                     <div class="learning-nav"><a href="chords-chords.html" class="learning-nav-button prev">上一页：和弦</a><a href="tones.html" class="learning-nav-button next">下一页：调式基础</a></div>
                 </div>
             </div>
         </div>
-    <script src="../js/audio-engine.js"></script><script src="../js/login.js"></script><script src="../js/lesson-quiz.js"></script>
+    <script src="../js/audio-engine.js"></script><script src="../js/chords-learning.js"></script><script src="../js/login.js"></script><script src="../js/lesson-quiz.js"></script>
     </body>
 </html>
