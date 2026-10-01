@@ -528,7 +528,7 @@
    * 逻辑部分
    *  - 四个音轨共用一个主时钟（js/audio-engine.js），同一 BPM、同一播放线，
    *    任一面板按 ▶ 就加入正在播放的时钟，可随时单独退出；顶部总控可一键全部播放。
-   *  - 节奏轨用鼓采样，和弦 / 贝斯 / 旋律轨用钢琴采样（audio/piano），
+  *  - 节奏轨用鼓采样，和弦 / 贝斯 / 旋律轨用 sources 中的钢琴采样，
    *    升号音用等音的降号采样，缺少的高八度自动降一个八度。
    *  - 创作内容按账号（未登录按访客）自动保存到 localStorage，刷新后恢复。
    * ==================================================================== */
@@ -595,7 +595,7 @@
     while (m > 72) m -= 12;   // C5 = 72
     while (m < 48) m += 12;   // C3 = 48
     const name = `${NOTE_NAMES_FLAT[m % 12]}${Math.floor(m / 12) - 1}`;
-    return SAMPLE_NAMES.has(name) ? `../audio/piano/piano-${name}.wav` : null;
+    return SAMPLE_NAMES.has(name) ? `../audio/piano/sources/source-piano-${name}.wav` : null;
   };
   // 每一行对应的采样：行 0 在最上面（最高音）。baseOctave 是最底行根音的八度。
   const rowSamples = (keyName, modeName, baseOctave) => {

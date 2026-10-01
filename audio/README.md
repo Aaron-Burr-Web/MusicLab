@@ -65,3 +65,7 @@ Manual fix (CapCut, do it once and replace the files):
 4. Add a short fade-out (~200 ms) at the end of each clip; optionally normalize peaks to about -6 dB
    (B4 is currently ~10–15 dB louder than the rest).
 5. Export as WAV, 44.1 kHz / 16-bit mono, keeping the exact filenames `piano-<Note><Octave>.wav`.
+
+## Current conversion from `audio/piano/sources`
+
+The 25 source files in `sources` are stored as `source-piano-<Note><Octave>.wav` so they remain distinct from the playable `piano-<Note><Octave>.wav` files in this directory. They are 44.1 kHz / 16-bit mono, aligned to their maximum-amplitude attack with 5 ms of lead-in, padded or trimmed to exactly 5.005 seconds, and given a 200 ms fade-out. Peak levels are calibrated to approximately -0.3 dBFS, close to the `audio/kick.wav` reference peak of 0 dBFS.

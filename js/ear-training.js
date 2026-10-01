@@ -7,11 +7,11 @@
  *   <div data-ear-training="chord"    ...></div>
  *
  * 三种模式：
- *   note     —— 先给一个基准音（C4），再放一个音，选出它的音名
+ *   note     —— 先给一个基准音（C3），再放一个音，选出它的音名
  *   interval —— 放两个音，选出它们的音程（度数）
  *   chord    —— 同时放三个音，选出和弦性质（大三 / 小三 / 减 / 增 / 属七）
  *
- * 音源用项目里已有的钢琴采样 audio/piano/*.wav；有 MusicLabAudio 时走它（调度更准），
+ * 音源使用 sources 中的钢琴采样；有 MusicLabAudio 时走它（调度更准），
  * 没有则回退到 <audio>。每轮结束给出正确率，可以立即再来一轮。
  */
 (() => {
@@ -23,10 +23,13 @@
   const ML = window.MusicLab;
   const AUDIO = window.MusicLabAudio || null;
   const esc = (ML && ML.escapeHTML) || ((v) => String(v));
+  const scriptUrl = [...document.scripts].find((script) => script.src.endsWith('/ear-training.js'))?.src || document.baseURI;
+  const pianoAudioRoot = new URL('../audio/piano/sources/', scriptUrl);
 
   /* ---------------- 音源 ---------------- */
-  // 采样只有 C3–C5，且黑键以降号命名
-  const SAMPLES = new Set(['C3', 'Db3', 'D3', 'Eb3', 'E3', 'F3', 'Gb3', 'G3', 'Ab3', 'A3', 'Bb3', 'B3',
+  // 采样覆盖 C2–C5，且黑键以降号命名
+  const SAMPLES = new Set(['C2', 'Db2', 'D2', 'Eb2', 'E2', 'F2', 'Gb2', 'G2', 'Ab2', 'A2', 'Bb2', 'B2',
+    'C3', 'Db3', 'D3', 'Eb3', 'E3', 'F3', 'Gb3', 'G3', 'Ab3', 'A3', 'Bb3', 'B3',
     'C4', 'Db4', 'D4', 'Eb4', 'E4', 'F4', 'Gb4', 'G4', 'Ab4', 'A4', 'Bb4', 'B4', 'C5']);
   const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
   const CN_NAMES = { C: 'C（do）', D: 'D（re）', E: 'E（mi）', F: 'F（fa）', G: 'G（sol）', A: 'A（la）', B: 'B（si）' };
@@ -34,7 +37,7 @@
   const midiToName = (midi) => `${FLAT_NAMES[((midi % 12) + 12) % 12]}${Math.floor(midi / 12) - 1}`;
   const srcOf = (midi) => {
     const name = midiToName(midi);
-    return SAMPLES.has(name) ? `../audio/piano/piano-${name}.wav` : null;
+    return SAMPLES.has(name) ? new URL(`source-piano-${name}.wav`, pianoAudioRoot).href : null;
   };
 
   const fallbackPool = {};
@@ -60,7 +63,7 @@
   };
 
   /* ---------------- 题库 ---------------- */
-  const C4 = 60;                                   // 中央 C
+  const C3 = 48;                                   // 中央 C
   const SCALE = [0, 2, 4, 5, 7, 9, 11];            // C 大调
   const INTERVALS = [
     { semitones: 2, label: '大二度' }, { semitones: 4, label: '大三度' }, { semitones: 5, label: '纯四度' },
@@ -88,23 +91,23 @@
       intro: '先听到基准音 C（do），再听到一个音。它是哪个音名？',
       make() {
         const degree = Math.floor(Math.random() * 7);
-        const midi = C4 + SCALE[degree];
+        const midi = C3 + SCALE[degree];
         const letter = ['C', 'D', 'E', 'F', 'G', 'A', 'B'][degree];
         return {
-          play: (replay) => { playSrc(srcOf(C4), 0, replay ? 0.7 : 0.7); playSrc(srcOf(midi), 1.0); },
+          play: (replay) => { playSrc(srcOf(C3), 0, replay ? 0.7 : 0.7); playSrc(srcOf(midi), 1.0); },
           options: ['C', 'D', 'E', 'F', 'G', 'A', 'B'].map((l) => CN_NAMES[l]),
           answer: CN_NAMES[letter],
           explain: `这个音是 ${letter}，比基准音 C 高 ${SCALE[degree]} 个半音。`
         };
       },
-      preload: () => preload([C4, ...SCALE.map((s) => C4 + s)])
+      preload: () => preload([C3, ...SCALE.map((s) => C3 + s)])
     },
     interval: {
       title: '音程听辨',
       intro: '连续听到两个音，它们之间是什么音程？',
       make() {
         const interval = pick(INTERVALS);
-        const root = C4 + pick([0, 2, 4, 5, 7]);
+        const root = C3 + pick([0, 2, 4, 5, 7]);
         return {
           play: () => { playSrc(srcOf(root)); playSrc(srcOf(root + interval.semitones), 0.9); },
           options: INTERVALS.map((i) => i.label),
@@ -112,14 +115,14 @@
           explain: `两个音相差 ${interval.semitones} 个半音，是${interval.label}。`
         };
       },
-      preload: () => preload(Array.from({ length: 25 }, (_, i) => C4 + i - 12))
+      preload: () => preload(Array.from({ length: 25 }, (_, i) => C3 + i - 12))
     },
     chord: {
       title: '和弦听辨',
       intro: '三到四个音同时响起，判断它属于哪种和弦。',
       make() {
         const chord = pick(CHORDS);
-        const root = C4 + pick([0, 2, 4, 5, 7]) - 12;
+        const root = C3 + pick([0, 2, 4, 5, 7]);
         return {
           play: () => chord.offsets.forEach((o) => playSrc(srcOf(root + o), 0, 0.6)),
           options: CHORDS.map((c) => c.label),
@@ -127,7 +130,7 @@
           explain: `这是${chord.label}（${chord.hint}），音程结构为 ${chord.offsets.join('-')} 个半音。`
         };
       },
-      preload: () => preload(Array.from({ length: 25 }, (_, i) => C4 + i - 12))
+      preload: () => preload(Array.from({ length: 25 }, (_, i) => C3 + i))
     },
     mode: {
       title: '调式听辨',

@@ -1446,7 +1446,8 @@ body.ml-confirm-open { overflow: hidden; }
 .pitch-map-note:hover::before, .pitch-map-note.is-playing::before { transform: scale(1.26); background: #e86b52; }
 .pitch-map-note.is-anchor::before { background: #f3bd3e; }
 
-.pitch-keyboard-preview { position: relative; display: grid; grid-template-columns: repeat(14, minmax(34px, 1fr)); min-height: 140px; overflow-x: auto; border: 1px solid #26374a; border-radius: 8px; background: #26374a; gap: 1px; }
+.pitch-keyboard-preview { position: relative; display: grid; grid-template-columns: repeat(14, minmax(34px, 1fr)); min-height: 140px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; border: 1px solid #26374a; border-radius: 8px; background: #26374a; gap: 1px; }
+.pitch-keyboard-preview::-webkit-scrollbar { display: none; }
 .pitch-key { display: flex; align-items: end; justify-content: center; min-width: 34px; padding: 0 0 12px; border: 0; background: #fffef9; color: #26374a; font-family: Georgia, serif; font-size: 13px; cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease; }
 .pitch-key:hover, .pitch-key.is-playing { background: #6cd2c2; color: #123643; transform: translateY(3px); }
 .pitch-key.is-anchor { background: #ffd160; font-weight: 700; }
@@ -1529,14 +1530,16 @@ body.ml-confirm-open { overflow: hidden; }
 .notation-tempo input { width: 100%; accent-color: #e86b52; }
 .notation-stage { display: grid; align-content: center; padding: 14px; border: 1px solid rgba(38, 55, 74, 0.16); border-radius: 8px; background: #fffdf7; }
 .notation-meta { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; color: #526072; font-size: 12px; }
-.notation-staff { position: relative; min-height: 215px; border-top: 2px solid #26374a; border-bottom: 2px solid #26374a; background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(25% - 1px), #26374a calc(25% - 1px), #26374a 25%); }
-.notation-clef { position: absolute; top: 21px; left: 8px; color: #26374a; font-family: serif; font-size: 96px; line-height: 0.9; }
-.notation-meter { position: absolute; top: 48px; left: 88px; color: #26374a; font-family: Georgia, serif; font-size: 26px; font-weight: 700; line-height: 0.76; text-align: center; }
-.notation-note { position: absolute; bottom: calc(20px + var(--step) * 18px); left: calc(25% + var(--step) * 16%); width: 42px; height: 90px; padding: 0; border: 0; background: transparent; color: #26374a; cursor: pointer; }
-.notation-note i { position: absolute; bottom: 28px; left: 5px; width: 25px; height: 18px; border-radius: 50%; background: #e86b52; transform: rotate(-18deg); transition: transform 0.16s ease, background-color 0.16s ease; }
-.notation-note i::after { content: ""; position: absolute; bottom: 8px; left: 21px; width: 3px; height: 64px; background: currentColor; transform: rotate(18deg); transform-origin: bottom; }
-.notation-note small { position: absolute; bottom: 0; left: 0; width: 100%; font: 700 12px Georgia, serif; }
-.notation-note:hover i, .notation-note.is-playing i { background: #f3bd3e; transform: rotate(-18deg) scale(1.24); }
+.notation-staff { min-height: 250px; overflow: hidden; background: #fffdf7; }
+.notation-staff svg { display: block; width: 100%; min-width: 340px; height: 250px; }
+.notation-staff-lines line, .notation-ledgers line, .notation-note-stem { stroke: #111820; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.notation-clef, .notation-meter { fill: #111820; }
+.notation-clef { font-family: "Noto Music", "Segoe UI Symbol", serif; font-size: 112px; }
+.notation-meter { font-family: Georgia, serif; font-size: 27px; font-weight: 700; text-anchor: middle; }
+.notation-note { cursor: pointer; outline: none; }
+.notation-note-head { fill: #111820; transition: fill 0.16s ease, transform 0.16s ease; }
+.notation-note-label { fill: #26374a; font: 700 12px Georgia, serif; text-anchor: middle; }
+.notation-note:hover .notation-note-head, .notation-note.is-playing .notation-note-head, .notation-note:focus .notation-note-head { fill: #f3bd3e; transform: rotate(-18deg) scale(1.24); transform-origin: center; }
 .notation-play { justify-self: center; margin-top: 16px; background: #e86b52; box-shadow: 0 10px 18px rgba(232, 107, 82, 0.22); }
 .notation-guide article { padding: 10px; border-left: 4px solid #5bb7aa; border-radius: 0 5px 5px 0; background: #edfbf5; }
 .notation-guide b { display: block; color: #26374a; font-size: 13px; }
@@ -1577,8 +1580,9 @@ body.ml-confirm-open { overflow: hidden; }
 @media (max-width: 560px) { .notation-lab, .melody-lab { padding: 16px 14px; } .notation-lab-head { flex-direction: column; } .notation-controls, .notation-guide, .melody-roles { grid-template-columns: 1fr; } .notation-stage { overflow-x: auto; } .notation-staff { min-width: 340px; } .melody-sequencer-head { flex-wrap: wrap; } .melody-bpm { flex: 1 1 180px; } .melody-bpm input { width: 100%; } .melody-clear { margin-left: 0; } .melody-ruler, .melody-row { grid-template-columns: 58px repeat(16, minmax(16px, 1fr)); gap: 6px; } }
 
 :root[data-theme="dark"] .notation-lab, :root[data-theme="dark"] .melody-lab { background: linear-gradient(135deg, #183b3b, #202a3a); border-color: var(--ml-border-strong); }
-:root[data-theme="dark"] .notation-lab-head h2, :root[data-theme="dark"] .notation-guide b, :root[data-theme="dark"] .melody-roles b, :root[data-theme="dark"] .notation-clef, :root[data-theme="dark"] .notation-meter, :root[data-theme="dark"] .notation-note, :root[data-theme="dark"] .melody-pitch-label { color: #e8edf5; }
-:root[data-theme="dark"] .notation-controls, :root[data-theme="dark"] .notation-guide, :root[data-theme="dark"] .notation-stage, :root[data-theme="dark"] .melody-sequencer-shell { background-color: #202a3a; border-color: var(--ml-border-strong); }
+:root[data-theme="dark"] .notation-lab-head h2, :root[data-theme="dark"] .notation-guide b, :root[data-theme="dark"] .melody-roles b, :root[data-theme="dark"] .melody-pitch-label { color: #e8edf5; }
+:root[data-theme="dark"] .notation-controls, :root[data-theme="dark"] .notation-guide, :root[data-theme="dark"] .melody-sequencer-shell { background-color: #202a3a; border-color: var(--ml-border-strong); }
+:root[data-theme="dark"] .notation-stage { background-color: #fffdf7; border-color: var(--ml-border-strong); }
 :root[data-theme="dark"] .melody-cell { background: #2a4650; }
 :root[data-theme="dark"] .melody-cell.active { background: #5bb7aa; }
 :root[data-theme="dark"] .melody-ruler-cell { background: rgba(255,255,255,0.08); color: var(--ml-text-3); }

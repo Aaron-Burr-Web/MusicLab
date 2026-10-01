@@ -40,11 +40,16 @@
 
 .practice-keyboard {
   overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding: 2px;
   border: 1px solid #26374a;
   border-radius: 8px;
   background: #26374a;
 }
+
+.practice-keyboard::-webkit-scrollbar { display: none; }
 
 .practice-keyboard-keys {
   position: relative;
@@ -117,44 +122,54 @@
 
 .practice-staff {
   position: relative;
-  min-height: 290px;
+  min-height: 250px;
   overflow: hidden;
   border: 1px solid rgba(38, 55, 74, 0.17);
-  background: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, #26374a 31px, #26374a 33px, transparent 33px, transparent 63px);
+  background: #fffdf8;
+}
+
+.practice-staff svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+}
+
+.practice-staff-lines line,
+.practice-ledger-lines line,
+.practice-staff-stem {
+  stroke: #111820;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.practice-clef,
+.practice-time-signature {
+  color: #26374a;
+  fill: #111820;
+  font-family: "Noto Music", "Segoe UI Symbol", serif;
 }
 
 .practice-clef {
-  position: absolute;
-  top: 96px;
-  left: 18px;
-  color: #26374a;
-  font-family: serif;
-  font-size: 96px;
-  line-height: 0.8;
+  font-size: 112px;
+}
+
+.practice-time-signature {
+  font-family: Georgia, serif;
+  font-size: 27px;
+  font-weight: 700;
+  text-anchor: middle;
 }
 
 .practice-staff-note {
-  position: absolute;
-  top: calc(244px - var(--staff-index) * 8.5px);
-  left: 52%;
-  width: 28px;
-  height: 19px;
-  border-radius: 50%;
-  background: #e86b52;
-  transform: rotate(-18deg);
-  transition: top 0.18s ease;
+  fill: #111820;
 }
 
-.practice-staff-note::after {
-  content: "";
-  position: absolute;
-  bottom: 8px;
-  left: 23px;
-  width: 3px;
-  height: 62px;
-  background: #26374a;
-  transform: rotate(18deg);
-  transform-origin: bottom;
+.practice-staff-accidental {
+  fill: #111820;
+  font-family: Georgia, serif;
+  font-size: 28px;
+  text-anchor: middle;
 }
 
 .practice-note-hint > p { margin: 0; }
@@ -164,17 +179,14 @@
   .practice-main { width: min(100% - 28px, 720px); }
   .practice-intro,
   .practice-note-hint { grid-template-columns: 1fr; }
-  .practice-staff { min-height: 230px; }
-  .practice-staff-note { top: calc(194px - var(--staff-index) * 6px); }
-  .practice-clef { top: 70px; }
+  .practice-staff,
+  .practice-staff svg { min-height: 230px; }
 }
 
 :root[data-theme="dark"] .practice-section { border-color: rgba(226, 232, 240, 0.16); }
 :root[data-theme="dark"] .practice-lead,
 :root[data-theme="dark"] .practice-note-hint b { color: #e8edf5 !important; }
 :root[data-theme="dark"] .practice-note-hint { background: #3b2929; border-color: var(--ml-border-strong); }
-:root[data-theme="dark"] .practice-staff { border-color: var(--ml-border-strong); background: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, #cbd5e1 31px, #cbd5e1 33px, transparent 33px, transparent 63px); }
-:root[data-theme="dark"] .practice-clef,
-:root[data-theme="dark"] .practice-staff-note::after { color: #e8edf5; background: #e8edf5; }
+:root[data-theme="dark"] .practice-staff { border-color: var(--ml-border-strong); background: #fffdf8; }
 :root[data-theme="dark"] .practice-white-key { background: #202a3a; color: #e8edf5; }
 :root[data-theme="dark"] .practice-white-key.is-c { background: #57441f; }

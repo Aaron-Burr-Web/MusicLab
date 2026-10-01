@@ -5,7 +5,7 @@
   const audio = window.MusicLabAudio;
   if (!audio) return;
 
-  const source = (note) => `../audio/piano/piano-${note}.wav`;
+  const source = (note) => `../audio/piano/sources/source-piano-${note}.wav`;
   const playNotes = (notes, options = {}) => {
     const { delay = 0, gain = 0.72 } = options;
     audio.unlock();

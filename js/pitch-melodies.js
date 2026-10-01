@@ -5,7 +5,7 @@
   const grid = document.querySelector('[data-melody-grid]');
   if (!engine || !grid) return;
 
-  const src = (note) => `../audio/piano/piano-${note}.wav`;
+  const src = (note) => `../audio/piano/sources/source-piano-${note}.wav`;
   const notes = ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4'];
   const steps = 16;
   const state = { bpm: 96, currentStep: 0, playing: false, frame: null, lastFrame: 0, accumulator: 0, scrubbing: false };

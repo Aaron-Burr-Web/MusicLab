@@ -1,6 +1,6 @@
 /*
  * 教程首页「四轨示例」播放器（js/track-demo.js）
- * 用项目里已有的鼓采样（audio/*.wav）和钢琴采样（audio/piano/*.wav）实时演奏
+ * 用项目里已有的鼓采样（audio/*.wav）和 sources 中的钢琴采样实时演奏
  * 4 种节奏 / 4 条贝斯 / 4 组和弦 / 4 段旋律。每列最多选一个，所有列共用一个节拍器，
  * 因此任意组合都能对齐——这正是课文里“尝试着把它们组合起来”的用意。
  * 全部素材都是 C 大调、16 步（4 拍）、100 BPM 循环。
@@ -21,7 +21,7 @@
     clap: '../audio/clap.wav',
     ride: '../audio/ride.wav'
   };
-  const piano = (note) => `../audio/piano/piano-${note}.wav`;
+  const piano = (note) => `../audio/piano/sources/source-piano-${note}.wav`;
 
   // 每一步要触发的采样（数组下标 = 步序 0..15）
   const drums = (map) => Array.from({ length: STEPS }, (_, i) =>

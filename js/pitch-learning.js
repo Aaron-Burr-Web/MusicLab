@@ -6,7 +6,7 @@
   if (!engine) return;
 
   const srcFor = (note) => `../audio/piano/piano-${note}.wav`;
-  const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
+  const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4'];
   const keyboardNotes = ['C3', 'Db3', 'D3', 'Eb3', 'E3', 'F3', 'Gb3', 'G3', 'Ab3', 'A3', 'Bb3', 'B3',
     'C4', 'Db4', 'D4', 'Eb4', 'E4', 'F4', 'Gb4', 'G4', 'Ab4', 'A4', 'Bb4', 'B4'];
   const play = (note, delay = 0) => {
@@ -14,7 +14,7 @@
     engine.play(srcFor(note), { at: delay ? engine.now() + delay : undefined, gain: 0.85 });
   };
 
-  engine.load(keyboardNotes.concat('C5').map(srcFor));
+  engine.load(keyboardNotes.map(srcFor));
 
   document.querySelectorAll('.pitch-audition').forEach((button) => {
     button.addEventListener('click', () => {
