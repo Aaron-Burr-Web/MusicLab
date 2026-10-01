@@ -47,12 +47,12 @@
                 <div class="learning-content-body">
                     <section class="pitch-lesson-intro" id="pitch-basics">
                         <div>
-                            <p class="pitch-lesson-kicker">先听，再定位</p>
-                            <p class="pitch-lesson-lead">声音有高低；音符帮你找到它，乐谱帮你把它留住。</p>
+                            <p class="pitch-lesson-kicker">边听边定位</p>
+                            <p class="pitch-lesson-lead">声音有频率的高低变化，音符可以帮你找到这些变化，而乐谱帮你把它翻译成可视化的记录。</p>
                         </div>
                         <div class="pitch-lesson-rule">
-                            <strong>1</strong>
-                            <span>每升高一个八度，听起来更亮；名称会从 C 再次开始。</span>
+                            <strong>🎶</strong>
+                            <span>音符是表示音高和时值的符号，是乐谱的基本组成部分。</span>
                         </div>
                     </section>
 
@@ -61,7 +61,7 @@
                             <span class="pitch-section-number">01</span>
                             <h2>音名与唱名</h2>
                         </div>
-                        <p>先记住这一圈：字母用于定位，唱名用于开口唱。</p>
+                        <p>先记住这些：用字母表示音高，当你开口唱歌的时候用唱名来唱。C、D、E、F、G、A、B再回到C，这样就形成了一个完整的音阶。</p>
                         <div class="pitch-note-pairs" aria-label="音名与唱名对照：点击卡片试听">
                             <button class="pitch-note-pair pitch-audition" type="button" data-note="C3"><b>C</b><span>do</span></button>
                             <button class="pitch-note-pair pitch-audition" type="button" data-note="D3"><b>D</b><span>re</span></button>
@@ -72,21 +72,43 @@
                             <button class="pitch-note-pair pitch-audition" type="button" data-note="B3"><b>B</b><span>si</span></button>
                             <button class="pitch-note-pair pitch-audition is-octave" type="button" data-note="C4"><b>C</b><span>高音 do</span></button>
                         </div>
-                        <!-- 图片交互标记：未来接入八度图片时，在 C3、D3、E3、F3、G3、A3、B3、C4 八个位置覆盖同名热点按钮。 -->
                         <div class="pitch-octave-map" aria-label="中央 C3 到高音 C4 的可点音高示意图">
                             <div class="pitch-map-copy">
                                 <b>中央 C3 到高音 C4</b>
-                                <span>带圆点的位置就是图片交互热点。</span>
+                                <span>点击音符头试听对应音高。</span>
                             </div>
-                            <div class="pitch-map-track" aria-label="点击圆点试听音高">
-                                <button class="pitch-map-note pitch-audition is-anchor" type="button" data-note="C3"><span>C</span><small>中央 C3</small></button>
-                                <button class="pitch-map-note pitch-audition" type="button" data-note="D3"><span>D</span></button>
-                                <button class="pitch-map-note pitch-audition" type="button" data-note="E3"><span>E</span></button>
-                                <button class="pitch-map-note pitch-audition" type="button" data-note="F3"><span>F</span></button>
-                                <button class="pitch-map-note pitch-audition" type="button" data-note="G3"><span>G</span></button>
-                                <button class="pitch-map-note pitch-audition" type="button" data-note="A3"><span>A</span></button>
-                                <button class="pitch-map-note pitch-audition" type="button" data-note="B3"><span>B</span></button>
-                                <button class="pitch-map-note pitch-audition is-anchor" type="button" data-note="C4"><span>C</span><small>高音 C4</small></button>
+                            <div class="pitch-map-staff" aria-label="高音谱表上的 C3 到 C4">
+                                <svg viewBox="0 0 900 230" role="img" aria-label="C3 到 C4 的一个八度五线谱">
+                                    <g class="pitch-map-staff-lines" aria-hidden="true">
+                                        <line x1="78" y1="70" x2="850" y2="70"></line>
+                                        <line x1="78" y1="86" x2="850" y2="86"></line>
+                                        <line x1="78" y1="102" x2="850" y2="102"></line>
+                                        <line x1="78" y1="118" x2="850" y2="118"></line>
+                                        <line x1="78" y1="134" x2="850" y2="134"></line>
+                                        <line x1="115" y1="150" x2="151" y2="150"></line>
+                                    </g>
+                                    <text class="pitch-map-clef" x="30" y="143" aria-hidden="true">𝄞</text>
+                                    <g class="pitch-map-noteheads" aria-hidden="true">
+                                        <ellipse cx="150" cy="150" rx="11" ry="7" transform="rotate(-18 150 150)"></ellipse>
+                                        <ellipse cx="250" cy="142" rx="11" ry="7" transform="rotate(-18 250 142)"></ellipse>
+                                        <ellipse cx="350" cy="134" rx="11" ry="7" transform="rotate(-18 350 134)"></ellipse>
+                                        <ellipse cx="450" cy="126" rx="11" ry="7" transform="rotate(-18 450 126)"></ellipse>
+                                        <ellipse cx="550" cy="118" rx="11" ry="7" transform="rotate(-18 550 118)"></ellipse>
+                                        <ellipse cx="650" cy="110" rx="11" ry="7" transform="rotate(-18 650 110)"></ellipse>
+                                        <ellipse cx="750" cy="102" rx="11" ry="7" transform="rotate(-18 750 102)"></ellipse>
+                                        <ellipse cx="850" cy="94" rx="11" ry="7" transform="rotate(-18 850 94)"></ellipse>
+                                    </g>
+                                </svg>
+                                <div class="pitch-map-hotspots" aria-label="点击音符试听音高">
+                                    <button class="pitch-map-note pitch-audition is-anchor" type="button" data-note="C3" style="--note-x:16.67%;--note-y:65.22%" aria-label="C3，中央 C"><span class="sr-only">C3，中央 C</span><span class="pitch-map-note-label"><b>C3</b><small>do</small></span></button>
+                                    <button class="pitch-map-note pitch-audition" type="button" data-note="D3" style="--note-x:27.78%;--note-y:61.74%" aria-label="D3"><span class="sr-only">D3</span><span class="pitch-map-note-label"><b>D3</b><small>re</small></span></button>
+                                    <button class="pitch-map-note pitch-audition" type="button" data-note="E3" style="--note-x:38.89%;--note-y:58.26%" aria-label="E3"><span class="sr-only">E3</span><span class="pitch-map-note-label"><b>E3</b><small>mi</small></span></button>
+                                    <button class="pitch-map-note pitch-audition" type="button" data-note="F3" style="--note-x:50%;--note-y:54.78%" aria-label="F3"><span class="sr-only">F3</span><span class="pitch-map-note-label"><b>F3</b><small>fa</small></span></button>
+                                    <button class="pitch-map-note pitch-audition" type="button" data-note="G3" style="--note-x:61.11%;--note-y:51.30%" aria-label="G3"><span class="sr-only">G3</span><span class="pitch-map-note-label"><b>G3</b><small>sol</small></span></button>
+                                    <button class="pitch-map-note pitch-audition" type="button" data-note="A3" style="--note-x:72.22%;--note-y:47.83%" aria-label="A3"><span class="sr-only">A3</span><span class="pitch-map-note-label"><b>A3</b><small>la</small></span></button>
+                                    <button class="pitch-map-note pitch-audition" type="button" data-note="B3" style="--note-x:83.33%;--note-y:44.35%" aria-label="B3"><span class="sr-only">B3</span><span class="pitch-map-note-label"><b>B3</b><small>si</small></span></button>
+                                    <button class="pitch-map-note pitch-audition is-anchor" type="button" data-note="C4" style="--note-x:94.44%;--note-y:40.87%" aria-label="C4，高音 C"><span class="sr-only">C4，高音 C</span><span class="pitch-map-note-label"><b>C4</b><small>高音 do</small></span></button>
+                                </div>
                             </div>
                         </div>
                     </section>

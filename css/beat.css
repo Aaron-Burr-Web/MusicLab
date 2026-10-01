@@ -12,6 +12,23 @@
         -3px -4px 8px rgba(255,255,255,0.7);
 }
 
+.beat-demo-example .beat-demo-pattern-buttons {
+    margin: 0 6px 16px;
+}
+
+.beat-demo-example .beat-demo-pattern-buttons .beat-instrument-button {
+    height: 48px;
+}
+
+.beat-demo-example .beat-demo-track {
+    width: 100%;
+    min-width: 0;
+}
+
+.beat-demo-example .beat-demo-row {
+    grid-template-columns: 64px repeat(var(--beat-step-count), minmax(0, 1fr));
+}
+
 .beat-demo-header {
     display: flex;
     align-items: center;
@@ -319,6 +336,15 @@
     .beat-demo-transport { flex-wrap: wrap; }
     .beat-demo-meter-switcher { margin-left: 0; }
     .beat-demo-slider { width: min(220px, 60vw); }
+
+    .beat-demo-example .beat-demo-pattern-buttons {
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    .beat-demo-example .beat-demo-row {
+        grid-template-columns: 58px repeat(var(--beat-step-count), minmax(0, 1fr));
+    }
 
     .beat-demo-row {
         grid-template-columns: 58px repeat(var(--beat-step-count), minmax(12px, 1fr));

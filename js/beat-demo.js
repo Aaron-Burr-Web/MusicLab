@@ -70,12 +70,16 @@
   const beatGrid = wrapper.querySelector('.beat-demo-grid');
   const beatPlayhead = wrapper.querySelector('.beat-demo-playhead');
 
-  let beatSteps = 16;
+  let beatSteps = wrapper.dataset.demoVariant === 'meter-basics' ? 8 : 16;
   let beatCells = [];
   let beatActive = [];
   let rulerCells = [];
 
-  const beatTracks = [
+  const beatTracks = wrapper.dataset.demoVariant === 'meter-basics' ? [
+    ['Tom', AUDIO_SOURCES.tom],
+    ['Snare', AUDIO_SOURCES.snare],
+    ['Closed-Hat', AUDIO_SOURCES['closed-hat']]
+  ] : [
     ['Kick', AUDIO_SOURCES.kick],
     ['Snare', AUDIO_SOURCES.snare],
     ['Open-Hat', AUDIO_SOURCES['open-hat']],
@@ -88,6 +92,10 @@
   beatTracks.forEach(([, src]) => getAudio(src));
 
   const rhythmPatterns = {
+    basic: { steps: 16, bpm: 80, pattern: { 0: [1, 9], 1: [5, 13], 3: [3, 7, 11, 15] } },
+    'meter-2-4': { steps: 4, bpm: 80, pattern: { 0: [1], 1: [3] } },
+    'meter-3-4': { steps: 6, bpm: 80, pattern: { 0: [1], 1: [3, 5] } },
+    'meter-4-4': { steps: 8, bpm: 80, pattern: { 0: [1], 1: [5], 2: [3, 7] } },
     jazz: { steps: 24, bpm: 80, pattern: { 0: [1, 6, 7, 12, 13, 18, 19, 24], 1: [4, 10, 16, 22], 2: [23], 3: [3, 9, 15, 21], 6: [11], 7: [4, 10, 16, 22] } },
     samba: { steps: 16, bpm: 130, pattern: { 0: [1, 5, 9, 13], 1: [4, 7, 12, 15], 2: [10], 3: [3, 8, 11, 16], 4: [6], 7: [4, 12] } },
     tango: { steps: 16, bpm: 65, pattern: { 0: [1, 7, 9, 14, 16], 1: [5, 13], 2: [6, 14], 3: [2, 7, 10, 15], 4: [4, 8, 12] } },
@@ -318,7 +326,7 @@
     updateBeatPlayhead();
   };
 
-  const applyRhythmPattern = (patternName) => {
+  const applyRhythmPattern = (patternName, shouldPlay = true) => {
     const preset = rhythmPatterns[patternName];
     if (!preset) return;
 
@@ -343,13 +351,21 @@
     rhythmButtons.forEach((button) => button.classList.toggle('is-flashing', button.dataset.rhythm === patternName));
     window.setTimeout(() => rhythmButtons.forEach((button) => button.classList.remove('is-flashing')), 180);
     wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    startBeatPlayback();
+    if (shouldPlay) startBeatPlayback();
   };
 
-  rhythmButtons.forEach((button) => button.addEventListener('click', () => applyRhythmPattern(button.dataset.rhythm)));
+  rhythmButtons.forEach((button) => {
+    if (!button.matches('.beat-demo-meter-button')) {
+      button.addEventListener('click', () => applyRhythmPattern(button.dataset.rhythm));
+    }
+  });
 
   beatMeterButtons.forEach((button) => {
     button.addEventListener('click', () => {
+      if (button.dataset.rhythm) {
+        applyRhythmPattern(button.dataset.rhythm);
+        return;
+      }
       const nextSteps = Number(button.dataset.steps);
       if (nextSteps === beatSteps) return;
       const wasPlaying = beatState.playing;
@@ -378,6 +394,7 @@
 
   renderBeatGrid();
   bindBeatCellEvents();
+  if (wrapper.dataset.demoPreset) applyRhythmPattern(wrapper.dataset.demoPreset, false);
   updateBeatDividers();
   measureBeatPlayhead();
   updateBeatPlayhead();
