@@ -1,4 +1,102 @@
-/* 谱与音符（二）：五线谱设置、四分音符试听与单音小练习。 */
+/* 音符与记谱系列共用脚本：音高练习、旋律音轨与记谱练习。 */
+
+/* ---------------- 音高试听与练习 ---------------- */
+(() => {
+  'use strict';
+
+  const engine = window.MusicLabAudio;
+  if (!engine) return;
+
+  const srcFor = (note) => `../audio/piano/piano-${note}.wav`;
+  const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4'];
+  const keyboardNotes = ['C3', 'Db3', 'D3', 'Eb3', 'E3', 'F3', 'Gb3', 'G3', 'Ab3', 'A3', 'Bb3', 'B3',
+    'C4', 'Db4', 'D4', 'Eb4', 'E4', 'F4', 'Gb4', 'G4', 'Ab4', 'A4', 'Bb4', 'B4'];
+  const play = (note, delay = 0) => {
+    engine.unlock();
+    engine.play(srcFor(note), { at: delay ? engine.now() + delay : undefined, gain: 0.85 });
+  };
+
+  engine.load(keyboardNotes.map(srcFor));
+
+  document.querySelectorAll('.pitch-audition').forEach((button) => {
+    button.addEventListener('click', () => {
+      play(button.dataset.note);
+      button.classList.remove('is-playing');
+      void button.offsetWidth;
+      button.classList.add('is-playing');
+      window.setTimeout(() => button.classList.remove('is-playing'), 360);
+    });
+  });
+
+  const earTraining = document.querySelector('[data-pitch-ear-training]');
+  if (earTraining) {
+    const targetButton = earTraining.querySelector('.pitch-play-target');
+    const feedback = earTraining.querySelector('.pitch-practice-feedback');
+    let target = null;
+    let attempts = 0;
+
+    targetButton.addEventListener('click', () => {
+      target = notes[Math.floor(Math.random() * 7)];
+      attempts = 0;
+      play(target);
+      targetButton.textContent = '↻ 再听一次';
+      feedback.className = 'pitch-practice-feedback';
+      feedback.textContent = '仔细听，选择一个音名。';
+      earTraining.querySelectorAll('[data-answer]').forEach((button) => { button.disabled = false; });
+    });
+
+    earTraining.querySelector('.pitch-answer-keys').addEventListener('click', (event) => {
+      const answer = event.target.closest('[data-answer]');
+      if (!answer || !target) return;
+      attempts += 1;
+      const isCorrect = target.startsWith(answer.dataset.answer);
+      feedback.className = `pitch-practice-feedback ${isCorrect ? 'is-correct' : 'is-wrong'}`;
+      feedback.textContent = isCorrect
+        ? `答对了，刚才是 ${target.slice(0, -1)}。再来一题吧。`
+        : `还不是 ${answer.dataset.answer}，再听一次。`;
+      if (isCorrect) {
+        earTraining.querySelectorAll('[data-answer]').forEach((button) => { button.disabled = true; });
+        targetButton.textContent = '▶ 下一题';
+        target = null;
+      } else if (attempts >= 2) {
+        feedback.textContent = `提示：它是 ${target.slice(0, -1)}。现在再听一次。`;
+      }
+    });
+  }
+
+  const sightSinging = document.querySelector('[data-sight-singing]');
+  if (sightSinging) {
+  };
+  const start = () => {
+    state.playing = true; state.lastFrame = performance.now();
+    playhead.style.display = 'block'; transport.textContent = '❚❚'; setStatus('播放中', true);
+    updatePlayhead();
+    if (state.accumulator === 0) playStep(state.currentStep);
+    state.frame = requestAnimationFrame(animate);
+  };
+  const seek = (step) => {
+    state.currentStep = Math.max(0, Math.min(steps - 1, Math.round(step)));
+    state.accumulator = 0; playhead.style.display = 'block'; updatePlayhead();
+    if (state.playing) playStep(state.currentStep);
+  };
+  const stepFromPointer = (x) => {
+    const first = rulerCells[0]?.getBoundingClientRect(); const last = rulerCells[rulerCells.length - 1]?.getBoundingClientRect();
+    if (!first || !last) return 0;
+    return Math.floor(Math.max(0, Math.min(0.999, (x - first.left) / Math.max(1, last.right - first.left))) * steps);
+  };
+
+  transport.addEventListener('click', () => (state.playing ? pause() : start()));
+  clearButton.addEventListener('click', () => { blocks.clear(); cells.flat().forEach((cell) => { cell.classList.remove('active', 'is-merged', 'is-merged-start', 'is-merged-end'); cell.setAttribute('aria-pressed', 'false'); }); active = cells.map((row) => row.map(() => false)); setStatus('已清空'); });
+  bpmInput.addEventListener('input', () => { state.bpm = Number(bpmInput.value); bpmValue.textContent = String(state.bpm); state.accumulator = 0; state.lastFrame = state.playing ? performance.now() : 0; updatePlayhead(); });
+  ruler.addEventListener('pointerdown', (event) => { if (event.button !== 0 && event.pointerType === 'mouse') return; state.scrubbing = true; ruler.setPointerCapture?.(event.pointerId); seek(stepFromPointer(event.clientX)); });
+  ruler.addEventListener('pointermove', (event) => { if (state.scrubbing) seek(stepFromPointer(event.clientX)); });
+  ruler.addEventListener('pointerup', () => { state.scrubbing = false; });
+  ruler.addEventListener('pointercancel', () => { state.scrubbing = false; });
+  window.addEventListener('resize', updatePlayhead);
+  render(); updatePlayhead();
+})();
+
+/* ---------------- 五线谱与音符练习（兼容旧页面） ---------------- */
 (() => {
   'use strict';
   const engine = window.MusicLabAudio;
@@ -57,10 +155,7 @@
     const audition = () => { play(button.dataset.note); button.classList.add('is-playing'); setStatus(`正在试听 ${button.dataset.note.slice(0, -1)}`); setTimeout(() => button.classList.remove('is-playing'), 330); };
     button.addEventListener('click', audition);
     button.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        audition();
-      }
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); audition(); }
     });
   });
   lab.querySelector('.notation-play').addEventListener('click', () => { lab.querySelectorAll('.notation-note').forEach((button, index) => { play(button.dataset.note, index * 0.52); setTimeout(() => button.classList.add('is-playing'), index * 520); setTimeout(() => button.classList.remove('is-playing'), index * 520 + 410); }); setStatus('正在播放一小节'); });

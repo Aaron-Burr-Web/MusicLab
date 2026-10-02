@@ -333,17 +333,11 @@
 
     .sequencer-cell.is-merged {
       filter: saturate(1.12) brightness(0.96);
+    }
+
+    .sequencer-cell.is-merged:not(.is-merged-end) {
       margin-right: -4px;
       width: calc(100% + 4px);
-      z-index: 1;
-    }
-
-    .sequencer-cell.is-merged-start {
-      border-radius: 4px 0 0 4px;
-    }
-
-    .sequencer-cell.is-merged-end {
-      border-radius: 0 4px 4px 0;
     }
 
     .stop-button {
@@ -782,7 +776,7 @@
           <div class="playhead-line"></div>
         </div>
       </div>
-      <p class="sequencer-hint">提示：❚❚ 暂停会停在原地，■ 回到开头；点击 / 拖动上方标尺可把播放线移到任意一格，播放中也可以随时增删方块。和弦轨长按同一行拖动，可合并连续网格。</p>
+      <p class="sequencer-hint">提示：❚❚ 暂停会停在原地，■ 回到开头；点击 / 拖动上方标尺可把播放线移到任意一格。和弦、贝斯与旋律轨长按同一行横向拖动，可合并连续网格；点击片段可取消。</p>
     `;
 
     const grid = panel.querySelector('.sequencer-grid');
@@ -809,7 +803,7 @@
 
     const cellMatrix = [];
     const rowCount = theme === 'red' ? drumTracks.length : 15;
-    const canMergeCells = id === 'chords';
+    const canMergeCells = theme !== 'red';
     const blockLengths = new Map();
     const drumLabels = drumTracks.map(([label]) => label);
     let samples = theme === 'red' ? drumTracks.map(([, src]) => src) : rowSamples(state.key, state.mode, baseOctave);
@@ -819,38 +813,59 @@
     const api = { id, armed: false };
 
     const updateStatus = () => { if (statusPill) statusPill.textContent = `${state.key} / ${state.mode}`; };
+    const chordGain = (count) => theme === 'yellow' ? gain / Math.sqrt(Math.max(1, count)) : gain;
 
     const blockKey = (rowIndex, step) => `${rowIndex}:${step}`;
-    const clearRowBlocks = (rowIndex) => {
-      [...blockLengths].forEach(([key, length]) => {
-        if (!key.startsWith(`${rowIndex}:`)) return;
-        const startStep = Number(key.split(':')[1]);
-        for (let step = startStep; step < startStep + length; step += 1) {
-          const cell = cellMatrix[rowIndex]?.[step];
-          if (cell) {
-            cell.classList.remove('active');
-            cell.setAttribute('aria-pressed', 'false');
-          }
+    const setCell = (rowIndex, step, isActive) => {
+      const cell = cellMatrix[rowIndex]?.[step];
+      if (!cell) return;
+      cell.classList.toggle('active', isActive);
+      cell.setAttribute('aria-pressed', String(isActive));
+    };
+    const removeBlock = ({ rowIndex, startStep, length }) => {
+      for (let step = startStep; step < startStep + length; step += 1) {
+        const cell = cellMatrix[rowIndex]?.[step];
+        if (!cell) continue;
+        setCell(rowIndex, step, false);
+      }
+      blockLengths.delete(blockKey(rowIndex, startStep));
+      renderBlocks(rowIndex);
+    };
+    const renderBlocks = (rowIndex) => {
+      const row = cellMatrix[rowIndex] || [];
+      row.forEach((cell) => cell.classList.remove('is-merged', 'is-merged-start', 'is-merged-end'));
+      blockLengths.forEach((length, key) => {
+        const [blockRow, blockStart] = key.split(':').map(Number);
+        if (blockRow !== rowIndex) return;
+        const endStep = Math.min(steps - 1, blockStart + length - 1);
+        for (let step = blockStart; step <= endStep; step += 1) {
+          const cell = row[step];
+          if (!cell) continue;
+          cell.classList.add('is-merged');
+          cell.classList.toggle('is-merged-start', step === blockStart);
+          cell.classList.toggle('is-merged-end', step === endStep);
         }
-        blockLengths.delete(key);
       });
-      cellMatrix[rowIndex]?.forEach((cell) => cell.classList.remove('is-merged', 'is-merged-start', 'is-merged-end'));
     };
     const paintBlock = (rowIndex, startStep, length) => {
       const endStep = Math.min(steps - 1, startStep + length - 1);
+      const overlaps = new Map();
+      for (let step = startStep; step <= endStep; step += 1) {
+        const existing = blockAt(rowIndex, step);
+        if (existing) overlaps.set(blockKey(existing.rowIndex, existing.startStep), existing);
+      }
+      overlaps.forEach((block) => blockLengths.delete(blockKey(block.rowIndex, block.startStep)));
       blockLengths.set(blockKey(rowIndex, startStep), endStep - startStep + 1);
       for (let step = startStep; step <= endStep; step += 1) {
         const cell = cellMatrix[rowIndex]?.[step];
         if (!cell) continue;
-        cell.classList.add('active', 'is-merged');
-        cell.setAttribute('aria-pressed', 'true');
-        cell.classList.toggle('is-merged-start', step === startStep);
-        cell.classList.toggle('is-merged-end', step === endStep);
+        setCell(rowIndex, step, true);
       }
+      renderBlocks(rowIndex);
     };
     const applyBlocks = (blocks) => {
       (blocks || []).forEach(([rowIndex, startStep, length]) => {
-        if (canMergeCells && Number.isInteger(length) && length > 1) paintBlock(rowIndex, startStep, length);
+        if (canMergeCells && Number.isInteger(length) && length >= 1) paintBlock(rowIndex, startStep, length);
       });
     };
 
@@ -880,10 +895,15 @@
           cell.setAttribute('aria-pressed', 'false');
           cell.addEventListener('click', () => {
             if (skipCellClickUntil > performance.now()) return;
-            clearRowBlocks(rowIndex);
-            const isActive = cell.classList.toggle('active');
-            cell.setAttribute('aria-pressed', String(isActive));
-            if (isActive && !api.armed) previewRow(rowIndex);
+            const block = blockAt(rowIndex, step);
+            if (block) {
+              removeBlock(block);
+              saveSoon();
+              return;
+            }
+            const isActive = !cell.classList.contains('active');
+            setCell(rowIndex, step, isActive);
+            if (isActive && !api.armed) previewRow(rowIndex, step);
             saveSoon();
           });
           if (canMergeCells) {
@@ -913,8 +933,20 @@
     const beginCellDrag = (event) => {
       if (event.button !== 0 && event.pointerType === 'mouse') return;
       const cell = event.currentTarget;
-      cellDrag = { pointerId: event.pointerId, rowIndex: Number(cell.dataset.row), startStep: Number(cell.dataset.step), endStep: Number(cell.dataset.step), startedAt: performance.now(), moved: false };
+      const rowIndex = Number(cell.dataset.row);
+      const baseBlocks = [...blockLengths].filter(([key]) => Number(key.split(':')[0]) === rowIndex);
+      const baseActive = (cellMatrix[rowIndex] || []).map((item) => item.classList.contains('active'));
+      cellDrag = { pointerId: event.pointerId, rowIndex, startStep: Number(cell.dataset.step), endStep: Number(cell.dataset.step), startedAt: performance.now(), moved: false, baseBlocks, baseActive };
       try { cell.setPointerCapture(event.pointerId); } catch (_) { /* ignore */ }
+    };
+    const restoreDragBase = () => {
+      if (!cellDrag) return;
+      for (const key of [...blockLengths.keys()]) {
+        if (Number(key.split(':')[0]) === cellDrag.rowIndex) blockLengths.delete(key);
+      }
+      cellDrag.baseBlocks.forEach(([key, length]) => blockLengths.set(key, length));
+      cellDrag.baseActive.forEach((isActive, step) => setCell(cellDrag.rowIndex, step, isActive));
+      renderBlocks(cellDrag.rowIndex);
     };
     const stepAtPointer = (rowIndex, clientX) => {
       const row = cellMatrix[rowIndex] || [];
@@ -942,47 +974,59 @@
       const rowRect = row[0]?.parentElement?.getBoundingClientRect();
       if (!rowRect || event.clientY < rowRect.top || event.clientY > rowRect.bottom) return;
       const step = stepAtPointer(rowIndex, event.clientX);
-      if (step === cellDrag.startStep || performance.now() - cellDrag.startedAt < 220) return;
+      if (performance.now() - cellDrag.startedAt < 220) return;
+      if (step === cellDrag.startStep && !cellDrag.moved) return;
       cellDrag.moved = true;
       cellDrag.endStep = step;
-      const startStep = Math.min(cellDrag.startStep, step);
-      const length = Math.abs(cellDrag.startStep - step) + 1;
-      clearRowBlocks(rowIndex);
-      paintBlock(rowIndex, startStep, length);
+      restoreDragBase();
+      paintBlock(rowIndex, Math.min(cellDrag.startStep, step), Math.abs(cellDrag.startStep - step) + 1);
     };
     const finishCellDrag = (event) => {
       if (!cellDrag || cellDrag.pointerId !== event.pointerId) return;
       if (cellDrag.moved) {
+        const startStep = Math.min(cellDrag.startStep, cellDrag.endStep);
+        paintBlock(cellDrag.rowIndex, startStep, Math.abs(cellDrag.endStep - cellDrag.startStep) + 1);
         skipCellClickUntil = performance.now() + 100;
         saveSoon();
         event.preventDefault();
       }
       cellDrag = null;
     };
-    const cancelCellDrag = () => { cellDrag = null; };
+    const cancelCellDrag = () => {
+      if (cellDrag?.moved) restoreDragBase();
+      cellDrag = null;
+    };
 
     const blockAt = (rowIndex, step) => {
       for (const [key, length] of blockLengths) {
         const [blockRow, blockStart] = key.split(':').map(Number);
-        if (blockRow === rowIndex && step >= blockStart && step < blockStart + length) return { start: blockStart, length };
+        if (blockRow === rowIndex && step >= blockStart && step < blockStart + length) return { rowIndex: blockRow, startStep: blockStart, length };
       }
       return null;
     };
 
-    const previewRow = (rowIndex) => {
+    const previewRow = (rowIndex, step = 0) => {
       AUDIO.unlock();
       const src = samples[rowIndex];
-      if (src) AUDIO.play(src, { gain, ...(theme === 'red' ? {} : { duration: 15 / master.bpm }) });
+      if (src) {
+        const activeCount = theme === 'yellow'
+          ? cellMatrix.reduce((count, row) => count + (row[step]?.classList.contains('active') ? 1 : 0), 0)
+          : 1;
+        AUDIO.play(src, { gain: chordGain(activeCount), ...(theme === 'red' ? {} : { duration: 15 / master.bpm, synth: true }) });
+      }
     };
 
     api.onStep = (step, time) => {
       if (!api.armed) return;
+      const activeCount = theme === 'yellow'
+        ? cellMatrix.reduce((count, row) => count + (row[step]?.classList.contains('active') ? 1 : 0), 0)
+        : 1;
       cellMatrix.forEach((row, rowIndex) => {
         const block = blockAt(rowIndex, step);
-        if (block && block.start !== step) return;
+        if (block && block.startStep !== step) return;
         if (row[step]?.classList.contains('active') && samples[rowIndex]) {
           const duration = theme === 'red' ? undefined : (block?.length || 1) * (15 / master.bpm);
-          AUDIO.play(samples[rowIndex], { at: time, gain, ...(duration ? { duration } : {}) });
+          AUDIO.play(samples[rowIndex], { at: time, gain: chordGain(activeCount), ...(duration ? { duration, synth: true } : {}) });
         }
       });
     };

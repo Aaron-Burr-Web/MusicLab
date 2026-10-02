@@ -64,14 +64,93 @@
     const scaleRows = ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3']
       .map((note) => [note, [note]]);
 
-    const createTrack = ({ title, theme, rows, gain }) => {
-      const state = { bpm: 96, pattern: Array.from({ length: 15 }, () => new Set()), clock: null, playing: false };
+    const createTrack = ({ title, theme, rows, gain, isChord = false }) => {
+      const state = { bpm: 96, pattern: Array.from({ length: 15 }, () => new Set()), blocks: new Map(), clock: null, playing: false };
       const panel = document.createElement('section');
       panel.className = `chord-sequencer-panel ${theme}`;
       audio.load(rows.flatMap(([, notes]) => notes.map(source)));
+      const chordGain = (count) => isChord ? gain / Math.sqrt(Math.max(1, count)) : gain;
+      const activeCountAt = (step) => state.pattern.reduce((count, row) => count + (row.has(step) ? 1 : 0), 0);
+
+      const blockKey = (row, start) => `${row}:${start}`;
+      const blockAt = (row, step) => {
+        for (const [key, length] of state.blocks) {
+          const [blockRow, start] = key.split(':').map(Number);
+          if (blockRow === row && step >= start && step < start + length) return { row, start, length };
+        }
+        return null;
+      };
+      const updateCell = (row, step) => {
+        const cell = panel.querySelector(`.chord-sequencer-cell[data-row="${row}"][data-step="${step}"]`);
+        if (!cell) return;
+        const block = blockAt(row, step);
+        cell.classList.toggle('is-active', state.pattern[row].has(step));
+        cell.classList.toggle('is-merged', Boolean(block));
+        cell.classList.toggle('is-merged-start', block?.start === step);
+        cell.classList.toggle('is-merged-end', block?.start + block?.length - 1 === step);
+        cell.setAttribute('aria-pressed', String(state.pattern[row].has(step)));
+      };
+      const removeBlock = ({ row, start, length }) => {
+        for (let step = start; step < start + length; step += 1) {
+          state.pattern[row].delete(step);
+          updateCell(row, step);
+        }
+        state.blocks.delete(blockKey(row, start));
+        for (let step = start; step < start + length; step += 1) updateCell(row, step);
+      };
+      const paintBlock = (row, start, length) => {
+        const end = Math.min(STEPS - 1, start + length - 1);
+        const overlaps = new Map();
+        for (let step = start; step <= end; step += 1) {
+          const block = blockAt(row, step);
+          if (block) overlaps.set(blockKey(block.row, block.start), block);
+        }
+        overlaps.forEach(removeBlock);
+        state.blocks.set(blockKey(row, start), end - start + 1);
+        for (let step = start; step <= end; step += 1) {
+          state.pattern[row].add(step);
+          updateCell(row, step);
+        }
+      };
+      let cellDrag = null;
+      let skipCellClickUntil = 0;
+      const stepAtPointer = (row, clientX) => {
+        const cells = [...panel.querySelectorAll(`.chord-sequencer-cell[data-row="${row}"]`)];
+        return cells.reduce((nearest, cell, step) => {
+          const rect = cell.getBoundingClientRect();
+          const distance = clientX < rect.left ? rect.left - clientX : clientX > rect.right ? clientX - rect.right : 0;
+          return distance < nearest.distance ? { step, distance } : nearest;
+        }, { step: 0, distance: Infinity }).step;
+      };
+      const beginCellDrag = (event) => {
+        if (event.button !== 0 && event.pointerType === 'mouse') return;
+        const cell = event.currentTarget;
+        cellDrag = { pointerId: event.pointerId, row: Number(cell.dataset.row), start: Number(cell.dataset.step), moved: false, startedAt: performance.now() };
+        try { cell.setPointerCapture?.(event.pointerId); } catch (_) { /* 合成指针事件没有活动指针时可忽略 */ }
+      };
+      const updateCellDrag = (event) => {
+        if (!cellDrag || cellDrag.pointerId !== event.pointerId || performance.now() - cellDrag.startedAt < 220) return;
+        const cells = panel.querySelectorAll(`.chord-sequencer-cell[data-row="${cellDrag.row}"]`);
+        const rowRect = cells[0]?.parentElement?.getBoundingClientRect();
+        if (!rowRect || event.clientY < rowRect.top || event.clientY > rowRect.bottom) return;
+        const end = stepAtPointer(cellDrag.row, event.clientX);
+        if (end === cellDrag.start) return;
+        cellDrag.moved = true;
+        cellDrag.end = end;
+        paintBlock(cellDrag.row, Math.min(cellDrag.start, end), Math.abs(end - cellDrag.start) + 1);
+      };
+      const finishCellDrag = (event) => {
+        if (!cellDrag || cellDrag.pointerId !== event.pointerId) return;
+        if (cellDrag.moved) {
+          paintBlock(cellDrag.row, Math.min(cellDrag.start, cellDrag.end), Math.abs(cellDrag.end - cellDrag.start) + 1);
+          skipCellClickUntil = performance.now() + 100;
+          event.preventDefault();
+        }
+        cellDrag = null;
+      };
 
       const render = () => {
-        panel.innerHTML = `<div class="chord-sequencer-title-row"><h3>${title}</h3></div><div class="chord-sequencer-header"><div class="chord-transport-group"><button class="chord-transport-button" type="button" data-play aria-label="播放或暂停${title}">${state.playing ? '❚❚' : '▶'}</button><button class="chord-stop-button" type="button" data-stop aria-label="停止${title}并回到开头">■</button><label class="chord-bpm-wrap"><span>BPM</span><output>${state.bpm}</output><input type="range" min="40" max="240" step="1" value="${state.bpm}" data-bpm aria-label="${title} BPM 调节器"></label></div><button class="chord-clear-button" type="button" data-clear>Clear</button></div><div class="chord-sequencer-shell"><div class="chord-sequencer-track"><div class="chord-sequencer-ruler"><span>拍</span>${Array.from({ length: STEPS }, (_, step) => `<button type="button" data-seek="${step}" class="${step % 4 === 0 ? 'is-beat' : ''}" aria-label="跳到第 ${step + 1} 格">${step % 4 === 0 ? step / 4 + 1 : '·'}</button>`).join('')}</div><div class="chord-sequencer-grid">${rows.map(([label], rowIndex) => `<div class="chord-sequencer-row"><b>${label}</b>${Array.from({ length: STEPS }, (_, step) => `<button type="button" class="chord-sequencer-cell ${dividerSteps.has(step) ? 'is-divider' : ''} ${state.pattern[rowIndex].has(step) ? 'is-active' : ''}" data-row="${rowIndex}" data-step="${step}" aria-label="${title} ${label} 第 ${step + 1} 格" aria-pressed="${state.pattern[rowIndex].has(step)}"></button>`).join('')}</div>`).join('')}<i class="chord-playhead" aria-hidden="true"></i></div></div></div><p class="chord-sequencer-hint">每四格是一拍。点击标尺可移动播放头，播放时仍可编辑方格。</p>`;
+        panel.innerHTML = `<div class="chord-sequencer-title-row"><h3>${title}</h3></div><div class="chord-sequencer-header"><div class="chord-transport-group"><button class="chord-transport-button" type="button" data-play aria-label="播放或暂停${title}">${state.playing ? '❚❚' : '▶'}</button><button class="chord-stop-button" type="button" data-stop aria-label="停止${title}并回到开头">■</button><label class="chord-bpm-wrap"><span>BPM</span><output>${state.bpm}</output><input type="range" min="40" max="240" step="1" value="${state.bpm}" data-bpm aria-label="${title} BPM 调节器"></label></div><button class="chord-clear-button" type="button" data-clear>Clear</button></div><div class="chord-sequencer-shell"><div class="chord-sequencer-track"><div class="chord-sequencer-ruler"><span>拍</span>${Array.from({ length: STEPS }, (_, step) => `<button type="button" data-seek="${step}" class="${step % 4 === 0 ? 'is-beat' : ''}" aria-label="跳到第 ${step + 1} 格">${step % 4 === 0 ? step / 4 + 1 : '·'}</button>`).join('')}</div><div class="chord-sequencer-grid">${rows.map(([label], rowIndex) => `<div class="chord-sequencer-row"><b>${label}</b>${Array.from({ length: STEPS }, (_, step) => { const block = blockAt(rowIndex, step); return `<button type="button" class="chord-sequencer-cell ${dividerSteps.has(step) ? 'is-divider' : ''} ${state.pattern[rowIndex].has(step) ? 'is-active' : ''} ${block ? 'is-merged' : ''} ${block?.start === step ? 'is-merged-start' : ''} ${block?.start + block?.length - 1 === step ? 'is-merged-end' : ''}" data-row="${rowIndex}" data-step="${step}" aria-label="${title} ${label} 第 ${step + 1} 格" aria-pressed="${state.pattern[rowIndex].has(step)}"></button>`; }).join('')}</div>`).join('')}<i class="chord-playhead" aria-hidden="true"></i></div></div></div><p class="chord-sequencer-hint">长按同一行并横向拖动可合并长音；点击已点亮片段可取消，同一行可建立多个片段。</p>`;
         bind();
       };
 
@@ -102,7 +181,9 @@
         if (state.playing) return;
         state.clock = audio.createClock({ bpm: state.bpm, steps: STEPS, onStep: (step, at) => {
           rows.forEach(([, notes], rowIndex) => {
-            if (state.pattern[rowIndex].has(step)) notes.forEach((note) => audio.play(source(note), { at, gain }));
+            const block = blockAt(rowIndex, step);
+            if (block && block.start !== step) return;
+            if (state.pattern[rowIndex].has(step)) notes.forEach((note) => audio.play(source(note), { at, gain: chordGain(activeCountAt(step)), duration: (15 / state.bpm) * (block?.length || 1), synth: true }));
           });
           paint(step);
         } });
@@ -119,15 +200,24 @@
           if (state.clock) state.clock.setBpm(state.bpm);
           panel.querySelector('output').textContent = state.bpm;
         });
-        panel.querySelector('[data-clear]').addEventListener('click', () => { state.pattern.forEach((row) => row.clear()); render(); });
+        panel.querySelector('[data-clear]').addEventListener('click', () => { state.blocks.clear(); state.pattern.forEach((row) => row.clear()); render(); });
         panel.querySelectorAll('.chord-sequencer-cell').forEach((cell) => cell.addEventListener('click', () => {
+          if (skipCellClickUntil > performance.now()) return;
           const row = state.pattern[Number(cell.dataset.row)];
           const step = Number(cell.dataset.step);
+          const rowIndex = Number(cell.dataset.row);
+          const block = blockAt(rowIndex, step);
+          if (block) { removeBlock(block); return; }
           row.has(step) ? row.delete(step) : row.add(step);
-          cell.classList.toggle('is-active', row.has(step));
-          cell.setAttribute('aria-pressed', String(row.has(step)));
-          if (!state.playing && row.has(step)) rows[Number(cell.dataset.row)][1].forEach((note) => audio.play(source(note), { gain }));
+          updateCell(rowIndex, step);
+          if (!state.playing && row.has(step)) rows[rowIndex][1].forEach((note) => audio.play(source(note), { gain: chordGain(activeCountAt(step)), duration: 15 / state.bpm, synth: true }));
         }));
+        panel.querySelectorAll('.chord-sequencer-cell').forEach((cell) => {
+          cell.addEventListener('pointerdown', beginCellDrag);
+          cell.addEventListener('pointermove', updateCellDrag);
+          cell.addEventListener('pointerup', finishCellDrag);
+          cell.addEventListener('pointercancel', () => { cellDrag = null; });
+        });
         panel.querySelectorAll('[data-seek]').forEach((button) => button.addEventListener('click', () => {
           const step = Number(button.dataset.seek);
           if (state.clock) state.clock.seek(step);
@@ -139,7 +229,7 @@
       trackLab.appendChild(panel);
     };
 
-    createTrack({ title: 'Chords 音轨', theme: 'is-chords', rows: scaleRows, gain: 0.5 });
+    createTrack({ title: 'Chords 音轨', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
     createTrack({ title: 'Basslines 音轨', theme: 'is-bass', rows: scaleRows, gain: 0.78 });
   }
 

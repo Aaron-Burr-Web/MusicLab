@@ -1,3 +1,9 @@
+.ear-training.is-audio-playing [data-ear-play],
+.ear-training.is-audio-playing [data-ear-replay] {
+  cursor: wait;
+  opacity: 0.48;
+}
+
 /* 练习区：键盘定位与五线谱提示。 */
 .practice-main {
   width: min(1100px, calc(100% - 48px));

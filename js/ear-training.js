@@ -2,7 +2,8 @@
  * 听音练习（js/ear-training.js）
  *
  * 用法：在教程页面里放一个容器，脚本会把整个练习渲染进去：
- *   <div data-ear-training="note"     data-title="单音听辨" data-rounds="8"></div>
+ *   <div data-ear-training="note"     data-title="听音找键" data-rounds="8"></div>
+ *   <div data-ear-training="note-advanced" data-title="单音听辨（进阶版）" data-rounds="8"></div>
  *   <div data-ear-training="interval" ...></div>
  *   <div data-ear-training="chord"    ...></div>
  *
@@ -32,8 +33,6 @@
     'C3', 'Db3', 'D3', 'Eb3', 'E3', 'F3', 'Gb3', 'G3', 'Ab3', 'A3', 'Bb3', 'B3',
     'C4', 'Db4', 'D4', 'Eb4', 'E4', 'F4', 'Gb4', 'G4', 'Ab4', 'A4', 'Bb4', 'B4', 'C5']);
   const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
-  const CN_NAMES = { C: 'C（do）', D: 'D（re）', E: 'E（mi）', F: 'F（fa）', G: 'G（sol）', A: 'A（la）', B: 'B（si）' };
-
   const midiToName = (midi) => `${FLAT_NAMES[((midi % 12) + 12) % 12]}${Math.floor(midi / 12) - 1}`;
   const srcOf = (midi) => {
     const name = midiToName(midi);
@@ -41,9 +40,37 @@
   };
 
   const fallbackPool = {};
-  const playSrc = (src, delaySec = 0, gain = 0.9) => {
+  let playbackTimer = null;
+  let playbackUntil = 0;
+  const playbackDurations = { note: 3200, 'note-advanced': 3200, interval: 3100, chord: 2200, mode: 4100 };
+  const setPlaybackButtons = (disabled) => {
+    mounts.forEach((mount) => {
+      mount.classList.toggle('is-audio-playing', disabled);
+      mount.querySelectorAll('[data-ear-play], [data-ear-replay]').forEach((button) => {
+        button.disabled = disabled;
+        button.setAttribute('aria-disabled', String(disabled));
+      });
+    });
+  };
+  const beginPlayback = (type) => {
+    const remaining = playbackUntil - performance.now();
+    if (remaining > 0) return false;
+    clearTimeout(playbackTimer);
+    playbackUntil = performance.now() + (playbackDurations[type] || 6200);
+    setPlaybackButtons(true);
+    playbackTimer = window.setTimeout(() => {
+      playbackUntil = 0;
+      setPlaybackButtons(false);
+    }, playbackUntil - performance.now());
+    return true;
+  };
+  const playSrc = (src, delaySec = 0, gain = 0.9, durationSec = 2) => {
     if (!src) return;
-    if (AUDIO) { AUDIO.unlock(); AUDIO.play(src, { at: delaySec ? AUDIO.now() + delaySec : undefined, gain }); return; }
+    if (AUDIO) {
+      AUDIO.unlock();
+      AUDIO.play(src, { at: delaySec ? AUDIO.now() + delaySec : undefined, gain, duration: durationSec });
+      return;
+    }
     const fire = () => {
       if (!fallbackPool[src]) fallbackPool[src] = Array.from({ length: 3 }, () => { const a = new Audio(src); a.preload = 'auto'; return a; });
       const pool = fallbackPool[src];
@@ -53,6 +80,10 @@
       voice.currentTime = 0;
       const req = voice.play();
       if (req) req.catch(() => {});
+      window.setTimeout(() => {
+        voice.pause();
+        voice.currentTime = 0;
+      }, durationSec * 1000);
     };
     if (delaySec > 0) setTimeout(fire, delaySec * 1000); else fire();
   };
@@ -64,7 +95,7 @@
 
   /* ---------------- 题库 ---------------- */
   const C3 = 48;                                   // 中央 C
-  const SCALE = [0, 2, 4, 5, 7, 9, 11];            // C 大调
+  const SINGLE_NOTE_RANGE = Array.from({ length: 13 }, (_, index) => C3 + index); // C3-C4 的全部半音
   const INTERVALS = [
     { semitones: 2, label: '大二度' }, { semitones: 4, label: '大三度' }, { semitones: 5, label: '纯四度' },
     { semitones: 7, label: '纯五度' }, { semitones: 9, label: '大六度' }, { semitones: 12, label: '纯八度' },
@@ -85,23 +116,25 @@
 
   const pick = (list) => list[Math.floor(Math.random() * list.length)];
 
-  const MODES = {
-    note: {
-      title: '单音听辨',
-      intro: '先听到基准音 C（do），再听到一个音。它是哪个音名？',
-      make() {
-        const degree = Math.floor(Math.random() * 7);
-        const midi = C3 + SCALE[degree];
-        const letter = ['C', 'D', 'E', 'F', 'G', 'A', 'B'][degree];
-        return {
-          play: (replay) => { playSrc(srcOf(C3), 0, replay ? 0.7 : 0.7); playSrc(srcOf(midi), 1.0); },
-          options: ['C', 'D', 'E', 'F', 'G', 'A', 'B'].map((l) => CN_NAMES[l]),
-          answer: CN_NAMES[letter],
-          explain: `这个音是 ${letter}，比基准音 C 高 ${SCALE[degree]} 个半音。`
-        };
-      },
-      preload: () => preload([C3, ...SCALE.map((s) => C3 + s)])
+  const makeSingleNoteMode = (title) => ({
+    title,
+    intro: '先听到基准音 C3，再听到一个音。它是哪一个音？',
+    make() {
+      const midi = pick(SINGLE_NOTE_RANGE);
+      const answer = midiToName(midi);
+      return {
+        play: () => { playSrc(srcOf(C3), 0, 0.7); playSrc(srcOf(midi), 1.0); },
+        options: SINGLE_NOTE_RANGE.map(midiToName),
+        answer,
+        explain: `这个音是 ${answer}，与基准音 C3 相差 ${midi - C3} 个半音。`
+      };
     },
+    preload: () => preload(SINGLE_NOTE_RANGE)
+  });
+
+  const MODES = {
+    note: makeSingleNoteMode('听音找键'),
+    'note-advanced': makeSingleNoteMode('单音听辨（进阶版）'),
     interval: {
       title: '音程听辨',
       intro: '连续听到两个音，它们之间是什么音程？',
@@ -189,6 +222,16 @@
         .join('');
     };
 
+    const playQuestion = () => {
+      if (!state.question) return false;
+      if (!beginPlayback(mount.dataset.earTraining)) {
+        window.setTimeout(playQuestion, Math.max(50, playbackUntil - performance.now() + 20));
+        return false;
+      }
+      state.question.play(state.started);
+      return true;
+    };
+
     const nextQuestion = () => {
       state.question = mode.make();
       state.answered = false;
@@ -198,7 +241,7 @@
       playBtn.textContent = '▶ 播放题目';
       replayBtn.disabled = false;
       renderOptions();
-      state.question.play(false);
+      playQuestion();
     };
 
     const finishRound = () => {
@@ -246,12 +289,10 @@
         scoreEl.textContent = `0 / ${rounds}`;
         scoreEl.className = 'status-badge offline';
         nextQuestion();
-      } else if (state.question) {
-        state.question.play(true);
-      }
+      } else if (state.question) playQuestion();
     });
 
-    replayBtn.addEventListener('click', () => { if (state.question) state.question.play(true); });
+    replayBtn.addEventListener('click', () => { if (state.question) playQuestion(); });
   };
 
   mounts.forEach(build);
