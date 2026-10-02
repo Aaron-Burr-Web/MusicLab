@@ -675,6 +675,11 @@
     content: "−";
 }
 
+.pic{
+  display: block;
+  max-width: 60%;
+  height: auto;
+}
 .directory-group summary h3,
 .directory-links a h3 {
     margin: 0;

@@ -11,14 +11,14 @@
   'use strict';
 
   const AUDIO_SOURCES = {
-    kick: '../audio/kick.wav',
-    snare: '../audio/snare.wav',
-    'open-hat': '../audio/open-hat.wav',
-    'closed-hat': '../audio/closed-hat.wav',
-    tom: '../audio/Tom.wav',
-    crash: '../audio/crash.wav',
-    ride: '../audio/ride.wav',
-    clap: '../audio/clap.wav'
+    kick: '../audio/beats/kick.wav',
+    snare: '../audio/beats/snare.wav',
+    'open-hat': '../audio/beats/open-hat.wav',
+    'closed-hat': '../audio/beats/closed-hat.wav',
+    tom: '../audio/beats/Tom.wav',
+    crash: '../audio/beats/crash.wav',
+    ride: '../audio/beats/ride.wav',
+    clap: '../audio/beats/clap.wav'
   };
 
   const audioCache = {};
@@ -69,6 +69,7 @@
   const beatShell = wrapper.querySelector('.beat-demo-shell');
   const beatGrid = wrapper.querySelector('.beat-demo-grid');
   const beatPlayhead = wrapper.querySelector('.beat-demo-playhead');
+  const beatCheck = wrapper.querySelector('.beat-demo-check');
 
   let beatSteps = wrapper.dataset.demoVariant === 'meter-basics' ? 8 : 16;
   let beatCells = [];
@@ -79,6 +80,10 @@
     ['Tom', AUDIO_SOURCES.tom],
     ['Snare', AUDIO_SOURCES.snare],
     ['Closed-Hat', AUDIO_SOURCES['closed-hat']]
+  ] : ['song-example', 'twinkle-example'].includes(wrapper.dataset.demoVariant) ? [
+    ['Kick', AUDIO_SOURCES.kick],
+    ['Snare', AUDIO_SOURCES.snare],
+    ['Clap', AUDIO_SOURCES.clap]
   ] : [
     ['Kick', AUDIO_SOURCES.kick],
     ['Snare', AUDIO_SOURCES.snare],
@@ -93,15 +98,29 @@
 
   const rhythmPatterns = {
     basic: { steps: 16, bpm: 80, pattern: { 0: [1, 9], 1: [5, 13], 3: [3, 7, 11, 15] } },
-    'meter-2-4': { steps: 4, bpm: 80, pattern: { 0: [1], 1: [3] } },
-    'meter-3-4': { steps: 6, bpm: 80, pattern: { 0: [1], 1: [3, 5] } },
+    'meter-2-4': { steps: 4, bpm: 80, pattern: { 0: [1], 2: [3] } },
+    'meter-3-4': { steps: 6, bpm: 80, pattern: { 0: [1], 2: [3, 5] } },
     'meter-4-4': { steps: 8, bpm: 80, pattern: { 0: [1], 1: [5], 2: [3, 7] } },
+    'we-will-rock-you': { steps: 16, bpm: 80, pattern: { 0: [1, 3, 9, 11], 1: [5 , 13], 2: [5, 13] } },
     jazz: { steps: 24, bpm: 80, pattern: { 0: [1, 6, 7, 12, 13, 18, 19, 24], 1: [4, 10, 16, 22], 2: [23], 3: [3, 9, 15, 21], 6: [11], 7: [4, 10, 16, 22] } },
     samba: { steps: 16, bpm: 130, pattern: { 0: [1, 5, 9, 13], 1: [4, 7, 12, 15], 2: [10], 3: [3, 8, 11, 16], 4: [6], 7: [4, 12] } },
     tango: { steps: 16, bpm: 65, pattern: { 0: [1, 7, 9, 14, 16], 1: [5, 13], 2: [6, 14], 3: [2, 7, 10, 15], 4: [4, 8, 12] } },
     waltz: { steps: 24, bpm: 140, pattern: { 0: [1], 1: [5, 9, 17, 21], 2: [13], 3: [4, 12, 20], 6: [13] } },
     funk: { steps: 16, bpm: 95, pattern: { 0: [1, 6, 10, 12, 14], 1: [3, 7, 11, 15], 2: [5, 13], 3: [2, 4, 6, 8, 10, 12, 14, 16] } },
     rock: { steps: 16, bpm: 110, pattern: { 0: [1, 9], 1: [5, 13], 2: [5, 13], 3: [2, 3, 4, 6, 7, 8, 10, 11, 12, 14, 15, 16], 5: [5, 13] } }
+  };
+
+  const updateBeatCheck = () => {
+    if (!beatCheck || wrapper.dataset.demoVariant !== 'song-example') return;
+    const preset = rhythmPatterns['we-will-rock-you'];
+    const patternMatches = beatSteps === preset.steps && beatTracks.every(([,], rowIndex) => {
+      const expected = new Set((preset.pattern[rowIndex] || []).map((step) => step - 1));
+      return beatActive[rowIndex].every((active, step) => active === expected.has(step));
+    });
+    beatCheck.textContent = patternMatches
+      ? beatState.bpm === 80 ? '没错！就是这样！' : '没错！就是这样。现在调节至合适的BPM吧！'
+      : '';
+    beatCheck.classList.toggle('is-visible', patternMatches);
   };
 
   const beatState = {
@@ -301,6 +320,7 @@
           const isActive = cell.classList.toggle('active');
           beatActive[rowIndex][step] = isActive;
           cell.setAttribute('aria-pressed', String(isActive));
+          updateBeatCheck();
           if (isActive && !beatState.playing) playInstrumentAtStep(rowIndex, step);
         });
       });
@@ -332,9 +352,11 @@
 
     stopBeatPlayback();
     if (preset.steps !== beatSteps) rebuildGrid(preset.steps, false);
-    beatState.bpm = preset.bpm;
-    beatBpmSlider.value = String(preset.bpm);
-    beatBpmValue.textContent = String(preset.bpm);
+    if (wrapper.dataset.demoVariant !== 'song-example') {
+      beatState.bpm = preset.bpm;
+      beatBpmSlider.value = String(preset.bpm);
+      beatBpmValue.textContent = String(preset.bpm);
+    }
     beatCells.flat().forEach((cell) => { cell.classList.remove('active'); cell.setAttribute('aria-pressed', 'false'); });
     beatActive = beatCells.map((row) => row.map(() => false));
 
@@ -350,6 +372,7 @@
     });
     rhythmButtons.forEach((button) => button.classList.toggle('is-flashing', button.dataset.rhythm === patternName));
     window.setTimeout(() => rhythmButtons.forEach((button) => button.classList.remove('is-flashing')), 180);
+    updateBeatCheck();
     wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     if (shouldPlay) startBeatPlayback();
   };
@@ -385,16 +408,19 @@
     beatState.lastFrameTime = beatState.playing ? performance.now() : 0;
     beatState.stepAccumulator = 0;
     updateBeatPlayhead();
+    updateBeatCheck();
   });
 
   beatClearButton.addEventListener('click', () => {
     beatCells.flat().forEach((cell) => { cell.classList.remove('active'); cell.setAttribute('aria-pressed', 'false'); });
     beatActive = beatCells.map((row) => row.map(() => false));
+    updateBeatCheck();
   });
 
   renderBeatGrid();
   bindBeatCellEvents();
   if (wrapper.dataset.demoPreset) applyRhythmPattern(wrapper.dataset.demoPreset, false);
+  updateBeatCheck();
   updateBeatDividers();
   measureBeatPlayhead();
   updateBeatPlayhead();

@@ -175,6 +175,20 @@
     will-change: transform;
 }
 
+.beat-demo-check {
+    min-height: 24px;
+    margin: 10px 0 0;
+    color: #16a34a !important;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    visibility: hidden;
+}
+
+.beat-demo-check.is-visible {
+    visibility: visible;
+}
+
 .beat-demo-divider {
     position: absolute;
     top: 0;
@@ -244,6 +258,22 @@
 
 .beat-instrument-button.is-flashing {
     background: #e53935;
+    color: #ffffff;
+}
+
+.beat-rhythm-fill-button {
+    width: min(90px, 100%);
+    aspect-ratio: 2 / 1;
+    height: auto;
+    flex: 0 0 auto;
+    border-radius: 14px;
+    background: #b3b4b6;
+    color: #ffffff;
+    box-shadow: 0 6px 12px rgba(55, 62, 72, 0.24);
+}
+
+.beat-rhythm-fill-button.is-flashing {
+    background: #b1b1b1;
     color: #ffffff;
 }
 

@@ -614,14 +614,14 @@
   };
 
   const drumTracks = [
-    ['Kick', '../audio/kick.wav'],
-    ['Snare', '../audio/snare.wav'],
-    ['Open-Hat', '../audio/open-hat.wav'],
-    ['Closed-Hat', '../audio/closed-hat.wav'],
-    ['Tom', '../audio/Tom.wav'],
-    ['Crash', '../audio/crash.wav'],
-    ['Ride', '../audio/ride.wav'],
-    ['Clap', '../audio/clap.wav']
+    ['Kick', '../audio/beats/kick.wav'],
+    ['Snare', '../audio/beats/snare.wav'],
+    ['Open-Hat', '../audio/beats/open-hat.wav'],
+    ['Closed-Hat', '../audio/beats/closed-hat.wav'],
+    ['Tom', '../audio/beats/Tom.wav'],
+    ['Crash', '../audio/beats/crash.wav'],
+    ['Ride', '../audio/beats/ride.wav'],
+    ['Clap', '../audio/beats/clap.wav']
   ];
 
   /* ---------- 持久化 ---------- */

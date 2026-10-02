@@ -1,6 +1,6 @@
 /*
  * 教程首页「四轨示例」播放器（js/track-demo.js）
- * 用项目里已有的鼓采样（audio/*.wav）和 sources 中的钢琴采样实时演奏
+ * 用项目里已有的鼓采样（audio/beats/*.wav）和 sources 中的钢琴采样实时演奏
  * 4 种节奏 / 4 条贝斯 / 4 组和弦 / 4 段旋律。每列最多选一个，所有列共用一个节拍器，
  * 因此任意组合都能对齐——这正是课文里“尝试着把它们组合起来”的用意。
  * 全部素材都是 C 大调、16 步（4 拍）、100 BPM 循环。
@@ -14,12 +14,12 @@
   const BPM = 100;
   const STEPS = 16;
   const DRUM = {
-    kick: '../audio/kick.wav',
-    snare: '../audio/snare.wav',
-    hat: '../audio/closed-hat.wav',
-    open: '../audio/open-hat.wav',
-    clap: '../audio/clap.wav',
-    ride: '../audio/ride.wav'
+    kick: '../audio/beats/kick.wav',
+    snare: '../audio/beats/snare.wav',
+    hat: '../audio/beats/closed-hat.wav',
+    open: '../audio/beats/open-hat.wav',
+    clap: '../audio/beats/clap.wav',
+    ride: '../audio/beats/ride.wav'
   };
   const piano = (note) => `../audio/piano/sources/source-piano-${note}.wav`;
 
@@ -56,6 +56,7 @@
       { name: 'I–IV–V–I', steps: chordSeq([[0, C], [4, F], [8, G], [12, C]]) },
       { name: 'vi–IV–I–V 切分', steps: chordSeq([[0, Am], [3, Am], [4, F], [7, F], [8, C], [11, C], [12, G], [15, G]]) }
     ],
+    // 检查音高音轨的旋律 pattern；每个音符会通过 piano() 接入钢琴采样。
     melody: [
       { name: '平稳级进', steps: notes({ 0: ['E4'], 2: ['G4'], 4: ['A4'], 6: ['G4'], 8: ['E4'], 10: ['D4'], 12: ['C4'] }) },
       { name: '下行再上行', steps: notes({ 0: ['C5'], 2: ['B4'], 4: ['A4'], 6: ['G4'], 8: ['A4'], 10: ['B4'], 12: ['C5'] }) },

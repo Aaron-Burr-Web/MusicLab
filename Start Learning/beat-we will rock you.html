@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicLab | 节奏基础 · 节奏音轨</title>
+    <title>MusicLab | 节奏基础 · 示例</title>
     <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
     <link rel="stylesheet" href="../css/Home.css">
     <link rel="stylesheet" href="../css/ui.css">
     <link rel="stylesheet" href="../css/beat.css">
     <script src="../js/musiclab-ui.js"></script>
 </head>
-    <body class="main" data-lesson="beat-track">
+    <body class="main" data-lesson="beat-we-will-rock-you">
         <div class="top">
             <div class="Logo">
                 <a href="../index.html" aria-label="返回主页"></a>
@@ -42,12 +42,18 @@
         <div class="box_with_side">
             <div class="learning-content-panel">
                 <div class="learning-content-header">
-                    <h1>节奏基础（三）：节奏音轨</h1>
+                    <h1>示例：We Will Rock You</h1>
                 </div>
                 <div class="learning-content-body">
-                    <h2 id="beat-track">Beat音轨</h2>
-                    <p>下面就是一个简化版的 Beat 音轨：纵向是时间（每 4 格为一拍），横向是 8 种乐器。点亮方块后按 ▶ 播放，播放中也可以随时增删方块。顶部的标尺可以点击或拖动，把红色播放线直接移到任意一格；❚❚ 暂停会停在原地，■ 则回到开头。你可以在这里创作你喜欢的节奏类型，动手尝试一下吧，音乐总是跟着感觉出现的，在后面你还能见到这个模块的更多应用。</p>
-                    <div class="beat-demo-wrapper">
+                    <h2 id="song-rhythm-example">歌曲中的节奏</h2>
+                    <p>《We Will Rock You》是一首Queen乐队创作并演唱的一首经典的摇滚歌曲，相信你一定听过它的旋律，下面是它的音频示例：</p>
+                    <img src="../images/queen.jpg" alt="We Will Rock You" class="pic">
+                    <audio controls>
+                        <source src="../audio/songs/we-will-rock-you.mp3" type="audio/mpeg">
+                        您的浏览器不支持音频播放。
+                    </audio>
+                    <p>它的经典律动可以简化为“咚、咚、啪”：前两个重击为踩踏，第三个重音为拍手，这就是这首曲目的经典动机。你可以在下面的音轨中写入这个动机并循环播放，或者调节 BPM、点亮或关闭方块，感受动机如何形成歌曲的记忆点。</p>
+                    <div class="beat-demo-wrapper" data-demo-variant="song-example">
                         <div class="beat-demo-header">
                             <div class="beat-demo-transport">
                                 <button class="beat-demo-play" type="button" aria-label="播放/暂停">▶</button>
@@ -69,25 +75,16 @@
                             <div class="beat-demo-grid"></div>
                             <div class="beat-demo-playhead" aria-hidden="true"></div>
                         </div>
-                        <p class="beat-demo-hint">提示：点击 / 拖动标尺可移动播放线；Clear 只清空方块，不会打断播放。</p>
+                        <p class="beat-demo-check" aria-live="polite"></p>
+                        <p class="beat-demo-hint">提示：点击 / 拖动标尺可移动播放线；Clear 只清空方块，不会打断播放。在上方的音轨中填入“咚、咚、啪”的节奏吧，如果不能解决，可以点下方的按钮填充示例。</p>
+                        <br>
+                        <button class="beat-instrument-button beat-rhythm-fill-button" type="button" data-rhythm="we-will-rock-you">填充示例</button>
                     </div>
-                    <h2 id="in-song">在乐曲中</h2>
-                    <p>节奏的核心是节拍与速度，但是不同类型的音乐有着不同的节奏特点和表现方式。在长期的音乐演变中，多种丰富的节奏型逐渐形成了。例如下面的这些示例，我们选取了不同音乐风格中一些代表性的节奏类型，点按块会在上方的beat音轨中填充相应的节奏型，来看看不同的节奏型是什么样的，并感受它们的节奏特点。</p>
-                    <div class="beat-instrument-buttons" aria-label="节奏类型试听">
-                        <button class="beat-instrument-button" type="button" data-rhythm="jazz">爵士</button>
-                        <button class="beat-instrument-button" type="button" data-rhythm="samba">桑巴</button>
-                        <button class="beat-instrument-button" type="button" data-rhythm="tango">探戈</button>
-                        <button class="beat-instrument-button" type="button" data-rhythm="waltz">华尔兹</button>
-                        <button class="beat-instrument-button" type="button" data-rhythm="funk">放克</button>
-                        <button class="beat-instrument-button" type="button" data-rhythm="rock">摇滚</button>
-                    </div>
-                    <p>节奏是音乐的骨架，大多类型的乐曲中，你都能听到明显的鼓点，尤其是摇滚等近现代音乐类型中。但大多数舒缓的音乐并不需要强烈的鼓点，但这并不代表节奏不存在。它决定着乐曲的快慢和强弱，根植于乐曲结构之中。有关其与其他声道的配合，你会在后续的学习中逐渐了解到。</p>
-                    <br><br>
                     <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
                     <section class="lesson-quiz" data-lesson-quiz></section>
                     <div class="learning-nav">
-                        <a href="beat-we will rock you.html" class="learning-nav-button prev">上一页：示例</a>
-                        <a href="pitches.html" class="learning-nav-button next">下一页：音符与记谱</a>
+                        <a href="beat-instruments.html" class="learning-nav-button prev">上一页：乐器介绍</a>
+                        <a href="beat-track.html" class="learning-nav-button next">下一页：Beat 音轨</a>
                     </div>
                 </div>
             </div>
