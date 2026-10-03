@@ -5,6 +5,14 @@
   const grid = document.querySelector('[data-melody-grid]');
   if (!engine || !grid) return;
 
+  document.documentElement.classList.add('melody-loading');
+  const loadingScreen = document.createElement('div');
+  loadingScreen.className = 'melody-loading-screen';
+  loadingScreen.setAttribute('role', 'status');
+  loadingScreen.setAttribute('aria-live', 'polite');
+  loadingScreen.innerHTML = '<div class="melody-loading-spinner" aria-hidden="true"></div><strong>正在准备音轨</strong><span>首次加载需要一点时间</span>';
+  document.body.appendChild(loadingScreen);
+
   const src = (note) => `../audio/piano/sources/source-piano-${note}.wav`;
   const notes = ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4'];
   const steps = 16;
@@ -52,7 +60,7 @@
     check.classList.toggle('is-visible', matches);
   };
 
-  engine.load(notes.map(src));
+  const audioReady = engine.load(notes.map(src));
 
   const stepDuration = () => (60000 / state.bpm) / 4;
   const setStatus = (text, playing = false) => { status.textContent = text; status.className = `status-badge ${playing ? 'online' : 'offline'}`; };
@@ -234,7 +242,12 @@
   ruler.addEventListener('pointerup', () => { state.scrubbing = false; });
   ruler.addEventListener('pointercancel', () => { state.scrubbing = false; });
   window.addEventListener('resize', updatePlayhead);
-  render(); updatePlayhead();
+  audioReady.finally(() => {
+    render();
+    updatePlayhead();
+    loadingScreen.remove();
+    document.documentElement.classList.remove('melody-loading');
+  });
 })();
 
 /* 游乐园也通过统一入口接入四轨音序器。旧实现暂作为兼容模块加载，避免迁移期间重复定义。 */

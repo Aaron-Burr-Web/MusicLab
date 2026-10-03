@@ -56,6 +56,41 @@
   color-scheme: dark;
 }
 
+.melody-loading body > *:not(.melody-loading-screen) {
+  visibility: hidden;
+}
+
+.melody-loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--ml-bg);
+  color: var(--ml-text);
+}
+
+.melody-loading-screen strong {
+  font-size: 1.05rem;
+}
+
+.melody-loading-screen span {
+  color: var(--ml-text-3);
+  font-size: 0.88rem;
+}
+
+.melody-loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--ml-border-strong);
+  border-top-color: var(--ml-accent);
+  border-radius: 50%;
+  animation: mlSpin 0.8s linear infinite;
+}
+
 /* ---------- keyframes referenced by Home.css ---------- */
 @keyframes homeBlockFloatIn {
   from { opacity: 0; transform: translateY(26px); }
