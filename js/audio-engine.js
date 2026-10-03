@@ -151,7 +151,7 @@
   };
 
   const playSynth = (src, buffer, startAt, gain, duration) => {
-    const minimumDuration = 0.6;
+    const minimumDuration = 0.5;
     const requestedDuration = Number.isFinite(duration) ? duration : 0;
     const total = Math.max(minimumDuration, requestedDuration + 0.01);
     const region = sustainRegion(src, buffer);

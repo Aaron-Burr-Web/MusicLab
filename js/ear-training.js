@@ -95,7 +95,8 @@
 
   /* ---------------- 题库 ---------------- */
   const C3 = 48;                                   // 中央 C
-  const SINGLE_NOTE_RANGE = Array.from({ length: 13 }, (_, index) => C3 + index); // C3-C4 的全部半音
+  const NOTE_RANGE = [0, 2, 4, 5, 7, 9, 11, 12].map((offset) => C3 + offset); // C3-C4 的八个白键音
+  const ADVANCED_NOTE_RANGE = Array.from({ length: 13 }, (_, index) => C3 + index); // C3-C4 的全部半音
   const INTERVALS = [
     { semitones: 2, label: '大二度' }, { semitones: 4, label: '大三度' }, { semitones: 5, label: '纯四度' },
     { semitones: 7, label: '纯五度' }, { semitones: 9, label: '大六度' }, { semitones: 12, label: '纯八度' },
@@ -116,25 +117,25 @@
 
   const pick = (list) => list[Math.floor(Math.random() * list.length)];
 
-  const makeSingleNoteMode = (title) => ({
+  const makeSingleNoteMode = (title, noteRange) => ({
     title,
     intro: '先听到基准音 C3，再听到一个音。它是哪一个音？',
     make() {
-      const midi = pick(SINGLE_NOTE_RANGE);
+      const midi = pick(noteRange);
       const answer = midiToName(midi);
       return {
         play: () => { playSrc(srcOf(C3), 0, 0.7); playSrc(srcOf(midi), 1.0); },
-        options: SINGLE_NOTE_RANGE.map(midiToName),
+        options: noteRange.map(midiToName),
         answer,
         explain: `这个音是 ${answer}，与基准音 C3 相差 ${midi - C3} 个半音。`
       };
     },
-    preload: () => preload(SINGLE_NOTE_RANGE)
+    preload: () => preload(noteRange)
   });
 
   const MODES = {
-    note: makeSingleNoteMode('听音找键'),
-    'note-advanced': makeSingleNoteMode('单音听辨（进阶版）'),
+    note: makeSingleNoteMode('听音找键', NOTE_RANGE),
+    'note-advanced': makeSingleNoteMode('单音听辨（进阶版）', ADVANCED_NOTE_RANGE),
     interval: {
       title: '音程听辨',
       intro: '连续听到两个音，它们之间是什么音程？',

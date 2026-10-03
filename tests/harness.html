@@ -108,6 +108,13 @@ const loaded = (id) => new Promise((resolve) => { const f = document.getElementB
     const prd = prf.contentDocument;
     check(prd.querySelectorAll('[data-practice-keyboard] [data-note]').length === 37, '练习区键盘覆盖 C2 到 C5 的 37 个琴键');
     check(prd.querySelectorAll('[data-ear-training]').length === 5, '练习区包含听音找键、进阶单音、音程、和弦、调式五类听辨');
+    const notePractice = prd.querySelector('[data-ear-training="note"]');
+    const advancedNotePractice = prd.querySelector('[data-ear-training="note-advanced"]');
+    notePractice.querySelector('[data-ear-play]').click(); await sleep(150);
+    check(notePractice.querySelectorAll('.ear-option').length === 8, '听音找键提供八个音');
+    await sleep(3300);
+    advancedNotePractice.querySelector('[data-ear-play]').click(); await sleep(150);
+    check(advancedNotePractice.querySelectorAll('.ear-option').length === 13, '进阶单音提供十三个半音');
     prd.querySelector('[data-practice-keyboard] [data-note="C3"]').click();
     check(/C3/.test(prd.querySelector('[data-practice-note-name]').textContent) && /C3/.test(prd.querySelector('[data-practice-staff-label]').textContent), '点击琴键更新音名和五线谱标识');
 

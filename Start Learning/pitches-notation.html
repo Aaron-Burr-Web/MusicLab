@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MusicLab 记谱法入门：认识音高、时值、休止符和常见记谱记号在旋律音轨中的体现。">
+    <title>MusicLab | 音符与记谱 · 记谱法入门</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
+</head>
+<body class="main" data-lesson="pitches-notation">
+    <div class="top">
+        <div class="Logo"><a href="../index.html" aria-label="返回主页"></a><img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab"></div>
+        <ul class="nav">
+            <li id="nav1"><a href="../index.html">主页</a></li><li id="nav2"><a href="../introduction/intro.html">开发组介绍</a></li><li id="nav3"><a href="../The Playground/index.html">游乐园</a></li><li id="nav6"><a href="index.html">初学者教程</a></li><li id="nav5"><a href="../settings/settings.html">设置</a></li><li id="nav4"><a href="../login/login.html">登录 | 注册</a></li>
+        </ul>
+        <div><hr></div>
+    </div>
+
+    <div class="sidebar"><div class="directory-panel"><div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录"><img src="../icons/directory.png" alt="Directory" class="directory-icon"></div><div class="directory-tree"></div></div></div>
+
+    <div class="box_with_side">
+        <div class="learning-content-panel">
+            <div class="learning-content-header"><h1>音符与记谱（四）：记谱法入门</h1></div>
+            <div class="learning-content-body">
+                <section class="notation-intro" id="notation-basics">
+                    <p class="pitch-lesson-kicker">从乐谱到音轨</p>
+                    <p class="pitch-lesson-lead">记谱法把音乐拆成几个可以读懂的答案：演奏哪个音、演奏多久、什么时候保持安静，以及这些声音如何组成一个乐句。</p>
+                    <p>这一页不把记号当成孤立的符号背诵。我们先在音轨里写出一个小乐句，再把音轨上的行、格子、连续片段和空白，分别对应到乐谱里的音高、时值和休止符。</p>
+                </section>
+
+                <section class="pitch-section" id="staff-reading">
+                    <div class="pitch-section-heading"><span class="pitch-section-number">01</span><h2>先看音高：音轨的每一行</h2></div>
+                    <p>在旋律音轨中，纵向位置就是音高坐标：上面的行音更高，下面的行音更低。五线谱用“线”和“间”记录同一件事，所以读谱时先找到音符落在哪条线或哪个间，再确认它的音名。</p>
+                    <div class="melody-roles" aria-label="音高的三个阅读线索">
+                        <article><b>谱号</b><span>谱号像坐标原点，告诉我们每条线的音名。高音谱号常放在旋律音域，低音谱号常放在低声部。</span></article>
+                        <article><b>调号</b><span>调号告诉我们乐曲的主音和音阶结构，帮助确认每个音符的实际音高。这个我们将在后续的课程中详细讲解。</span></article>
+                        <article><b>音符位置</b><span>音符在五线谱上向上移动，音高随之上行；在音轨里，就是从低音行移动到高音行。</span></article>
+                        <article><b>音名标签</b><span>音轨左侧的 C4、D4、E4 是可读的音名，帮助初学者把视觉位置和实际声音连起来。</span></article>
+                    </div>
+                </section>
+
+                <section class="pitch-section" id="note-values">
+                    <div class="pitch-section-heading"><span class="pitch-section-number">02</span><h2>再看时值：连续的格子</h2></div>
+                    <p>音高解决“演奏哪个音”，时值解决“演奏多久”。在下面的音轨里，每一个小格代表半拍：点亮一个格是短音，把同一行向右拖成长片段，就是延长这个音的时值。</p>
+                    <div class="notation-symbol-grid" aria-label="常见时值的图文解释">
+                        <P></P>
+                        <article><strong>♩</strong><h3>四分音符</h3><p>占一拍。音轨中可以理解为连续两个半拍格子。</p></article>
+                        <article><strong>𝅗𝅥</strong><h3>二分音符</h3><p>占两拍。音轨中是同一行连续四个半拍格子。</p></article>
+                        <article><strong>♪ ♪</strong><h3>八分音符</h3><p>每个占半拍。两个短音可以填满一拍。</p></article>
+                        <article><strong>♩.</strong><h3>附点音符</h3><p>在原时值上增加一半，例如附点二分音符共有三拍。</p></article>
+                    </div>
+                </section>
+
+                <section class="notation-track-section" id="notation-track">
+                    <div class="pitch-section-heading"><span class="pitch-section-number">03</span><h2>把记谱法写进旋律音轨</h2></div>
+                    <p>下面是一个可以直接操作的 C 大调旋律音轨。先点击“填充示例”观察乐句，再播放它。你会看到：同一行的连续色块是长音，换行是音高变化，空出来的格子就是休止符或留白。</p>
+                    <section class="melody-lab notation-melody-lab" data-melody-example="twinkle" aria-label="记谱法对应的旋律音轨">
+                        <div class="notation-lab-head">
+                            <div><h2>示例：一小段上行旋律</h2><p>横向 16 格组成一个乐句；每格代表半拍，四格组成一拍。</p></div>
+                            <span class="status-badge offline" data-melody-status>未播放</span>
+                        </div>
+                        <div class="melody-sequencer-head">
+                            <button class="melody-transport" type="button" aria-label="播放或暂停旋律">▶</button>
+                            <div class="melody-bpm"><span>BPM</span><output data-melody-bpm-value>96</output><input type="range" min="40" max="240" value="96" step="1" data-melody-bpm aria-label="旋律速度 BPM"></div>
+                            <button class="melody-clear" type="button">清空</button>
+                            <button class="melody-clear" type="button" data-melody-fill>填充示例</button>
+                        </div>
+                        <div class="melody-sequencer-shell">
+                            <div class="melody-sequencer-track">
+                                <div class="melody-ruler" data-melody-ruler aria-label="播放位置标尺：点击或拖动可移动播放头"></div>
+                                <div class="melody-grid" data-melody-grid aria-label="固定 C 大调旋律音序器"></div>
+                                <div class="melody-playhead" aria-hidden="true"></div>
+                            </div>
+                        </div>
+                        <div class="notation-track-key">
+                            <span><b>纵向</b>音高：换一行就是换一个音</span>
+                            <span><b>横向</b>时值：连续格子就是延长</span>
+                            <span><b>空白</b>休止：这里不发声</span>
+                        </div>
+                        <p class="melody-lab-foot">先填充并播放示例，再清空音轨自己写一小节。点击格子添加短音，按住并拖动可以延长同一音；保留空白，就能让旋律呼吸。</p>
+                    </section>
+                </section>
+
+                <section class="pitch-section" id="rests-and-marks">
+                    <div class="pitch-section-heading"><span class="pitch-section-number">04</span><h2>其他记号：用图形读懂音乐动作</h2></div>
+                    <p>不是所有音乐信息都靠音符头表达。下面这些记号可以先用“动作”来理解，再回到乐谱中认形状。</p>
+                    <div class="notation-symbol-grid notation-mark-grid" aria-label="其他记谱记号的图文解释">
+                        <article><strong>𝄽</strong><h3>休止符</h3><p>表示这一段时间不发声。音轨里的空白格就是休止符最直观的对应物。</p></article>
+                        <article><strong>|</strong><h3>小节线</h3><p>把连续的拍子分成小组，帮助我们数拍和定位。音轨中每四格的分隔线就是小节线。</p></article>
+                        <article><strong>♯ ♭ ♮</strong><h3>变音记号</h3><p>升号、降号和还原号会改变音高。它们相当于在音名旁边附加一个音高说明。</p></article>
+                        <article><strong>𝄆 𝄇</strong><h3>反复记号</h3><p>告诉演奏者回到指定位置再演奏一次，减少重复书写，让乐谱更紧凑。</p></article>
+                    </div>
+                </section>
+
+                <section class="pitch-reading-cue notation-summary"><b>读谱顺序</b><span>先看谱号和音高位置，再看音符的时值，接着数拍号，最后留意休止、变音和反复记号。把这套顺序带回旋律音轨，你就能把“看见的格子”翻译成“听见的音乐”。</span></section>
+                <section class="lesson-quiz" data-lesson-quiz></section>
+                <div class="learning-nav"><a href="pitches-melodies.html" class="learning-nav-button prev">上一页：Melodies 音轨</a><a href="chords.html" class="learning-nav-button next">下一页：音程与和弦（一）</a></div>
+            </div>
+        </div>
+    </div>
+    <script src="../js/audio-engine.js"></script><script src="../js/track.js"></script><script src="../js/login.js"></script><script src="../js/lesson-quiz.js"></script>
+</body>
+</html>

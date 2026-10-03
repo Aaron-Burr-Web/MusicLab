@@ -65,8 +65,7 @@
   }
 
   const sightSinging = document.querySelector('[data-sight-singing]');
-  if (sightSinging) {
-  };
+  if (!sightSinging) return;
   const start = () => {
     state.playing = true; state.lastFrame = performance.now();
     playhead.style.display = 'block'; transport.textContent = '❚❚'; setStatus('播放中', true);
@@ -141,13 +140,13 @@
     const [symbol, label, guide] = clefCopy[button.dataset.clef];
     lab.querySelectorAll('[data-clef]').forEach((item) => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
     currentClef = button.dataset.clef;
-    lab.querySelector('[data-clef-symbol]').textContent = symbol; lab.querySelector('[data-clef-label]').textContent = label; lab.querySelector('[data-guide-clef]').textContent = guide; renderNotes(); setStatus(`已切换${label}`);
+    lab.querySelector('[data-clef-symbol]').textContent = symbol; lab.querySelector('[data-clef-glyph]').textContent = symbol; lab.querySelector('[data-clef-label]').textContent = label; lab.querySelector('[data-guide-clef]').textContent = guide; renderNotes(); setStatus(`已切换${label}`);
   }));
   lab.querySelectorAll('[data-meter]').forEach((button) => button.addEventListener('click', () => {
     const meter = button.dataset.meter;
     lab.querySelectorAll('[data-meter]').forEach((item) => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
     const [top, bottom] = meter.split('/');
-    lab.querySelector('[data-meter-top]').textContent = top; lab.querySelector('[data-meter-bottom]').textContent = bottom; lab.querySelector('[data-meter-label]').textContent = meter.replace('/', ' / '); lab.querySelector('[data-guide-meter]').textContent = `${meter} 表示每小节有 ${meter[0]} 拍，四分音符占一拍。`; setStatus(`已切换 ${meter} 拍`);
+    lab.querySelector('[data-meter-top]').textContent = top; lab.querySelector('[data-meter-bottom]').textContent = bottom; lab.querySelector('[data-meter-glyph-top]').textContent = top; lab.querySelector('[data-meter-glyph-bottom]').textContent = bottom; lab.querySelector('[data-meter-label]').textContent = meter.replace('/', ' / '); lab.querySelector('[data-guide-meter]').textContent = `${meter} 表示每小节有 ${meter[0]} 拍，四分音符占一拍。`; setStatus(`已切换 ${meter} 拍`);
   }));
   const tempo = lab.querySelector('[data-tempo]');
   tempo.addEventListener('input', () => { const value = tempo.value; lab.querySelector('[data-tempo-value]').textContent = value; lab.querySelector('[data-tempo-label]').textContent = `Andante · ${value} BPM`; lab.querySelector('[data-guide-tempo]').textContent = `${value} BPM 表示每分钟 ${value} 拍。`; });

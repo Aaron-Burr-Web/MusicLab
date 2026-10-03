@@ -16,12 +16,41 @@
   const bpmValue = document.querySelector('[data-melody-bpm-value]');
   const status = document.querySelector('[data-melody-status]');
   const playhead = document.querySelector('.melody-playhead');
+  const example = document.querySelector('[data-melody-example]');
+  const check = document.querySelector('[data-melody-check]');
+  const fillButton = document.querySelector('[data-melody-fill]');
+  const examples = {
+    twinkle: {
+      bpm: 40,
+      pattern: [{ row: 7, start: 0, length: 1 }, { row: 7, start: 1, length: 1 },
+        { row: 3, start: 2, length: 1 }, { row: 3, start: 3, length: 1 },
+        { row: 2, start: 4, length: 1 }, { row: 2, start: 5, length: 1 },
+        { row: 3, start: 6, length: 2 }, { row: 4, start: 8, length: 1 },
+        { row: 4, start: 9, length: 1 }, { row: 5, start: 10, length: 1 },
+        { row: 5, start: 11, length: 1}, { row: 6, start: 12, length: 1 },
+        { row: 6, start: 13, length: 1 }, { row: 7, start: 14, length: 2 }]
+    }
+  };
+  const examplePattern = examples[example?.dataset.melodyExample]?.pattern || [];
   let cells = [];
   let active = [];
   let rulerCells = [];
   const blocks = new Map();
   let cellDrag = null;
   let skipCellClickUntil = 0;
+
+  const updateCheck = () => {
+    if (!check || !examplePattern.length) return;
+    const expected = new Set(examplePattern.flatMap(({ row, start, length }) => Array.from({ length }, (_, offset) => `${row}:${start + offset}`)));
+    const actual = new Set(active.flatMap((row, rowIndex) => row.flatMap((isActive, step) => isActive ? [`${rowIndex}:${step}`] : [])));
+    const expectedBlocks = examplePattern.filter(({ length }) => length > 1);
+    const blocksMatch = blocks.size === expectedBlocks.length && expectedBlocks.every(({ row, start, length }) => blocks.get(blockKey(row, start)) === length);
+    const matches = expected.size === actual.size && [...expected].every((key) => actual.has(key)) && blocksMatch;
+    check.textContent = matches
+      ? state.bpm === 40 ? '没错！就是这样！' : '没错！再尝试调整到合适的BPM！'
+      : '';
+    check.classList.toggle('is-visible', matches);
+  };
 
   engine.load(notes.map(src));
 
@@ -50,15 +79,17 @@
       cell.addEventListener('pointerup', finishCellDrag);
       cell.addEventListener('pointercancel', cancelCellDrag);
     }));
+    updateCheck();
   };
 
   const blockKey = (rowIndex, startStep) => `${rowIndex}:${startStep}`;
-  const setCell = (rowIndex, step, isActive) => {
+  const setCell = (rowIndex, step, isActive, shouldCheck = true) => {
     const cell = cells[rowIndex]?.[step];
     if (!cell) return;
     active[rowIndex][step] = isActive;
     cell.classList.toggle('active', isActive);
     cell.setAttribute('aria-pressed', String(isActive));
+    if (shouldCheck) updateCheck();
   };
   const blockAt = (rowIndex, step) => {
     for (const [key, length] of blocks) {
@@ -67,27 +98,29 @@
     }
     return null;
   };
-  const removeBlock = ({ row, start, length }) => {
+  const removeBlock = ({ row, start, length }, shouldCheck = true) => {
     for (let step = start; step < start + length; step += 1) {
       const cell = cells[row]?.[step];
       if (!cell) continue;
-      setCell(row, step, false);
+      setCell(row, step, false, shouldCheck);
       cell.classList.remove('is-merged', 'is-merged-start', 'is-merged-end');
     }
     blocks.delete(blockKey(row, start));
+    if (shouldCheck) updateCheck();
   };
-  const paintBlock = (row, start, length) => {
+  const paintBlock = (row, start, length, shouldCheck = true) => {
     const end = Math.min(steps - 1, start + length - 1);
     for (let step = start; step <= end; step += 1) {
       const existing = blockAt(row, step);
-      if (existing) removeBlock(existing);
-      setCell(row, step, true);
+      if (existing) removeBlock(existing, shouldCheck);
+      setCell(row, step, true, shouldCheck);
       const cell = cells[row][step];
       cell.classList.add('is-merged');
       cell.classList.toggle('is-merged-start', step === start);
       cell.classList.toggle('is-merged-end', step === end);
     }
     blocks.set(blockKey(row, start), end - start + 1);
+    if (shouldCheck) updateCheck();
   };
   const stepAtPointer = (rowIndex, clientX) => {
     const row = cells[rowIndex] || [];
@@ -184,8 +217,18 @@
   };
 
   transport.addEventListener('click', () => (state.playing ? pause() : start()));
-  clearButton.addEventListener('click', () => { blocks.clear(); cells.flat().forEach((cell) => { cell.classList.remove('active', 'is-merged', 'is-merged-start', 'is-merged-end'); cell.setAttribute('aria-pressed', 'false'); }); active = cells.map((row) => row.map(() => false)); setStatus('已清空'); });
-  bpmInput.addEventListener('input', () => { state.bpm = Number(bpmInput.value); bpmValue.textContent = String(state.bpm); state.accumulator = 0; state.lastFrame = state.playing ? performance.now() : 0; updatePlayhead(); });
+  const clearCheck = () => { if (check) { check.textContent = ''; check.classList.remove('is-visible'); } };
+  const clearPattern = () => { blocks.clear(); cells.flat().forEach((cell) => { cell.classList.remove('active', 'is-merged', 'is-merged-start', 'is-merged-end'); cell.setAttribute('aria-pressed', 'false'); }); active = cells.map((row) => row.map(() => false)); clearCheck(); };
+  clearButton.addEventListener('click', () => { clearPattern(); setStatus('已清空'); });
+  fillButton?.addEventListener('click', () => {
+    clearPattern();
+    examplePattern.forEach(({ row, start, length }) => paintBlock(row, start, length, false));
+    const exampleBpm = examples[example?.dataset.melodyExample]?.bpm;
+    if (exampleBpm) { state.bpm = exampleBpm; bpmInput.value = String(exampleBpm); bpmValue.textContent = String(exampleBpm); }
+    clearCheck();
+    setStatus('示例已填充');
+  });
+  bpmInput.addEventListener('input', () => { state.bpm = Number(bpmInput.value); bpmValue.textContent = String(state.bpm); state.accumulator = 0; state.lastFrame = state.playing ? performance.now() : 0; updatePlayhead(); updateCheck(); });
   ruler.addEventListener('pointerdown', (event) => { if (event.button !== 0 && event.pointerType === 'mouse') return; state.scrubbing = true; ruler.setPointerCapture?.(event.pointerId); seek(stepFromPointer(event.clientX)); });
   ruler.addEventListener('pointermove', (event) => { if (state.scrubbing) seek(stepFromPointer(event.clientX)); });
   ruler.addEventListener('pointerup', () => { state.scrubbing = false; });

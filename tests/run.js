@@ -10,7 +10,8 @@
  *   node tests/run.js --full     → 三步全跑（无头浏览器 + 交互用例，约 1–3 分钟）。npm run test:full。
  *
  * 给 AI Agent 的约定：
- *   - 修改 HTML / CSS / JS 之后，需要验证时只运行默认的静态模式；不要因为普通改动就自动执行 --full。
+ *   - 除非项目维护者明确要求运行测试，否则不要主动执行 npm test、npm run test:full 或等价的 node tests/run.js 命令。
+ *   - 项目维护者明确要求测试时，按要求选择默认静态模式或 --full；不要因为普通改动自动触发测试。
  *   - --full 只在项目维护者明确要求“跑完整测试 / 回归”时执行，由人工决定时机（节省 credits）。
  *   - 新增页面 / 交互功能时，仍要同步维护本文件的 PAGES 列表和 tests/harness.html 的用例。
  *   - 静态检查对图片 / 音频 / 字体等多媒体资源（jpg png svg mp3 wav aiff ttf woff…）缺失只记备注、不算失败；

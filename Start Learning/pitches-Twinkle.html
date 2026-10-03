@@ -20,33 +20,34 @@
     <div class="sidebar"><div class="directory-panel"><div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录"><img src="../icons/directory.png" alt="Directory" class="directory-icon"></div><div class="directory-tree"></div></div></div>
     <div class="box_with_side"><div class="learning-content-panel"><div class="learning-content-header"><h1>示例：小星星</h1></div>
         <div class="learning-content-body">
-            <h2 id="twinkle-rhythm-example">小星星的节奏</h2>
-            <p>《小星星》（Twinkle, Twinkle, Little Star）是一首广为传唱的儿童歌曲，旋律简单、重复性强，很适合用来观察歌曲中的节奏。你可以先听一听心里熟悉的旋律，再尝试把每个音符或乐句对应的节奏填入下面的音轨。</p>
-            <p>下面的界面先为你准备好 Kick、Snare 和 Clap 三行鼓组。请根据《小星星》的律动完成 pattern；我会在这里继续补充正确的填充示例。</p>
-            <div class="beat-demo-wrapper" data-demo-variant="twinkle-example" aria-label="小星星歌曲节奏示例">
-                <div class="beat-demo-header">
-                    <div class="beat-demo-transport">
-                        <button class="beat-demo-play" type="button" aria-label="播放/暂停">▶</button>
-                        <button class="beat-demo-stop" type="button" aria-label="停止并回到开头">■</button>
-                        <div class="beat-demo-bpm">
-                            <span class="beat-demo-label">BPM</span>
-                            <span class="beat-demo-value">80</span>
-                            <input class="beat-demo-slider" type="range" min="40" max="240" step="1" value="80" aria-label="BPM 调节">
-                        </div>
+            <h2 id="twinkle-melody-example">小星星的旋律</h2>
+            <p>《小星星》（Twinkle, Twinkle, Little Star）的旋律简单、重复性强，很适合用来练习旋律音轨。相信你小时候一定听过这个旋律，你可以先尝试写出它的第一个乐句。</p>
+            <p>下面的界面保留旋律音轨的播放、BPM、定位、清空和长音编辑功能；完成后可以用填充示例按钮对照正确写法。</p>
+            <section class="melody-lab" data-melody-example="twinkle" aria-label="小星星旋律音轨示例">
+                <p>如同之前的节奏音轨一样，你可以通过点击和拖动来编辑旋律音轨，创建和调整音符的时值和位置，这是我们教学内容的主体部分。回忆一下上一页的内容，并跟它做出对照。</p>
+                <div class="notation-lab-head">
+                    <div><h2>尝试</h2><p>C 大调，横向 16 格为一个乐句；点击点亮单音，长按并横向拖动可合并为长音。</p></div>
+                    <span class="status-badge offline" data-melody-status>未播放</span>
+                </div>
+                <div class="melody-sequencer-head">
+                    <button class="melody-transport" type="button" aria-label="播放或暂停旋律">▶</button>
+                    <div class="melody-bpm"><span>BPM</span><output data-melody-bpm-value>96</output><input type="range" min="40" max="240" value="96" step="1" data-melody-bpm aria-label="旋律速度 BPM"></div>
+                    <button class="melody-clear" type="button">Clear</button>
+                    <button class="melody-clear" type="button" data-melody-fill>填充示例</button>
+                </div>
+                <div class="melody-sequencer-shell">
+                    <div class="melody-sequencer-track">
+                        <div class="melody-ruler" data-melody-ruler aria-label="播放位置标尺：点击或拖动可移动播放头"></div>
+                        <div class="melody-grid" data-melody-grid aria-label="固定 C 大调旋律音序器"></div>
+                        <div class="melody-playhead" aria-hidden="true"></div>
                     </div>
-                    <button class="beat-demo-clear" type="button" aria-label="清空全部交互块">Clear</button>
                 </div>
-                <div class="beat-demo-shell">
-                    <!-- 标尺、三行音轨和播放线由 js/beat-demo.js 渲染。 -->
-                    <div class="beat-demo-grid"></div>
-                    <div class="beat-demo-playhead" aria-hidden="true"></div>
-                </div>
-                <!-- TODO: 根据《小星星》的正确节奏补充 pattern；暂不自动填充，保留空网格供手动编写。 -->
-                <p class="beat-demo-hint">提示：点击方块填入节奏，点击播放试听；完成《小星星》的节奏 pattern 后，再补充对应的检测提示。</p>
-            </div>
-            <div class="learning-nav"><a href="pitches-melodies.html" class="learning-nav-button prev">上一页：Melodies 音轨</a><a href="chords.html" class="learning-nav-button next">下一页：音程与和弦</a></div>
+                <p class="notation-check melody-example-check" data-melody-check aria-live="polite"></p>
+                <p class="melody-lab-foot">提示：点击已点亮的片段可取消；同一行可建立多个长音片段。先写出《小星星》的第一个乐句，再播放试听；如果需要对照，可以点击“填充示例”。</p>
+            </section>
+            <div class="learning-nav"><a href="pitches.html" class="learning-nav-button prev">上一页：音符与记谱</a><a href="pitches-melodies.html" class="learning-nav-button next">下一页：Melodies 音轨</a></div>
         </div>
     </div></div>
-    <script src="../js/login.js"></script><script src="../js/beat-demo.js"></script>
+    <script src="../js/audio-engine.js"></script><script src="../js/track.js"></script><script src="../js/login.js"></script>
 </body>
 </html>
