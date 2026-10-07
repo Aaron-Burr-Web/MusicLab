@@ -11,7 +11,8 @@
  *   mode: 'webaudio' | 'html',
  *   load(srcs),                       // 预热并预加载（返回 Promise）
  *   warmup(srcs),                     // load 的语义化别名
- *   play(src, { at, gain }),          // at: 引擎时间（秒），缺省立即
+  *   play(src, { at, gain }),          // at: 引擎时间（秒），缺省立即
+  *   playAudition(srcs, { controls, offsets, gain, duration }), // 短试听并锁定控件
  *   play(src, { duration, synth: true }) // 延展稳定音段，生成带自然尾音的短音
  *   now(),                            // 引擎时间（秒）
  *   unlock(),                         // 在用户手势里调用，解除自动播放限制
@@ -21,8 +22,10 @@
 (() => {
   'use strict';
 
-  const FADE_IN_SECONDS = 0;
+  const FADE_IN_SECONDS = 0.008;
   const FADE_OUT_SECONDS = 0.1;
+  const FADE_FLOOR = 0.0001;
+  const FADE_SETTLE_SECONDS = 0.004;
 
   const AC = window.AudioContext || window.webkitAudioContext;
   const canFetch = window.location.protocol !== 'file:';
@@ -40,6 +43,7 @@
   let keepAliveGain = null;
   let warmupGestureInstalled = false;
   let silentWarmupDone = false;
+  let auditionBusyUntil = 0;
 
   const engine = {
     mode: AC && canFetch ? 'webaudio' : 'html'
@@ -49,8 +53,14 @@
     if (!ctx && engine.mode === 'webaudio') {
       ctx = new AC({ latencyHint: 'interactive' });
       masterGain = ctx.createGain();
-      masterGain.gain.value = 0.9;
-      masterGain.connect(ctx.destination);
+      masterGain.gain.value = 1;
+      const outputLimiter = ctx.createDynamicsCompressor();
+      outputLimiter.threshold.value = -6;
+      outputLimiter.knee.value = 12;
+      outputLimiter.ratio.value = 3;
+      outputLimiter.attack.value = 0.005;
+      outputLimiter.release.value = 0.12;
+      masterGain.connect(outputLimiter).connect(ctx.destination);
     }
     return ctx;
   };
@@ -290,8 +300,18 @@
     }
     if (fadeOutStart > fadeInEnd) {
       gainNode.gain.setValueAtTime(gain, fadeOutStart);
-      gainNode.gain.linearRampToValueAtTime(0.001, endAt);
+      const settleAt = Math.max(fadeOutStart, endAt - FADE_SETTLE_SECONDS);
+      if (gain > FADE_FLOOR) gainNode.gain.exponentialRampToValueAtTime(FADE_FLOOR, settleAt);
+      gainNode.gain.linearRampToValueAtTime(0, endAt);
     }
+  };
+
+  const scheduleExponentialFade = (gainNode, gain, startAt, endAt) => {
+    if (endAt <= startAt) return;
+    gainNode.gain.setValueAtTime(Math.max(FADE_FLOOR, gain), startAt);
+    const settleAt = Math.max(startAt, endAt - FADE_SETTLE_SECONDS);
+    if (gain > FADE_FLOOR) gainNode.gain.exponentialRampToValueAtTime(FADE_FLOOR, settleAt);
+    gainNode.gain.linearRampToValueAtTime(0, endAt);
   };
 
   const playSynth = (src, buffer, startAt, gain, duration) => {
@@ -326,7 +346,12 @@
     body.loopEnd = Math.max(region.start + 0.02, mainNaturalEnd);
     body.playbackRate.value = mainPlaybackRate;
     const bodyGain = connectGain(body, gain);
-    scheduleFade(bodyGain, startAt, startAt + bodyEnd, gain);
+    bodyGain.gain.setValueAtTime(0.001, startAt);
+    bodyGain.gain.linearRampToValueAtTime(gain, Math.min(startAt + attackLength, startAt + bodyEnd));
+    if (startAt + bodyEnd - FADE_OUT_SECONDS > startAt + attackLength) {
+      bodyGain.gain.setValueAtTime(gain, startAt + bodyEnd - FADE_OUT_SECONDS);
+      scheduleExponentialFade(bodyGain, gain, startAt + bodyEnd - FADE_OUT_SECONDS, startAt + bodyEnd);
+    }
     body.start(startAt, region.start);
     body.stop(startAt + bodyEnd);
 
@@ -339,7 +364,7 @@
     const tailFadeIn = Math.min(FADE_IN_SECONDS, tailLength * 0.25);
     const tailStart = Math.max(startAt, startAt + bodyEnd - tailFadeIn);
     tailGain.gain.setValueAtTime(gain * 0.7, tailStart);
-    tailGain.gain.linearRampToValueAtTime(0.001, startAt + total);
+    scheduleExponentialFade(tailGain, gain * 0.7, tailStart, startAt + total);
     tail.start(tailStart, tailOffset);
     tail.stop(startAt + total);
   };
@@ -388,7 +413,7 @@
       const voice = htmlVoice(src);
       const playToken = {};
       voice.__musicLabPlayToken = playToken;
-      const targetVolume = Math.min(1, Math.max(0, gain));
+      const targetVolume = Math.min(1, Math.max(0, gain * 1.08));
       const fadeStart = performance.now();
       const fadeDuration = Number.isFinite(playbackDuration) && playbackDuration > 0 ? playbackDuration * 1000 : null;
       const updateVolume = () => {
@@ -397,9 +422,10 @@
         const fadeIn = FADE_IN_SECONDS > 0 ? Math.min(1, elapsed / (FADE_IN_SECONDS * 1000)) : 1;
         const naturalDuration = Number.isFinite(voice.duration) && voice.duration > 0 ? voice.duration * 1000 : null;
         const endDuration = fadeDuration || naturalDuration;
-        const fadeOut = endDuration === null ? 1 : Math.min(1, Math.max(0, (endDuration - elapsed) / (FADE_OUT_SECONDS * 1000)));
+        const fadeProgress = endDuration === null ? 0 : (elapsed - (endDuration - FADE_OUT_SECONDS * 1000)) / (FADE_OUT_SECONDS * 1000);
+        const fadeOut = endDuration === null ? 1 : fadeProgress >= 1 ? 0 : Math.max(FADE_FLOOR, Math.pow(FADE_FLOOR, Math.max(0, fadeProgress)));
         voice.volume = targetVolume * Math.min(fadeIn, fadeOut);
-        if (!voice.ended && (endDuration === null || elapsed < endDuration)) requestAnimationFrame(updateVolume);
+        if (!voice.ended && (endDuration === null || elapsed < endDuration + FADE_SETTLE_SECONDS * 1000)) requestAnimationFrame(updateVolume);
       };
       voice.volume = 0;
       voice.currentTime = 0;
@@ -411,11 +437,51 @@
           if (voice.__musicLabPlayToken !== playToken) return;
           voice.pause();
           voice.currentTime = 0;
-        }, playbackDuration * 1000);
+        }, playbackDuration * 1000 + FADE_SETTLE_SECONDS * 1000);
       }
     };
     const delay = at ? (at - engine.now()) * 1000 : 0;
     if (delay > 4) setTimeout(fire, delay); else fire();
+  };
+
+  engine.playAudition = (srcs, { controls = [], offsets = [], at, gain = 0.85, duration = 1.2 } = {}) => {
+    const sources = [].concat(srcs).filter(Boolean);
+    const now = engine.now();
+    const controlList = [...controls].filter(Boolean);
+    const isContinuation = controlList.length > 0 && controlList.every((control) => control.disabled);
+    if (!sources.length || (auditionBusyUntil > performance.now() && !isContinuation)) return false;
+    const changedControls = controlList.filter((control) => !control.disabled);
+    changedControls.forEach((control) => {
+      control.disabled = true;
+      control.setAttribute('aria-disabled', 'true');
+    });
+    const startAt = Number.isFinite(at) ? at : now;
+    const sourceOffsets = sources.map((_, index) => Math.max(0, Number(offsets[index]) || 0));
+    const overlapCounts = sourceOffsets.map((offset) => sourceOffsets.reduce((count, otherOffset) => (
+      otherOffset <= offset && otherOffset + duration > offset ? count + 1 : count
+    ), 0));
+    const latestOffset = sources.reduce((latest, _, index) => Math.max(latest, Number(offsets[index]) || 0), 0);
+    auditionBusyUntil = performance.now() + (Math.max(0, startAt - now) + latestOffset + duration) * 1000;
+    sources.forEach((src, index) => engine.play(src, {
+      at: startAt + (Number(offsets[index]) || 0),
+      gain: gain / Math.sqrt(Math.max(1, overlapCounts[index])),
+      duration
+    }));
+    if (changedControls.length) {
+      const release = () => {
+        if (performance.now() < auditionBusyUntil) {
+          window.setTimeout(release, auditionBusyUntil - performance.now());
+          return;
+        }
+        changedControls.forEach((control) => {
+          control.disabled = false;
+          control.removeAttribute('aria-disabled');
+        });
+        auditionBusyUntil = 0;
+      };
+      window.setTimeout(release, Math.max(0, auditionBusyUntil - performance.now()));
+    }
+    return true;
   };
 
   /*
@@ -423,7 +489,7 @@
    * onStep(step, time) 在每一步到点前被调用，time 是该步的引擎时间，用于 play({ at: time })。
    * position() 返回当前小数步位（0 ≤ p < steps），用于画播放线。
    */
-  engine.createClock = ({ bpm = 100, steps = 16, onStep = () => {}, lookahead = 0.12, interval = 25 } = {}) => {
+  engine.createClock = ({ bpm = 100, steps = 16, onStep = () => {}, onEnd = () => {}, loop = true, lookahead = 0.12, interval = 25 } = {}) => {
     const clock = { bpm, steps, playing: false };
     let timer = null;
     let nextStep = 0;        // 下一个要调度的步
@@ -436,10 +502,18 @@
     const schedule = () => {
       const horizon = engine.now() + (document.hidden ? 1.5 : lookahead);
       while (nextTime < horizon) {
+        if (!loop && nextStep >= clock.steps) {
+          clock.playing = false;
+          clearInterval(timer);
+          timer = null;
+          anchorStep = 0;
+          onEnd();
+          return;
+        }
         onStep(nextStep, nextTime);
         lastScheduled = { step: nextStep, time: nextTime };
         nextTime += stepSeconds();
-        nextStep = (nextStep + 1) % clock.steps;
+        nextStep = loop ? (nextStep + 1) % clock.steps : nextStep + 1;
       }
     };
 
@@ -450,7 +524,7 @@
       nextStep = typeof fromStep === 'number' ? fromStep : anchorStep;
       nextTime = engine.now() + 0.03;
       schedule();
-      timer = setInterval(schedule, interval);
+      if (clock.playing) timer = setInterval(schedule, interval);
     };
 
     clock.pause = () => {

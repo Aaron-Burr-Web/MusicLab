@@ -20,12 +20,12 @@
         <div class="sidebar"><div class="directory-panel"><div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录"><img src="../icons/directory.png" alt="Directory" class="directory-icon"></div><div class="directory-tree"></div></div></div>
         <div class="box_with_side">
             <div class="learning-content-panel">
-                <div class="learning-content-header"><h1>音程与和弦（三）：和弦</h1></div>
+                <div class="learning-content-header"><h1>音程与和弦（四）：和弦</h1></div>
                 <div class="learning-content-body">
-                    <section class="chord-lesson-intro" id="chords"><div><p class="chord-kicker">把音程叠起来</p><p class="chord-lead">三个或更多音同时发声，音程关系便组织成和弦。</p></div><p>先掌握三和弦，再扩展到七和弦；这是最有效的和声入门路径。</p></section>
+                    <section class="chord-lesson-intro" id="chords"><div><p class="chord-kicker">把音程叠起来</p><p class="chord-lead">三个或更多音同时发声，音程关系便组织成和弦。</p></div><p>先掌握三和弦，再扩展到七和弦，最终尝试写出和弦连接。</p></section>
                     <section class="chord-section">
-                        <div class="chord-section-heading"><span>01</span><h2>四种 C 三和弦</h2></div>
-                        <p>三和弦由根音、三度音和五度音组成。大、小、增、减的差别来自两段三度的排列。</p>
+                        <div class="chord-section-heading"><span>01</span><h2>我们从四种 C 三和弦开始</h2></div>
+                        <p>三和弦由根音、三度音和五度音组成。大、小、增、减的差别来自两段三度的排列。例如，我们从根音C开始依次依次找到大三度的E音，然后再从E开始找到小三度的G音，便构成了C大三和弦。</p>
                         <div class="triad-grid" data-triad-builder aria-label="选择三和弦试听与查看构成">
                             <button type="button" data-triad="major"><b>C</b><span>大三度 + 小三度</span></button><button type="button" data-triad="minor"><b>Cm</b><span>小三度 + 大三度</span></button><button type="button" data-triad="augmented"><b>Caug</b><span>大三度 + 大三度</span></button><button type="button" data-triad="diminished"><b>Cdim</b><span>小三度 + 小三度</span></button>
                         </div>
@@ -34,20 +34,35 @@
                     </section>
                     <section class="chord-section">
                         <div class="chord-section-heading"><span>02</span><h2>读懂和弦标记</h2></div>
-                        <p>根音加类型即可快速标记：C 是 C 大三和弦，Cm 是小三和弦，Caug 是增三和弦，Cdim 是减三和弦。用同一套规则可以推断其他根音。</p>
+                        <p>根音加类型即可快速标记：C 是 C 大三和弦，Cm 是C小三和弦，Caug 是C增三和弦，Cdim 是C减三和弦。用同一套规则可以推断其他根音。和之前一样，你可以在下面的音轨中试一试！</p>
                         <div class="chord-symbols"><span><b>C</b> major</span><span><b>Cm</b> minor</span><span><b>Caug</b> augmented</span><span><b>Cdim</b> diminished</span></div>
+                        <div class="chord-track-lab" data-chord-track-lab="octave" data-chord-track-range="g4-c3" aria-label="半音阶音轨：C3 到 G4"></div>
+                        <div class="interval-track-practice" data-chord-track-practice>
+                            <button type="button" class="interval-practice-start" data-chord-practice-start>开始练习</button>
+                            <p class="interval-practice-question" data-chord-practice-question aria-live="polite">按下按钮开始八题和弦练习。</p>
+                            <p class="interval-practice-feedback" data-chord-practice-feedback aria-live="polite"></p>
+                        </div>
+                        <div class="interval-track-practice" data-seventh-track-practice>
+                            <button type="button" class="interval-practice-start" data-seventh-practice-start>开始七和弦练习</button>
+                            <p class="interval-practice-question" data-seventh-practice-question aria-live="polite">按下按钮开始八题七和弦练习。</p>
+                            <p class="interval-practice-feedback" data-seventh-practice-feedback aria-live="polite"></p>
+                        </div>
                     </section>
                     <section class="chord-section">
                         <div class="chord-section-heading"><span>03</span><h2>从三和弦到七和弦</h2></div>
-                        <p>在三和弦上再叠加一次音程，就得到七和弦。它的色彩和导向性更丰富，常会强调七音和三音；必要时可省略五音，保持声音清晰。</p>
-                        <div class="seventh-table" role="table" aria-label="常见七和弦构成"><div role="row"><b role="columnheader">标记</b><b role="columnheader">构成</b><b role="columnheader">听感</b></div><div role="row"><span>Cmaj7</span><span>C E G B</span><span>明亮、延展</span></div><div role="row"><span>C7</span><span>C E G B♭</span><span>有解决倾向</span></div><div role="row"><span>Cm7</span><span>C E♭ G B♭</span><span>柔和、内敛</span></div><div role="row"><span>Cm7♭5</span><span>C E♭ G♭ B♭</span><span>紧张、不稳定</span></div></div>
-                        <p>掌握三和弦和七和弦已足以应对多数入门创作。九、十一、十三和弦会在七和弦上加入扩展音，也常省略未被强调的音。</p>
+                        <p>在三和弦上再叠加一次音程，就得到七和弦，例如在一个大三和弦上叠加一个根音的小七度音，就能得到大小七和弦。它们的色彩和导向性更丰富，常会强调七音和三音；必要时可省略五音，保持声音清晰。</p>
+                        <p>当然你会发现，光是同一个根音的三个音程排列组合就有很多种，分别对应不同的七和弦类型，它们的命名由三和弦和七度音的性质决定，例如大三和弦+大七度，就被称作大大七和弦，如下面的表格所示。</p>
+                        <img src="../images/chords-seven.png" alt="C七和弦示意图" class="pic">
+                        <p>像这样排列出所有的组合，那将是一个不小的列表。所以我们一般只会记住最常使用的五种，包括大七和弦、属七和弦、小七和弦和半减七和弦和减七和弦。</p>
+                        <div class="seventh-table" role="table" aria-label="常见七和弦构成"><div role="row"><b role="columnheader">标记</b><b role="columnheader">中文名称</b><b role="columnheader">构成</b><b role="columnheader">听感</b></div><div role="row"><span>Cmaj7</span><span>大七和弦</span><span>C E G B</span><span>明亮、延展</span></div><div role="row"><span>C7</span><span>属七和弦</span><span>C E G B♭</span><span>有解决倾向</span></div><div role="row"><span>Cm7</span><span>小七和弦</span><span>C E♭ G B♭</span><span>柔和、内敛</span></div><div role="row"><span>Cm7♭5</span><span>半减七和弦</span><span>C E♭ G♭ B♭</span><span>紧张、不稳定</span></div><div role="row"><span>Cdim7</span><span>减七和弦</span><span>C E♭ G♭ B𝄫</span><span>极度紧张、不稳定</span></div></div>
+                        <p>这些名称都是为了实际简化使用，详细的命名规则参照上方的图片。你可能会注意到，减七和弦中出现了一个减七度，它比小七度还要少一个半音，为了音名不变，在B上标记了重降号（B𝄫），意为降低两个半音。</p>               <p>另外，因为四个音的音响效果会很繁杂，而七和弦又比较强调三音和七音，但要保证根音的存在，所以在实际中，我们有时会省略五音，以简化和弦的声音结构。需要格外注意的是，属七和弦拥有强烈的解决倾向，这致使它经常被使用，所以你最好记住它的结构。</p>
+                        <p>掌握三和弦和七和弦已足以完成多数创作。九、十一、十三和弦会在七和弦上加入扩展音，也常省略未被强调的音。</p>
                     </section>
                     <section class="chord-section" id="chord-listening"><div class="chord-section-heading"><span>04</span><h2 id="chord-test">和弦听辨</h2></div><p>通过听辨巩固和弦性质。这个练习更考验基础听觉，适合反复完成。</p></section>
                     <div data-ear-training="chord" data-title="和弦听辨练习" data-rounds="8"></div>
                     <p>在学习了和弦相关知识后，你就可以更好地实践DAW创作了。</p>
                     <section class="lesson-quiz" data-lesson-quiz></section>
-                    <div class="learning-nav"><a href="chords-intervals.html" class="learning-nav-button prev">上一页：度与音程</a><a href="chords-track.html" class="learning-nav-button next">下一页：音轨</a></div>
+                    <div class="learning-nav"><a href="chords-scales.html" class="learning-nav-button prev">上一页：音阶</a><a href="chords-progressions.html" class="learning-nav-button next">下一页：简单和弦进行</a></div>
                 </div>
             </div>
         </div>

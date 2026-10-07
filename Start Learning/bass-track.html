@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLab | 贝斯系列 · 三轨音轨群</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <link rel="stylesheet" href="../css/beat.css">
+    <script src="../js/musiclab-ui.js"></script>
+</head>
+<body class="main" data-lesson="bass-track">
+    <div class="top"><div class="Logo"><a href="../index.html" aria-label="返回主页"></a><img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab"></div><ul class="nav"><li id="nav1"><a href="../index.html">主页</a></li><li id="nav2"><a href="../introduction/intro.html">开发组介绍</a></li><li id="nav3"><a href="../The Playground/index.html">游乐园</a></li><li id="nav6"><a href="index.html">初学者教程</a></li><li id="nav5"><a href="../settings/settings.html">设置</a></li><li id="nav4"><a href="../login/login.html">登录 | 注册</a></li></ul><div><hr></div></div>
+    <div class="sidebar"><div class="directory-panel"><div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录"><img src="../icons/directory.png" alt="Directory" class="directory-icon"></div><div class="directory-tree"></div></div></div>
+    <div class="box_with_side"><div class="learning-content-panel"><div class="learning-content-header"><h1>贝斯系列（三）：和弦、贝斯与节奏</h1></div><div class="learning-content-body">
+        <section id="bass-track-group"><h2>三轨音轨群</h2><p>下面的和弦、贝斯与节奏共用一个 16 steps 播放时钟。和弦提供色彩，贝斯连接低音与律动，节奏负责推动整段音乐。三个音轨可以分别编辑，但播放时会保持对齐。</p>
+            <div class="chord-track-lab" data-chord-track-lab="bass-suite" data-chord-track-range="c3-c5-chromatic" aria-label="和弦与贝斯三轨编辑器"></div>
+            <h3>节奏</h3>
+            <div class="beat-demo-wrapper chord-rhythm-track" data-sync-clock="true" data-demo-variant="chords-sync" aria-label="三轨音轨群的节奏音轨">
+                <div class="beat-demo-header"><div class="beat-demo-transport"><button class="beat-demo-play" type="button" aria-label="播放或暂停">▶</button><button class="beat-demo-stop" type="button" aria-label="停止并回到开头">■</button><div class="beat-demo-bpm"><span class="beat-demo-label">BPM</span><span class="beat-demo-value">96</span><input class="beat-demo-slider" type="range" min="40" max="240" step="1" value="96" aria-label="BPM 调节"></div></div><button class="beat-demo-clear" type="button" aria-label="清空全部节奏块">Clear</button></div>
+                <div class="beat-demo-shell"><div class="beat-demo-grid"></div><div class="beat-demo-playhead" aria-hidden="true"></div></div>
+            </div>
+        </section>
+        <p>从一个低音根音开始，再加入少量和弦音，最后用 Kick、Snare 和镲类建立稳定律动。所有轨道初始保持空白，由你决定第一拍放什么。</p>
+        <section class="lesson-quiz" data-lesson-quiz></section><div class="learning-nav"><a href="bass-another-one.html" class="learning-nav-button prev">上一页：Another One Bites the Dust</a><a href="others.html" class="learning-nav-button next">下一页：拓展与其他</a></div>
+    </div></div></div>
+    <script src="../js/audio-engine.js"></script><script src="../js/chords-learning.js"></script><script src="../js/beat-demo.js"></script><script src="../js/login.js"></script><script src="../js/lesson-quiz.js"></script>
+</body>
+</html>

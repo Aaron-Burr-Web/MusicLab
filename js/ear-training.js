@@ -64,7 +64,7 @@
     }, playbackUntil - performance.now());
     return true;
   };
-  const playSrc = (src, delaySec = 0, gain = 0.9, durationSec = 2) => {
+  const playSrc = (src, delaySec = 0, gain = 0.9, durationSec = 1.2) => {
     if (!src) return;
     if (AUDIO) {
       AUDIO.unlock();

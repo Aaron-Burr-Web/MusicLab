@@ -70,12 +70,27 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://example.com/Start%20Learning/chords-track.html</loc>
+    <loc>https://example.com/Start%20Learning/tones.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://example.com/Start%20Learning/tones.html</loc>
+    <loc>https://example.com/Start%20Learning/tones-major-minor.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/tones-common-modes.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/tones-chord-connection.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/tones-chord-color.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

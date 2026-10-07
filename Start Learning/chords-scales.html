@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLab | 音程与和弦 · 音阶</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
+</head>
+<body class="main" data-lesson="chords-scales">
+    <div class="top">
+        <div class="Logo"><a href="../index.html" aria-label="返回主页"></a><img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab"></div>
+        <ul class="nav">
+            <li id="nav1"><a href="../index.html">主页</a></li>
+            <li id="nav2"><a href="../introduction/intro.html">开发组介绍</a></li>
+            <li id="nav3"><a href="../The Playground/index.html">游乐园</a></li>
+            <li id="nav6"><a href="index.html">初学者教程</a></li>
+            <li id="nav5"><a href="../settings/settings.html">设置</a></li>
+            <li id="nav4"><a href="../login/login.html">登录 | 注册</a></li>
+        </ul>
+        <div><hr></div>
+    </div>
+    <div class="sidebar"><div class="directory-panel"><div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录"><img src="../icons/directory.png" alt="Directory" class="directory-icon"></div><div class="directory-tree"></div></div></div>
+    <div class="box_with_side"><div class="learning-content-panel"><div class="learning-content-header"><h1>音程与和弦（三）：音阶</h1></div>
+        <div class="learning-content-body">
+            <section class="melody-intro" id="scales"><p class="pitch-lesson-kicker">把音程排成方向</p><p class="pitch-lesson-lead">音阶是按照一定音程关系排列起来的一组音。它为旋律提供音高材料，也为和弦建立调性坐标。</p></section>
+            <section class="chord-section">
+                <div class="chord-section-heading"><span>01</span><h2>从 C 大调开始</h2></div>
+                <p>C 大调由 C、D、E、F、G、A、B 七个基本音组成。相邻音之间的全音与半音关系是：全音、全音、半音、全音、全音、全音、半音。</p>
+                <div class="track-role-grid"><article><b>级进</b><p>沿着音阶相邻移动，旋律通常平稳，容易形成清楚的方向。</p></article><article><b>向上展开</b><p>从低音 C 逐级走到高音 C，可以听见音高连续上行的方向。</p></article></div>
+            </section>
+            <img src="../images/scale.png" alt="C 大调音阶示例" class="pic">
+            <p>尝试对照着上面的谱写出来吧，暂时把一格当作一个十六分音符。</p>
+            <section class="melody-lab" id="scale-lab" data-melody-example="scale">
+                <div class="notation-lab-head"><div><h2>尝试写一条音阶</h2><p>先填充 C 大调音阶示例，再修改格子，观察音高方向如何改变听感。</p></div><span class="status-badge offline" data-melody-status>未播放</span></div>
+                <div class="melody-sequencer-head">
+                    <button class="melody-transport" type="button" aria-label="播放或暂停音阶">▶</button>
+                    <div class="melody-bpm"><span>BPM</span><output data-melody-bpm-value>72</output><input type="range" min="40" max="240" value="72" step="1" data-melody-bpm aria-label="音阶速度 BPM"></div>
+                    <button class="melody-clear" type="button">Clear</button>
+                </div>
+                <div class="melody-sequencer-shell"><div class="melody-sequencer-track"><div class="melody-ruler" data-melody-ruler aria-label="播放位置标尺"></div><div class="melody-grid" data-melody-grid aria-label="C 大调音阶音轨"></div><div class="melody-playhead" aria-hidden="true"></div></div></div>
+                <p class="melody-lab-foot">点击“填充示例”载入 C 大调上行音阶，每个音占两格；点击格子添加音，长按并横向拖动可延长音。</p>
+                <button class="ml-btn secondary" type="button" data-melody-fill>填充示例</button>
+                <span class="pitch-practice-feedback" data-melody-check aria-live="polite"></span>
+            </section>
+            <p>在这个音轨中你可以很清晰的看到音阶的走向和距离。我们以C大调音阶为例，讲一讲这些音高的属性和它们在旋律中的作用。</p>
+            <section class="chord-section"><div class="chord-section-heading"><span>02</span><h2>从音阶走向旋律</h2></div><p>音阶不是必须逐级播放的练习，它更像一组可选择的音高。跳过某些级数、改变起点或重复一个音，就能从音阶材料中写出不同的旋律。</p>
+            <p>按照顺序，我们依次将它们称为：主音、上主音、中音、下属音、属音、下中音、导音、主音。为什么会有这样的命名呢？这是因为每个音在旋律中承担的功能不同，主音是旋律的中心，上主音和中音起到连接作用，下属音和属音则带有一定的张力，导音具有引导回主音的作用。</p>
+            <p>下面这张图展示其对应关系。</p>
+            <img src="../images/scale-to-melodies.png" alt="音阶与旋律对应关系示例" class="pic"></section>
+            <p>你可以在上方的音轨中听一听各个音高的导向性，感受它们在旋律中所起的作用。你需要特别注意的是，主音、下属音和属音，这个在后面的和弦连接中有很重要的应用。</p>
+            <section class="lesson-quiz" data-lesson-quiz></section>
+            <div class="learning-nav"><a href="chords-intervals.html" class="learning-nav-button prev">上一页：度与音程</a><a href="chords-chords.html" class="learning-nav-button next">下一页：和弦</a></div>
+        </div>
+    </div></div>
+    <script src="../js/audio-engine.js"></script><script src="../js/track.js"></script><script src="../js/login.js"></script><script src="../js/lesson-quiz.js"></script>
+</body>
+</html>

@@ -71,8 +71,7 @@
 
   const play = (note) => {
     if (!audio) return;
-    audio.unlock();
-    audio.play(sourceFor(note), { gain: 0.85 });
+    audio.playAudition(sourceFor(note), { gain: 0.85, controls: keyboard.querySelectorAll('[data-note]') });
   };
 
   keyboard.addEventListener('click', (event) => {

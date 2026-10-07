@@ -352,7 +352,7 @@
 
     stopBeatPlayback();
     if (preset.steps !== beatSteps) rebuildGrid(preset.steps, false);
-    if (wrapper.dataset.demoVariant !== 'song-example') {
+    if (!['song-example', 'chords-sync'].includes(wrapper.dataset.demoVariant)) {
       beatState.bpm = preset.bpm;
       beatBpmSlider.value = String(preset.bpm);
       beatBpmValue.textContent = String(preset.bpm);
@@ -399,17 +399,53 @@
     });
   });
 
-  beatPlayButton.addEventListener('click', () => (beatState.playing ? pauseBeatPlayback() : startBeatPlayback()));
-  if (beatStopButton) beatStopButton.addEventListener('click', stopBeatPlayback);
+  const syncTransport = wrapper.dataset.syncClock === 'true' ? window.MusicLabChordTransport : null;
+  if (syncTransport) {
+    window.MusicLabAudio?.load(beatTracks.map(([, src]) => src));
+    syncTransport.subscribe((step, at) => {
+      if (typeof step !== 'number') {
+        beatState.playing = false;
+        beatState.currentStep = 0;
+        beatState.stepAccumulator = 0;
+        beatPlayhead.style.display = 'none';
+        setPlayButton();
+        updateBeatPlayhead();
+        return;
+      }
+      beatState.playing = true;
+      beatState.currentStep = step;
+      beatState.stepAccumulator = 0;
+      beatState.lastFrameTime = 0;
+      beatPlayhead.style.display = 'block';
+      beatTracks.forEach(([, src], rowIndex) => {
+        if (beatActive[rowIndex]?.[step]) window.MusicLabAudio?.play(src, { at, gain: 0.8 });
+      });
+      measureBeatPlayhead();
+      updateBeatPlayhead();
+      setPlayButton();
+    });
+    syncTransport.subscribeBpm((bpm) => {
+      beatState.bpm = bpm;
+      beatBpmSlider.value = String(bpm);
+      beatBpmValue.textContent = String(bpm);
+      updateBeatPlayhead();
+    });
+    beatPlayButton.addEventListener('click', () => (beatState.playing ? syncTransport.stop() : syncTransport.start()));
+    if (beatStopButton) beatStopButton.addEventListener('click', () => syncTransport.stop());
+    beatBpmSlider.addEventListener('input', (event) => syncTransport.setBpm(Number(event.target.value)));
+  } else {
+    beatPlayButton.addEventListener('click', () => (beatState.playing ? pauseBeatPlayback() : startBeatPlayback()));
+    if (beatStopButton) beatStopButton.addEventListener('click', stopBeatPlayback);
 
-  beatBpmSlider.addEventListener('input', (event) => {
-    beatState.bpm = Number(event.target.value);
-    beatBpmValue.textContent = String(beatState.bpm);
-    beatState.lastFrameTime = beatState.playing ? performance.now() : 0;
-    beatState.stepAccumulator = 0;
-    updateBeatPlayhead();
-    updateBeatCheck();
-  });
+    beatBpmSlider.addEventListener('input', (event) => {
+      beatState.bpm = Number(event.target.value);
+      beatBpmValue.textContent = String(beatState.bpm);
+      beatState.lastFrameTime = beatState.playing ? performance.now() : 0;
+      beatState.stepAccumulator = 0;
+      updateBeatPlayhead();
+      updateBeatCheck();
+    });
+  }
 
   beatClearButton.addEventListener('click', () => {
     beatCells.flat().forEach((cell) => { cell.classList.remove('active'); cell.setAttribute('aria-pressed', 'false'); });

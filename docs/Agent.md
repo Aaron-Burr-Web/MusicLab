@@ -267,7 +267,7 @@ README.md 我之后会自己更新最终版本。
 ==================================================
 
 【检查结果】
-- 分页/导航：pitches、chords 四页的上一页/下一页链条完整（index → pitches → beat → beat-instruments → beat-track → chords → chords-intervals → chords-chords → chords-track → tones → others）；目录、页脚、搜索索引、sitemap、lesson-quiz 题库都已包含 chords-intervals / chords-chords / chords-track。唯一问题：目录里 pitches.html#pitch-basics 锚点在页面中不存在。
+- 分页/导航：pitches、chords 系列的上一页/下一页链条完整（index → pitches → beat → beat-instruments → beat-track → chords → chords-intervals → chords-chords → chords-progressions → tones → bass series → others）。唯一问题：目录里 pitches.html#pitch-basics 锚点在页面中不存在。
 - 目录滚动：桌面端 .directory-tree 没有 max-height / overflow，.sidebar 又是 position: fixed，超出窗口的目录项点不到；≤900px 已有 max-height: 60vh; overflow-y: auto。
 - Piano 音频（实测 25 个 wav）：录音干净（底噪 −70~−90 dB），但起始静音 105 ms（F3）~ 848 ms（D3）不等，相差约 740 ms；文件长度 24~44 s；峰值电平相差 15 dB（B4 −16 dB vs A3 −31 dB）。是素材问题，不是调度问题：audio-engine.js 用 Web Audio 精确同时 start()，鼓采样起始都在 0 ms、能整齐播放。
 - run.js：原来 npm test 就是完整三阶段（静态 + 无头浏览器 23 页 + 交互 harness），没有轻量模式。

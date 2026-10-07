@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLab | 音程与和弦 · 简单和弦进行</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+    <link rel="stylesheet" href="../css/Home.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/musiclab-ui.js"></script>
+</head>
+<body class="main" data-lesson="chords-progressions">
+    <div class="top">
+        <div class="Logo"><a href="../index.html" aria-label="返回主页"></a><img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab"></div>
+        <ul class="nav">
+            <li id="nav1"><a href="../index.html">主页</a></li>
+            <li id="nav2"><a href="../introduction/intro.html">开发组介绍</a></li>
+            <li id="nav3"><a href="../The Playground/index.html">游乐园</a></li>
+            <li id="nav6"><a href="index.html">初学者教程</a></li>
+            <li id="nav5"><a href="../settings/settings.html">设置</a></li>
+            <li id="nav4"><a href="../login/login.html">登录 | 注册</a></li>
+        </ul>
+        <div><hr></div>
+    </div>
+    <div class="sidebar"><div class="directory-panel"><div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录"><img src="../icons/directory.png" alt="Directory" class="directory-icon"></div><div class="directory-tree"></div></div></div>
+    <div class="box_with_side">
+        <div class="learning-content-panel">
+            <div class="learning-content-header"><h1>音程与和弦（五）：简单和弦进行</h1></div>
+            <div class="learning-content-body">
+                <section class="chord-lesson-intro" id="progressions"><div><p class="chord-kicker">让和弦向前走</p><p class="chord-lead">和弦进行，让多个和弦按顺序连接起来。</p></div><p>和弦决定音乐的色彩，进行决定音乐如何产生方向感。先从四个和弦的循环开始。</p></section>
+                <section class="chord-section">
+                    <div class="chord-section-heading"><span>01</span><h2>什么是和弦进行</h2></div>
+                    <p>单独听一个和弦，可以感受到它的色彩；把几个和弦按顺序排列，就会产生出发、发展和回到稳定位置的感觉。和弦进行通常以罗马数字表示，数字代表和弦根音在调内的级数。</p>
+                    <div class="track-role-grid"><article><b>I：主和弦</b><p>常作为开始和结束，提供稳定的归属感。</p></article><article><b>V：属和弦</b><p>带有明显的回到 I 的倾向，制造期待。</p></article><article><b>vi：关系小和弦</b><p>与 I 共享多个音，适合带来柔和、抒情的变化。</p></article></div>
+                </section>
+                <section class="chord-section">
+                    <div class="chord-section-heading"><span>02</span><h2>三种常见进行</h2></div>
+                    <p>下面使用 C 大调试听三种入门和弦进行。点击卡片即可播放每个进行中的和弦顺序。</p>
+                    <div class="chord-audition-grid">
+                        <button type="button" class="chord-audition" data-chord-progression="C4,E4,G4|G3,B3,D4|A3,C4,E4|F3,A3,C4"><b>I–V–vi–IV</b><span>C、G、Am、F：明亮而有流动感</span></button>
+                        <button type="button" class="chord-audition" data-chord-progression="C3,E3,G3|F3,A3,C4|G3,B3,D4|C3,E3,G3"><b>I–IV–V–I</b><span>C、F、G、C：清晰的出发与回归</span></button>
+                        <button type="button" class="chord-audition" data-chord-progression="D3,F3,A3|G3,B3,D4|C3,E3,G3|C3,E3,G3" data-chord-merge-last="8"><b>ii–V–I</b><span>Dm、G、C：常见的解决进行</span></button>
+                    </div>
+                    <div class="chord-track-lab" data-chord-track-lab="progression" data-chord-track-range="c3-c5" aria-label="C3到C5的15个白键音音轨，16格"></div>
+                </section>
+                <section class="chord-section">
+                    <div class="chord-section-heading"><span>03</span><h2>写进行时的三个步骤</h2></div>
+                    <div class="track-role-grid"><article><b>先确定调</b><p>先选 C 大调这样的熟悉调性，确定可以使用的和弦。</p></article><article><b>再确定方向</b><p>用 I 作为落点，用 V 或 ii–V 制造回归感。</p></article><article><b>最后重复试听</b><p>循环播放，感受每次换和弦时的张力与释放。</p></article></div>
+                </section>
+                <section class="lesson-quiz" data-lesson-quiz></section>
+                <div class="learning-nav"><a href="chords-chords.html" class="learning-nav-button prev">上一页：和弦</a><a href="tones.html" class="learning-nav-button next">下一页：调式基础</a></div>
+            </div>
+        </div>
+    </div>
+    <script src="../js/audio-engine.js"></script><script src="../js/chords-learning.js"></script><script src="../js/login.js"></script><script src="../js/lesson-quiz.js"></script>
+</body>
+</html>

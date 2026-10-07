@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicLab | Start Learning</title>
+    <title>MusicLab | 调式基础 · 引入</title>
     <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
     <link rel="stylesheet" href="../css/Home.css">
     <link rel="stylesheet" href="../css/ui.css">
+    <link rel="stylesheet" href="../css/beat.css">
     <script src="../js/musiclab-ui.js"></script>
 </head>
-    <body class="main" data-lesson="tones">
+    <body class="main" data-lesson="tones-intro">
         <div class="top">
 			<div class="Logo">
                 <a href="../index.html" aria-label="返回主页"></a>
@@ -42,38 +43,27 @@
         <div class="box_with_side">
             <div class="learning-content-panel">
                 <div class="learning-content-header">
-                    <h1>音阶调式</h1>
+                    <h1>调式基础（一）：引入</h1>
                 </div>
                 <div class="learning-content-body">
-                    <p>调式是音乐中组织音高的系统，它决定了某一段音乐的整体情绪与归属感。常见的调式包括大调和小调，它们在旋律和和声上有明显区别。</p>
-                    <p>大调常给人明亮、稳定和积极的感觉，而小调更容易表达忧郁、内敛和深沉。了解调式之后，你会更容易判断一首歌为什么听起来“开朗”或者“压抑”。</p>
-                    <h2 id="mode-practice">小试一下</h2><p>先用同一组音符切换不同调式，比较它们在情绪和归属感上的差异。</p>
-                    <div></div><!--这里放一个含调式切换的预设音轨-->
-                    <h2>音阶基础</h2>
-                    
-                    <h1 id="common-modes">常见调式</h1><p>自然大调、自然小调是最常用的基础调式。</p>
-                    <h2>自然大调</h2>
-                    <h2>自然小调</h2>
-                    <h2>和声小调与旋律小调</h2>
-                    <h1 id="folk-modes">中国民族调式</h1>
-                    <h2>传统五音音阶</h2>
-                    <h2>六音、七音的加入</h2>
-                    <h1 id="more-modes">更多调式</h1>
-                    <h2>Lydian、Mixolydian调式</h2>
-                    <h2>Dorian、Phrygian调式</h2>
-                    <h2>Locrian调式</h2>
-                    <h1 id="chord-test">调式听辨测试</h1><p>通过聆听一段和弦组合，训练对调式色彩的判断。</p>
-                    <div data-ear-training="mode" data-title="调式听辨练习" data-rounds="8"></div>
+                    <p>调式是音乐组织音高的方式。它不只是“从哪个音开始的音阶”，还会通过音与音之间的关系，建立一段音乐的重心、方向和情绪。</p>
+                    <p>接下来的章节会先从自然大调与自然小调开始，再认识其他常用调式，最后把调式应用到和弦连接、色彩转换与拼接中。</p>
+                    <section class="chord-section" id="mode-basics">
+                        <div class="chord-section-heading"><span>01</span><h2>先建立三个观察角度</h2></div>
+                        <div class="track-role-grid"><article><b>主音</b><p>哪一个音像“家”，决定了音乐的归属感。</p></article><article><b>音阶结构</b><p>音与音之间的全音、半音关系，决定调式的基本性格。</p></article><article><b>和声重心</b><p>和弦如何围绕主音运动，决定音乐的方向与张力。</p></article></div>
+                    </section>
                     <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->
                     <section class="lesson-quiz" data-lesson-quiz></section>
                     <div class="learning-nav">
-                        <a href="chords-track.html" class="learning-nav-button prev">上一页：音程与和弦（四）</a>
-                        <a href="others.html" class="learning-nav-button next">下一页：拓展与其他</a>
+                        <a href="chords-progressions.html" class="learning-nav-button prev">上一页：简单和弦进行</a>
+                        <a href="tones-major-minor.html" class="learning-nav-button next">下一页：自然大调与小调</a>
                     </div>
                 </div>
             </div>
         </div>
     <script src="../js/audio-engine.js"></script>
+    <script src="../js/tones-track.js"></script>
+    <script src="../js/beat-demo.js"></script>
     <script src="../js/ear-training.js"></script>
     <script src="../js/login.js"></script>
     <script src="../js/lesson-quiz.js"></script>

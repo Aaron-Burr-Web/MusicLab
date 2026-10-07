@@ -14,7 +14,11 @@
   document.body.appendChild(loadingScreen);
 
   const src = (note) => `../audio/piano/sources/source-piano-${note}.wav`;
-  const notes = ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4'];
+  const example = document.querySelector('[data-melody-example]');
+  const isScale = example?.dataset.melodyExample === 'scale';
+  const notes = isScale
+    ? ['C5', 'B4', 'Bb4', 'A4', 'Ab4', 'G4', 'Gb4', 'F4', 'E4', 'Eb4', 'D4', 'Db4', 'C4']
+    : ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4'];
   const steps = 16;
   const state = { bpm: 96, currentStep: 0, playing: false, frame: null, lastFrame: 0, accumulator: 0, scrubbing: false };
   const ruler = document.querySelector('[data-melody-ruler]');
@@ -24,10 +28,14 @@
   const bpmValue = document.querySelector('[data-melody-bpm-value]');
   const status = document.querySelector('[data-melody-status]');
   const playhead = document.querySelector('.melody-playhead');
-  const example = document.querySelector('[data-melody-example]');
   const check = document.querySelector('[data-melody-check]');
   const fillButton = document.querySelector('[data-melody-fill]');
   const examples = {
+    scale: {
+      bpm: 72,
+      pattern: [12, 10, 8, 7, 5, 3, 1, 0]
+        .map((row, index) => ({ row, start: index * 2, length: 2 }))
+    },
     twinkle: {
       bpm: 40,
       pattern: [{ row: 7, start: 0, length: 1 }, { row: 7, start: 1, length: 1 },
@@ -54,9 +62,8 @@
     const expectedBlocks = examplePattern.filter(({ length }) => length > 1);
     const blocksMatch = blocks.size === expectedBlocks.length && expectedBlocks.every(({ row, start, length }) => blocks.get(blockKey(row, start)) === length);
     const matches = expected.size === actual.size && [...expected].every((key) => actual.has(key)) && blocksMatch;
-    check.textContent = matches
-      ? state.bpm === 40 ? '没错！就是这样！' : '没错！再尝试调整到合适的BPM！'
-      : '';
+    check.textContent = matches ? '对！就是这样！' : '';
+    check.classList.toggle('is-correct', matches);
     check.classList.toggle('is-visible', matches);
   };
 
@@ -225,7 +232,7 @@
   };
 
   transport.addEventListener('click', () => (state.playing ? pause() : start()));
-  const clearCheck = () => { if (check) { check.textContent = ''; check.classList.remove('is-visible'); } };
+  const clearCheck = () => { if (check) { check.textContent = ''; check.classList.remove('is-visible', 'is-correct'); } };
   const clearPattern = () => { blocks.clear(); cells.flat().forEach((cell) => { cell.classList.remove('active', 'is-merged', 'is-merged-start', 'is-merged-end'); cell.setAttribute('aria-pressed', 'false'); }); active = cells.map((row) => row.map(() => false)); clearCheck(); };
   clearButton.addEventListener('click', () => { clearPattern(); setStatus('已清空'); });
   fillButton?.addEventListener('click', () => {
@@ -244,6 +251,7 @@
   window.addEventListener('resize', updatePlayhead);
   audioReady.finally(() => {
     render();
+    grid.closest('.melody-lab')?.style.setProperty('--melody-steps', String(steps));
     updatePlayhead();
     loadingScreen.remove();
     document.documentElement.classList.remove('melody-loading');

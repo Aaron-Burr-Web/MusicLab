@@ -7,17 +7,30 @@
 
   const source = (note) => `../audio/piano/sources/source-piano-${note}.wav`;
   const playNotes = (notes, options = {}) => {
-    const { delay = 0, gain = 0.72 } = options;
-    audio.unlock();
-    const startAt = delay ? audio.now() + delay : undefined;
-    notes.forEach((note) => audio.play(source(note), { at: startAt, gain }));
+    const { delay = 0, gain = 0.72, controls = [] } = options;
+    return audio.playAudition(notes.map(source), { offsets: notes.map((_, index) => index ? delay : 0), gain, controls });
   };
+
+  let intervalMode = 'melody';
+  const intervalModeSwitch = document.querySelector('[data-interval-mode-switch]');
+  if (intervalModeSwitch) {
+    intervalModeSwitch.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-interval-mode]');
+      if (!button) return;
+      intervalMode = button.dataset.intervalMode;
+      intervalModeSwitch.querySelectorAll('[data-interval-mode]').forEach((item) => {
+        const isActive = item === button;
+        item.classList.toggle('is-active', isActive);
+        item.setAttribute('aria-pressed', String(isActive));
+      });
+    });
+  }
 
   document.querySelectorAll('[data-chord-audition]').forEach((button) => {
     const notes = button.dataset.chordAudition.split(',').filter(Boolean);
     audio.load(notes.map(source));
     button.addEventListener('click', () => {
-      playNotes(notes);
+      playNotes(notes, { delay: intervalMode === 'melody' ? 0.3 : 0, controls: document.querySelectorAll('.chord-audition, [data-interval-keyboard] [data-note]') });
       button.classList.remove('is-playing');
       void button.offsetWidth;
       button.classList.add('is-playing');
@@ -31,7 +44,7 @@
     intervalKeyboard.addEventListener('click', (event) => {
       const target = event.target.closest('button[data-note]');
       if (!target) return;
-      playNotes(['C3', target.dataset.note], { delay: 0.72 });
+      playNotes(['C3', target.dataset.note], { delay: 0.3, controls: intervalKeyboard.querySelectorAll('button, .chord-audition') });
       intervalKeyboard.querySelectorAll('button').forEach((button) => button.classList.toggle('is-selected', button === target));
       readout.innerHTML = `<b>C 到 ${target.textContent}</b>：${target.dataset.name}，${target.dataset.degree}，相差 ${target.dataset.semitones} 个半音。`;
     });
@@ -50,7 +63,7 @@
       const button = event.target.closest('[data-triad]');
       if (!button) return;
       const triad = triads[button.dataset.triad];
-      playNotes(triad.notes);
+      playNotes(triad.notes, { controls: triadBuilder.querySelectorAll('button') });
       triadBuilder.querySelectorAll('button').forEach((item) => item.classList.toggle('is-selected', item === button));
       readout.innerHTML = `<b>${triad.title}</b><span>${triad.structure}</span>`;
     });
@@ -58,16 +71,37 @@
 
   const trackLab = document.querySelector('[data-chord-track-lab]');
   if (trackLab) {
-    const STEPS = 16;
-    const dividerSteps = new Set([4, 8, 12]);
-    // 两个工作台都使用 C 大调自然音阶：从底部 C3 向上到 C5，共两个八度、15 个单音。
-    const scaleRows = ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3']
+    const trackMode = trackLab.dataset.chordTrackLab;
+    const STEPS = trackMode === 'octave' ? 4 : 16;
+    const dividerSteps = new Set(STEPS === 4 ? [1, 2, 3] : [4, 8, 12]);
+    const isOctaveTrack = trackMode === 'octave';
+    const isProgressionTrack = trackMode === 'progression';
+    const isChordsOnlyTrack = trackMode === 'chords-only';
+    const isBassExampleTrack = trackMode === 'bass-example';
+    const isBassSuiteTrack = trackMode === 'bass-suite';
+    const sharedTransport = isChordsOnlyTrack || isBassExampleTrack || isBassSuiteTrack
+      ? { clock: null, bpm: 96, states: [], listeners: [], bpmListeners: [] } : null;
+    const octaveRows = trackLab.dataset.chordTrackRange === 'g4-c3'
+      ? ['G4', 'Gb4', 'F4', 'E4', 'Eb4', 'D4', 'Db4', 'C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3']
+      : ['C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3'];
+    const scaleNotes = isChordsOnlyTrack
+      ? ['C5', 'B4', 'Bb4', 'A4', 'Ab4', 'G4', 'Gb4', 'F4', 'E4', 'Eb4', 'D4', 'Db4', 'C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3']
+      : isProgressionTrack
+        ? ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3']
+      : (isOctaveTrack ? octaveRows : ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3']);
+    const scaleRows = scaleNotes
+      .map((note) => [note, [note]]);
+    const bassRows = ['C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3']
       .map((note) => [note, [note]]);
 
-    const createTrack = ({ title, theme, rows, gain, isChord = false }) => {
-      const state = { bpm: 96, pattern: Array.from({ length: 15 }, () => new Set()), blocks: new Map(), clock: null, playing: false };
+    const createTrack = ({ title, theme, rows, gain, isChord = false, defaultBpm = 96 }) => {
+      const state = { bpm: defaultBpm, pattern: Array.from({ length: rows.length }, () => new Set()), blocks: new Map(), clock: null, playing: false };
+      if (sharedTransport) {
+        state.bpm = sharedTransport.bpm;
+        sharedTransport.states.push(state);
+      }
       const panel = document.createElement('section');
-      panel.className = `chord-sequencer-panel ${theme}`;
+      panel.className = `chord-sequencer-panel ${theme}${STEPS === 4 ? ' is-four-step' : ''}`;
       audio.load(rows.flatMap(([, notes]) => notes.map(source)));
       const chordGain = (count) => isChord ? gain / Math.sqrt(Math.max(1, count)) : gain;
       const activeCountAt = (step) => state.pattern.reduce((count, row) => count + (row.has(step) ? 1 : 0), 0);
@@ -171,22 +205,51 @@
       };
 
       const stop = () => {
+        if (sharedTransport) {
+          if (sharedTransport.clock) sharedTransport.clock.stop();
+          sharedTransport.clock = null;
+          sharedTransport.states.forEach((item) => { item.clock = null; item.playing = false; });
+          sharedTransport.listeners.forEach((listener) => listener('stop'));
+          render();
+          return;
+        }
         if (state.clock) state.clock.stop();
         state.clock = null;
         state.playing = false;
         render();
       };
 
+      const playTrackStep = (step, at) => {
+        if (step === 'stop' || step === 'end') return;
+        rows.forEach(([, notes], rowIndex) => {
+          const block = blockAt(rowIndex, step);
+          if (block && block.start !== step) return;
+          if (state.pattern[rowIndex].has(step)) notes.forEach((note) => audio.play(source(note), { at, gain: chordGain(activeCountAt(step)), duration: (15 / state.bpm) * (block?.length || 1), synth: true }));
+        });
+        paint(step);
+      };
+
       const start = () => {
         if (state.playing) return;
-        state.clock = audio.createClock({ bpm: state.bpm, steps: STEPS, onStep: (step, at) => {
-          rows.forEach(([, notes], rowIndex) => {
-            const block = blockAt(rowIndex, step);
-            if (block && block.start !== step) return;
-            if (state.pattern[rowIndex].has(step)) notes.forEach((note) => audio.play(source(note), { at, gain: chordGain(activeCountAt(step)), duration: (15 / state.bpm) * (block?.length || 1), synth: true }));
-          });
-          paint(step);
-        } });
+        if (sharedTransport) {
+          if (sharedTransport.clock) return;
+          if (!sharedTransport.listeners.includes(playTrackStep)) sharedTransport.listeners.push(playTrackStep);
+          sharedTransport.clock = audio.createClock({ bpm: sharedTransport.bpm, steps: STEPS, loop: true, onEnd: () => {
+            sharedTransport.clock = null;
+            sharedTransport.states.forEach((item) => { item.clock = null; item.playing = false; });
+            sharedTransport.listeners.forEach((listener) => listener('end'));
+            render();
+          }, onStep: (step, at) => sharedTransport.listeners.forEach((listener) => listener(step, at)) });
+          sharedTransport.states.forEach((item) => { item.clock = sharedTransport.clock; item.playing = true; });
+          sharedTransport.clock.start();
+          render();
+          return;
+        }
+        state.clock = audio.createClock({ bpm: state.bpm, steps: STEPS, loop: !isOctaveTrack, onEnd: () => {
+          state.clock = null;
+          state.playing = false;
+          render();
+        }, onStep: playTrackStep });
         state.clock.start();
         state.playing = true;
         render();
@@ -197,7 +260,12 @@
         panel.querySelector('[data-stop]').addEventListener('click', stop);
         panel.querySelector('[data-bpm]').addEventListener('input', (event) => {
           state.bpm = Number(event.target.value);
-          if (state.clock) state.clock.setBpm(state.bpm);
+          if (sharedTransport) {
+            sharedTransport.bpm = state.bpm;
+            sharedTransport.states.forEach((item) => { item.bpm = state.bpm; });
+            if (sharedTransport.clock) sharedTransport.clock.setBpm(state.bpm);
+            sharedTransport.bpmListeners.forEach((listener) => listener(state.bpm));
+          } else if (state.clock) state.clock.setBpm(state.bpm);
           panel.querySelector('output').textContent = state.bpm;
         });
         panel.querySelector('[data-clear]').addEventListener('click', () => { state.blocks.clear(); state.pattern.forEach((row) => row.clear()); render(); });
@@ -225,12 +293,319 @@
         }));
       };
 
+      const fillProgression = (groups, button) => {
+        state.blocks.clear();
+        state.pattern.forEach((row) => row.clear());
+        const mergeLast = Number(button?.dataset?.chordMergeLast || 0);
+        const groupsToFill = mergeLast && groups.length >= 2
+          ? [...groups.slice(0, -2), [...new Set(groups.at(-2).concat(groups.at(-1)))]]
+          : groups;
+        groupsToFill.forEach((group, groupIndex) => {
+          const start = groupIndex * 4;
+          const length = groupIndex === groupsToFill.length - 1 && mergeLast ? mergeLast : 4;
+          group.forEach((note) => {
+            const rowIndex = rows.findIndex(([label]) => label === note);
+            if (rowIndex >= 0) paintBlock(rowIndex, start, length);
+          });
+        });
+        render();
+      };
+
       render();
       trackLab.appendChild(panel);
+      return { fillProgression, panel, start, stop, setBpm: (bpm) => {
+        const slider = panel.querySelector('[data-bpm]');
+        if (!slider) return;
+        slider.value = String(bpm);
+        slider.dispatchEvent(new Event('input', { bubbles: true }));
+      } };
     };
 
-    createTrack({ title: 'Chords 音轨', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
-    createTrack({ title: 'Basslines 音轨', theme: 'is-bass', rows: scaleRows, gain: 0.78 });
+    let progressionTrack = null;
+    let chordTrack = null;
+    if (isOctaveTrack) {
+      createTrack({ title: '尝试', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
+    } else if (isProgressionTrack) {
+      progressionTrack = createTrack({ title: 'C 大调和弦音轨 · C3–C5 · 16 steps', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true, defaultBpm: 40 });
+    } else if (isChordsOnlyTrack) {
+      chordTrack = createTrack({ title: '和弦', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
+    } else if (isBassExampleTrack) {
+      chordTrack = createTrack({ title: '贝斯', theme: 'is-bass', rows: bassRows, gain: 0.78, defaultBpm: 80 });
+    } else if (isBassSuiteTrack) {
+      chordTrack = createTrack({ title: '和弦', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
+      createTrack({ title: '贝斯', theme: 'is-bass', rows: bassRows, gain: 0.78 });
+    } else {
+      createTrack({ title: 'Chords 音轨', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
+      createTrack({ title: 'Basslines 音轨', theme: 'is-bass', rows: scaleRows, gain: 0.78 });
+    }
+
+    if (progressionTrack) {
+      document.querySelectorAll('[data-chord-progression]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const groups = button.dataset.chordProgression.split('|').map((group) => group.split(',').filter(Boolean));
+          progressionTrack.fillProgression(groups, button);
+        });
+      });
+    }
+
+    if (isBassExampleTrack && chordTrack) {
+      document.querySelector('[data-bass-example-fill]')?.addEventListener('click', () => {
+        chordTrack.fillProgression([['C3'], ['C3'], ['G3'], ['A3']], null);
+      });
+    }
+
+    if (chordTrack && sharedTransport) {
+      window.MusicLabChordTransport = {
+        start: chordTrack.start,
+        stop: chordTrack.stop,
+        setBpm: chordTrack.setBpm,
+        subscribe: (listener) => sharedTransport.listeners.push(listener),
+        subscribeBpm: (listener) => sharedTransport.bpmListeners.push(listener)
+      };
+    }
+
+    const practice = document.querySelector('[data-interval-track-practice]');
+    if (practice && isOctaveTrack) {
+      const panel = trackLab.querySelector('.chord-sequencer-panel');
+      const startButton = practice.querySelector('[data-interval-practice-start]');
+      const question = practice.querySelector('[data-interval-practice-question]');
+      const feedback = practice.querySelector('[data-interval-practice-feedback]');
+      const intervalNames = ['纯一度', '小二度', '大二度', '小三度', '大三度', '纯四度', '增四度', '纯五度', '小六度', '大六度', '小七度', '大七度', '纯八度'];
+      const noteNames = scaleRows.map(([note]) => note);
+      const noteLabel = (note) => note.replace('b', '♭').slice(0, -1);
+      const candidates = noteNames.flatMap((root, rootRow) => Array.from({ length: rootRow + 1 }, (_, semitones) => ({ root, rootRow, semitones, target: noteNames[rootRow - semitones], label: intervalNames[semitones] })));
+      let questions = [];
+      let questionIndex = -1;
+      let current = null;
+      let nextTimer = null;
+
+      const shuffle = (items) => [...items].sort(() => Math.random() - 0.5);
+      const setFeedback = (text, type = '') => {
+        feedback.textContent = text;
+        feedback.className = `interval-practice-feedback${type ? ` is-${type}` : ''}`;
+      };
+      const nextQuestion = () => {
+        if (nextTimer) { window.clearTimeout(nextTimer); nextTimer = null; }
+        questionIndex += 1;
+        if (questionIndex >= 8) {
+          current = null;
+          question.textContent = '八题完成！按下“重新开始”再来一轮。';
+          startButton.textContent = '重新开始';
+          setFeedback('');
+          return;
+        }
+        current = questions[questionIndex];
+        panel.querySelector('[data-clear]')?.click();
+        question.textContent = `第 ${questionIndex + 1} / 8 题：写出${noteLabel(current.root)}为根音的${current.label}音程。`;
+        setFeedback('');
+      };
+      const getPattern = () => {
+        const pattern = [];
+        panel.querySelectorAll('.chord-sequencer-row').forEach((row, rowIndex) => {
+          const cells = [...row.querySelectorAll('.chord-sequencer-cell')];
+          const active = cells.filter((cell) => cell.classList.contains('is-active'));
+          const starts = cells.filter((cell) => cell.classList.contains('is-merged-start'));
+          const ends = cells.filter((cell) => cell.classList.contains('is-merged-end'));
+          if (active.length || starts.length || ends.length) pattern.push({ rowIndex, active, starts, ends });
+        });
+        return pattern;
+      };
+      const isCorrect = () => {
+        if (!current) return false;
+        const pattern = getPattern();
+        if (pattern.length !== 2) return false;
+        const expectedRows = [current.rootRow, current.rootRow - current.semitones].sort((a, b) => a - b);
+        const actualRows = pattern.map(({ rowIndex }) => rowIndex).sort((a, b) => a - b);
+        if (expectedRows.some((row, index) => row !== actualRows[index])) return false;
+        return pattern.every(({ active, starts, ends }) => active.length === 4 && starts.length === 1 && ends.length === 1 && starts[0].dataset.step === '0' && ends[0].dataset.step === '3');
+      };
+
+      startButton.addEventListener('click', () => {
+        questions = shuffle(candidates).slice(0, 8);
+        questionIndex = -1;
+        current = null;
+        startButton.textContent = '重新开始';
+        nextQuestion();
+      });
+      panel.addEventListener('click', (event) => {
+        const playButton = event.target.closest('[data-play]');
+        if (!playButton || !current) return;
+        if (!isCorrect()) {
+          event.stopImmediatePropagation();
+          setFeedback('不对，再试试吧！', 'wrong');
+          return;
+        }
+        setFeedback('正确！', 'correct');
+        nextTimer = window.setTimeout(nextQuestion, 760);
+      }, true);
+    }
+
+    const chordPractice = document.querySelector('[data-chord-track-practice]');
+    if (chordPractice && isOctaveTrack) {
+      const panel = trackLab.querySelector('.chord-sequencer-panel');
+      let practiceMode = null;
+      const startButton = chordPractice.querySelector('[data-chord-practice-start]');
+      const question = chordPractice.querySelector('[data-chord-practice-question]');
+      const feedback = chordPractice.querySelector('[data-chord-practice-feedback]');
+      const chordTypes = [
+        { name: '大三和弦', offsets: [0, 4, 7] },
+        { name: '小三和弦', offsets: [0, 3, 7] },
+        { name: '增三和弦', offsets: [0, 4, 8] },
+        { name: '减三和弦', offsets: [0, 3, 6] }
+      ];
+      const noteNames = scaleRows.map(([note]) => note);
+      const noteLabel = (note) => note.replace('b', '♭');
+      const candidates = noteNames.flatMap((root, rootRow) => chordTypes
+        .filter(({ offsets }) => Math.max(...offsets) <= rootRow)
+        .map((type) => ({ root, rootRow, ...type })));
+      let questions = [];
+      let questionIndex = -1;
+      let current = null;
+      let nextTimer = null;
+      const shuffle = (items) => {
+        const result = [...items];
+        for (let index = result.length - 1; index > 0; index -= 1) {
+          const swapIndex = Math.floor(Math.random() * (index + 1));
+          [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+        }
+        return result;
+      };
+      const selectQuestionsFrom = (items) => {
+        const groups = [...new Set(items.map(({ rootRow }) => rootRow))]
+          .map((rootRow) => shuffle(items.filter((candidate) => candidate.rootRow === rootRow)));
+        const selected = [];
+        while (selected.length < 8 && groups.some((group) => group.length)) {
+          shuffle(groups.filter((group) => group.length)).forEach((group) => {
+            if (selected.length < 8 && group.length) selected.push(group.pop());
+          });
+        }
+        return shuffle(selected);
+      };
+      const selectQuestions = () => selectQuestionsFrom(candidates);
+      const setFeedback = (text, type = '') => {
+        feedback.textContent = text;
+        feedback.className = `interval-practice-feedback${type ? ` is-${type}` : ''}`;
+      };
+      const getPattern = () => [...panel.querySelectorAll('.chord-sequencer-row')].reduce((result, row, rowIndex) => {
+        const cells = [...row.querySelectorAll('.chord-sequencer-cell')];
+        const active = cells.filter((cell) => cell.classList.contains('is-active'));
+        const starts = cells.filter((cell) => cell.classList.contains('is-merged-start'));
+        const ends = cells.filter((cell) => cell.classList.contains('is-merged-end'));
+        if (active.length || starts.length || ends.length) result.push({ rowIndex, active, starts, ends });
+        return result;
+      }, []);
+      const isCorrect = () => {
+        if (!current) return false;
+        const pattern = getPattern();
+        if (pattern.length !== 3) return false;
+        const expectedRows = [current.rootRow, ...current.offsets.slice(1).map((offset) => current.rootRow - offset)].sort((a, b) => a - b);
+        const actualRows = pattern.map(({ rowIndex }) => rowIndex).sort((a, b) => a - b);
+        if (expectedRows.some((row, index) => row !== actualRows[index])) return false;
+        return pattern.every(({ active, starts, ends }) => active.length === 4 && starts.length === 1 && ends.length === 1 && starts[0].dataset.step === '0' && ends[0].dataset.step === '3');
+      };
+      const nextQuestion = () => {
+        if (nextTimer) { window.clearTimeout(nextTimer); nextTimer = null; }
+        questionIndex += 1;
+        if (questionIndex >= 8) {
+          current = null;
+          question.textContent = '八题完成！按下“重新开始”再来一轮。';
+          startButton.textContent = '重新开始';
+          setFeedback('');
+          return;
+        }
+        current = questions[questionIndex];
+        panel.querySelector('[data-clear]')?.click();
+        question.textContent = `第 ${questionIndex + 1} / 8 题：写出${noteLabel(current.root)}${current.name}。`;
+        setFeedback('');
+      };
+      startButton.addEventListener('click', () => {
+        practiceMode = 'triad';
+        questions = selectQuestions();
+        questionIndex = -1;
+        current = null;
+        startButton.textContent = '重新开始';
+        nextQuestion();
+      });
+      panel.addEventListener('click', (event) => {
+        const playButton = event.target.closest('[data-play]');
+        if (!playButton || practiceMode !== 'triad' || !current) return;
+        if (!isCorrect()) {
+          event.stopImmediatePropagation();
+          setFeedback('不对，再试试吧！', 'wrong');
+          return;
+        }
+        setFeedback('正确！', 'correct');
+        nextTimer = window.setTimeout(nextQuestion, 760);
+      }, true);
+
+      const seventhPractice = document.querySelector('[data-seventh-track-practice]');
+      if (seventhPractice) {
+        const seventhStart = seventhPractice.querySelector('[data-seventh-practice-start]');
+        const seventhQuestion = seventhPractice.querySelector('[data-seventh-practice-question]');
+        const seventhFeedback = seventhPractice.querySelector('[data-seventh-practice-feedback]');
+        const seventhTypes = [
+          { name: '大七和弦', offsets: [0, 4, 7, 11] },
+          { name: '属七和弦', offsets: [0, 4, 7, 10] },
+          { name: '小七和弦', offsets: [0, 3, 7, 10] },
+          { name: '半减七和弦', offsets: [0, 3, 6, 10] },
+          { name: '减七和弦', offsets: [0, 3, 6, 9] }
+        ];
+        const seventhCandidates = noteNames.flatMap((root, rootRow) => seventhTypes
+          .filter(({ offsets }) => Math.max(...offsets) <= rootRow)
+          .map((type) => ({ root, rootRow, ...type })));
+        let seventhQuestions = [];
+        let seventhIndex = -1;
+        let seventhCurrent = null;
+        let seventhTimer = null;
+        const seventhFeedbackSet = (text, type = '') => {
+          seventhFeedback.textContent = text;
+          seventhFeedback.className = `interval-practice-feedback${type ? ` is-${type}` : ''}`;
+        };
+        const seventhNext = () => {
+          if (seventhTimer) { window.clearTimeout(seventhTimer); seventhTimer = null; }
+          seventhIndex += 1;
+          if (seventhIndex >= 8) {
+            seventhCurrent = null;
+            seventhQuestion.textContent = '八题完成！按下“重新开始”再来一轮。';
+            seventhStart.textContent = '重新开始';
+            seventhFeedbackSet('');
+            return;
+          }
+          seventhCurrent = seventhQuestions[seventhIndex];
+          panel.querySelector('[data-clear]')?.click();
+          seventhQuestion.textContent = `第 ${seventhIndex + 1} / 8 题：写出${noteLabel(seventhCurrent.root)}${seventhCurrent.name}。`;
+          seventhFeedbackSet('');
+        };
+        const seventhCorrect = () => {
+          if (!seventhCurrent) return false;
+          const pattern = getPattern();
+          if (pattern.length !== 4) return false;
+          const expectedRows = [seventhCurrent.rootRow, ...seventhCurrent.offsets.slice(1).map((offset) => seventhCurrent.rootRow - offset)].sort((a, b) => a - b);
+          const actualRows = pattern.map(({ rowIndex }) => rowIndex).sort((a, b) => a - b);
+          if (expectedRows.some((row, index) => row !== actualRows[index])) return false;
+          return pattern.every(({ active, starts, ends }) => active.length === 4 && starts.length === 1 && ends.length === 1 && starts[0].dataset.step === '0' && ends[0].dataset.step === '3');
+        };
+        seventhStart.addEventListener('click', () => {
+          practiceMode = 'seventh';
+          seventhQuestions = selectQuestionsFrom(seventhCandidates);
+          seventhIndex = -1;
+          seventhCurrent = null;
+          seventhStart.textContent = '重新开始';
+          seventhNext();
+        });
+        panel.addEventListener('click', (event) => {
+          const playButton = event.target.closest('[data-play]');
+          if (!playButton || practiceMode !== 'seventh' || !seventhCurrent) return;
+          if (!seventhCorrect()) {
+            event.stopImmediatePropagation();
+            seventhFeedbackSet('不对，再试试吧！', 'wrong');
+            return;
+          }
+          seventhFeedbackSet('正确！', 'correct');
+          seventhTimer = window.setTimeout(seventhNext, 760);
+        }, true);
+      }
+    }
   }
 
   window.MusicLabChords = { playNotes, source };

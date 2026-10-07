@@ -37,36 +37,52 @@
             <div class="learning-content-panel">
                 <div class="learning-content-header"><h1>音程与和弦（二）：度与音程</h1></div>
                 <div class="learning-content-body">
-                    <section class="chord-lesson-intro" id="intervals"><div><p class="chord-kicker">数白键，也听半音</p><p class="chord-lead">度数说位置，半音说距离；两者一起才是准确的音程。</p></div><p>相邻琴键相差一个半音，两个半音是一个全音。先在键盘上找到它们。</p></section>
+                    <section class="chord-lesson-intro" id="intervals"><div><p class="chord-kicker">数键数</p><p class="chord-lead">音程即是距离，数清楚键数才能准确判断音程。</p></div><p>相邻琴键相差一个半音，两个半音是一个全音。先在键盘上找到它们。</p></section>
                     <section class="chord-section">
                         <div class="chord-section-heading"><span>01</span><h2>从 C 开始数</h2></div>
-                        <p>计算度数时包含首尾两个白键：C 到 E 是三度，C 到 G 是五度。点击下方任意音，先听 C，再听目标音。</p>
+                        <p>计算度数时包含首尾两个白键：例如C 到 E 是三度，C 到 G 是五度。点击下方任意音，先听 C，再听目标音，下方会显示它们的音程关系，感受一下不同音程听上去的差异。</p>
                         <div class="interval-keyboard" data-interval-keyboard aria-label="C 到高音 C 的音程键盘">
                             <button type="button" data-note="C3" data-name="纯一度" data-degree="一度" data-semitones="0">C</button><button type="button" data-note="Db3" data-name="小二度" data-degree="二度" data-semitones="1">D♭</button><button type="button" data-note="D3" data-name="大二度" data-degree="二度" data-semitones="2">D</button><button type="button" data-note="Eb3" data-name="小三度" data-degree="三度" data-semitones="3">E♭</button><button type="button" data-note="E3" data-name="大三度" data-degree="三度" data-semitones="4">E</button><button type="button" data-note="F3" data-name="纯四度" data-degree="四度" data-semitones="5">F</button><button type="button" data-note="Gb3" data-name="增四度" data-degree="四度" data-semitones="6">F♯</button><button type="button" data-note="G3" data-name="纯五度" data-degree="五度" data-semitones="7">G</button><button type="button" data-note="Ab3" data-name="小六度" data-degree="六度" data-semitones="8">A♭</button><button type="button" data-note="A3" data-name="大六度" data-degree="六度" data-semitones="9">A</button><button type="button" data-note="Bb3" data-name="小七度" data-degree="七度" data-semitones="10">B♭</button><button type="button" data-note="B3" data-name="大七度" data-degree="七度" data-semitones="11">B</button><button type="button" data-note="C4" data-name="纯八度" data-degree="八度" data-semitones="12">C</button>
                         </div>
                         <p class="interval-readout" data-interval-readout aria-live="polite">选择一个目标音，查看它与 C 的关系。</p>
-                        <!-- 图片补充建议：可在此键盘背景中叠加中央 C 至高音 C 的实拍琴键图，保持按钮位置不变。 -->
                     </section>
                     <section class="chord-section">
                         <div class="chord-section-heading"><span>02</span><h2>听见大小与纯增减</h2></div>
                         <p>二、三、六、七度通常有大和小；一、四、五、八度以“纯”为基础，再向上或向下变化为增、减。</p>
-                        <div class="interval-compare-grid">
-                            <article><b>三度</b><p>小三度比大三度少一个半音，色彩更柔和、偏暗。</p><div><button type="button" class="chord-audition" data-chord-audition="C3,Eb3">C + E♭</button><button type="button" class="chord-audition" data-chord-audition="C3,E3">C + E</button></div></article>
-                            <article><b>四度</b><p>纯四度稳定；增四度带有更明显的悬念。减四度在特殊调式或经过音中更常见。</p><div><button type="button" class="chord-audition" data-chord-audition="C3,F3">C + F</button><button type="button" class="chord-audition" data-chord-audition="C3,Gb3">C + F♯</button></div></article>
+                        <p>半音是十二平均律中最小的音程单位，钢琴键上的每相邻的两个键之间相差一个半音。我们通常以半音计数，对应不同音高的音程差异。音程通常有旋律音程和和弦音程两种，两个音先后发声叫做旋律音程，同时发声叫做和弦音程。同一个音程在这两种模式下有不同的听感和应用，下面我们以C为基准音，来介绍不同音程。点击可以切换不同的模式。</p>
+                        <div class="interval-mode-switch" data-interval-mode-switch role="group" aria-label="音程播放模式">
+                            <button type="button" class="is-active" data-interval-mode="melody" aria-pressed="true">旋律音程</button>
+                            <button type="button" data-interval-mode="chord" aria-pressed="false">和弦音程</button>
                         </div>
-                        <p>音程决定组合的稳定、紧张、明亮或柔和。C 到 E 较明亮，C 到 E♭ 更紧张；练习是在用“距离”控制情绪。</p>
+                        <div class="interval-compare-grid">
+                            <article><b>二度</b><p>在和弦音程中，小二度间隔一个半音，听起来极度紧张且不和谐；大二度间隔2个半音，稍微明亮一些，但依旧不稳定；在旋律音程中，二者听起来都有一定的级进感和导向性。</p><div><button type="button" class="chord-audition" data-chord-audition="C3,Db3">C + D♭</button><button type="button" class="chord-audition" data-chord-audition="C3,D3">C + D</button></div></article>
+                            <article><b>三度</b><p>在和弦音程中，二者听上去都比较和谐。大三度相隔4个半音，听起来明亮、稳定；而小三度比大三度少一个半音，色彩更柔和、偏暗。在旋律音程中，二者有都有独特的小跳跃性。</p><div><button type="button" class="chord-audition" data-chord-audition="C3,Eb3">C + E♭</button><button type="button" class="chord-audition" data-chord-audition="C3,E3">C + E</button></div></article>
+                            <article><b>四度</b><p>在和弦音程中，纯四度稳定，间隔5个半音，和谐但不那么饱满；而增四度间隔6个半音，带有更明显的不和谐感，有悬疑、紧张的感觉。在旋律音程中，四度听起来有一定的跳进感，且坚定、有力，通常有终止解决的性质。</p><div><button type="button" class="chord-audition" data-chord-audition="C3,F3">C + F</button><button type="button" class="chord-audition" data-chord-audition="C3,Gb3">C + F♯</button></div></article>
+                            <article><b>五度</b><p>在和弦音程中，纯五度稳定，间隔7个半音；减五度（即增四度）带有不协和感，至于同一个音程什么时候用不同的名称，依情况而定。在旋律音程中，五度听起来形成了大跳进感。</p><div><button type="button" class="chord-audition" data-chord-audition="C3,G3">C + G</button><button type="button" class="chord-audition" data-chord-audition="C3,Gb3">C + G♭</button></div></article>
+                            <article><b>六度</b><p>在和弦音程中，小六度（增五度）间隔8个半音，较柔和；大六度间隔9个半音，明亮，有稳重感。在旋律音程中，有较大的跨进感。</p><div><button type="button" class="chord-audition" data-chord-audition="C3,Ab3">C + A♭</button><button type="button" class="chord-audition" data-chord-audition="C3,A3">C + A</button></div></article>
+                            <article><b>七度</b><p>在和弦音程中，小七度间隔10个半音，带有紧张感；大七度间隔11个半音，更为尖锐。在旋律音程中，七度通常形成更大的跳进感，具有强烈的导向性。</p><div><button type="button" class="chord-audition" data-chord-audition="C3,Bb3">C + B♭</button><button type="button" class="chord-audition" data-chord-audition="C3,B3">C + B</button>  </div></article>
+                        </div>
+                        <p>其中大二度和小二度就是我们所称的全音和半音，其中全音由两个半音组成。</p>
+                        <p>依照上方的规律，你可以推算出各个基准音不同音程所对应的音高。现在再试试在音轨中写出这些双音吧！</p>
+                        <div class="chord-track-lab" data-chord-track-lab="octave" aria-label="尝试音轨：C3 到 C4 的 4 格半音阶和弦音轨"></div>
+                        <p>点击下方的按钮，依次显示随机的基准音和音程，尝试着写出对应的音高吧！为了方便判定，长按拖拽放置长度为4格的音符！然后点击播放键，你的答案将由系统判定是否正确！</p>
+                        <div class="interval-track-practice" data-interval-track-practice>
+                            <button type="button" class="interval-practice-start" data-interval-practice-start>开始练习</button>
+                            <p class="interval-practice-question" data-interval-practice-question aria-live="polite">按下按钮开始八题音程练习。</p>
+                            <p class="interval-practice-feedback" data-interval-practice-feedback aria-live="polite"></p>
+                        </div>
                     </section>
                     <section class="chord-section" id="chord-listening">
                         <div class="chord-section-heading"><span>03</span><h2>把耳朵从键盘上带走</h2></div>
-                        <p>听觉推断不会总给你琴键。反复比较基准音与目标音，逐渐建立音程的听觉记忆。</p>
-                        <h3 id="pitch-test">单音与音程听辨</h3><p>通过反复比较，训练对音符位置和音程大小的判断。</p>
+                        <p>听觉推断不会总给你琴键。反复比较基准音与目标音，逐渐建立音程的听觉记忆。接下来是音乐素养中重要的一环————听觉训练。想要写出好的作品，你不仅要有能把旋律哼出来的能力，还要有把你哼出来的旋律写下来的能力。下面是两个较为简单的练习，你可以借助上方的音轨帮助建立你的听觉记忆。之后，再试着脱离标准音的辅助，独立判断音高和音程。</p>
+                        <h3 id="pitch-test">单音与音程听辨</h3><p>通过反复比较，训练对音符位置和音程大小的判断。点击下方的练习按钮开始训练。</p>
                     </section>
                     <div data-ear-training="note" data-title="单音听辨练习" data-rounds="8"></div>
                     <div data-ear-training="interval" data-title="音程听辨练习" data-rounds="8"></div>
                     <section class="lesson-quiz" data-lesson-quiz></section>
                     <div class="learning-nav">
                         <a href="chords.html" class="learning-nav-button prev">上一页：音程与和弦</a>
-                        <a href="chords-chords.html" class="learning-nav-button next">下一页：和弦</a>
+                        <a href="chords-scales.html" class="learning-nav-button next">下一页：音阶</a>
                     </div>
                 </div>
             </div>

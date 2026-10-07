@@ -12,8 +12,7 @@
   const keyboardNotes = ['C3', 'Db3', 'D3', 'Eb3', 'E3', 'F3', 'Gb3', 'G3', 'Ab3', 'A3', 'Bb3', 'B3',
     'C4', 'Db4', 'D4', 'Eb4', 'E4', 'F4', 'Gb4', 'G4', 'Ab4', 'A4', 'Bb4', 'B4'];
   const play = (note, delay = 0) => {
-    engine.unlock();
-    engine.play(srcFor(note), { at: delay ? engine.now() + delay : undefined, gain: 0.85 });
+    engine.playAudition(srcFor(note), { at: delay ? engine.now() + delay : undefined, gain: 0.85, controls: document.querySelectorAll('.pitch-audition, .notation-note') });
   };
 
   engine.load(keyboardNotes.map(srcFor));
@@ -103,7 +102,7 @@
   if (!engine || !lab) return;
   const src = (note) => `../audio/piano/piano-${note}.wav`;
   const notes = ['C3', 'D3', 'E3', 'F3', 'G3'];
-  const play = (note, delay = 0) => { engine.unlock(); engine.play(src(note), { at: delay ? engine.now() + delay : undefined, gain: 0.85 }); };
+  const play = (note, delay = 0) => engine.playAudition(src(note), { at: delay ? engine.now() + delay : undefined, gain: 0.85, controls: lab.querySelectorAll('.notation-note') });
   engine.load(notes.map(src));
   const status = lab.querySelector('[data-notation-status]');
   const setStatus = (text) => { status.textContent = text; status.className = 'status-badge online'; };
