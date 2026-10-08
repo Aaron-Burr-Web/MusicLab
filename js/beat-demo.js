@@ -56,8 +56,9 @@
   });
 
   /* ---------------- Beat 音轨演示 ---------------- */
-  const wrapper = document.querySelector('.beat-demo-wrapper');
-  if (!wrapper) return;
+  const wrappers = [...document.querySelectorAll('.beat-demo-wrapper')];
+  if (!wrappers.length) return;
+  wrappers.forEach((wrapper) => {
 
   const beatPlayButton = wrapper.querySelector('.beat-demo-play');
   const beatStopButton = wrapper.querySelector('.beat-demo-stop');
@@ -71,12 +72,15 @@
   const beatPlayhead = wrapper.querySelector('.beat-demo-playhead');
   const beatCheck = wrapper.querySelector('.beat-demo-check');
 
-  let beatSteps = wrapper.dataset.demoVariant === 'meter-basics' ? 8 : 16;
+  let beatSteps = wrapper.dataset.demoVariant === 'meter-basics' ? 8 : wrapper.dataset.demoVariant === 'bass-rhythm' ? 32 : 16;
   let beatCells = [];
   let beatActive = [];
   let rulerCells = [];
 
-  const beatTracks = wrapper.dataset.demoVariant === 'meter-basics' ? [
+  const beatTracks = wrapper.dataset.demoVariant === 'bass-rhythm' ? [
+    ['Kick', AUDIO_SOURCES.kick],
+    ['Snare', AUDIO_SOURCES.snare]
+  ] : wrapper.dataset.demoVariant === 'meter-basics' ? [
     ['Tom', AUDIO_SOURCES.tom],
     ['Snare', AUDIO_SOURCES.snare],
     ['Closed-Hat', AUDIO_SOURCES['closed-hat']]
@@ -97,6 +101,7 @@
   beatTracks.forEach(([, src]) => getAudio(src));
 
   const rhythmPatterns = {
+    'bass-example': { steps: 32, bpm: 80, pattern: { 0: [1, 9, 17, 25], 1: [5, 13, 21, 29] } },
     basic: { steps: 16, bpm: 80, pattern: { 0: [1, 9], 1: [5, 13], 3: [3, 7, 11, 15] } },
     'meter-2-4': { steps: 4, bpm: 80, pattern: { 0: [1], 2: [3] } },
     'meter-3-4': { steps: 6, bpm: 80, pattern: { 0: [1], 2: [3, 5] } },
@@ -356,6 +361,7 @@
       beatState.bpm = preset.bpm;
       beatBpmSlider.value = String(preset.bpm);
       beatBpmValue.textContent = String(preset.bpm);
+      if (syncTransport) syncTransport.setBpm(preset.bpm);
     }
     beatCells.flat().forEach((cell) => { cell.classList.remove('active'); cell.setAttribute('aria-pressed', 'false'); });
     beatActive = beatCells.map((row) => row.map(() => false));
@@ -399,7 +405,7 @@
     });
   });
 
-  const syncTransport = wrapper.dataset.syncClock === 'true' ? window.MusicLabChordTransport : null;
+  const syncTransport = wrapper.dataset.syncClock === 'true' ? (window.MusicLabBassTransport || window.MusicLabChordTransport) : null;
   if (syncTransport) {
     window.MusicLabAudio?.load(beatTracks.map(([, src]) => src));
     syncTransport.subscribe((step, at) => {
@@ -461,4 +467,5 @@
   measureBeatPlayhead();
   updateBeatPlayhead();
   window.addEventListener('resize', () => { updateBeatDividers(); measureBeatPlayhead(); updateBeatPlayhead(); });
+  });
 })();

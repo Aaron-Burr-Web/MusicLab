@@ -2,6 +2,12 @@
 .mode-track-control-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .mode-track-control-group > span { min-width: 42px; color: #4e586d; font-size: 13px; font-weight: 700; }
 .mode-track-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+.suite-mode-controls { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-left: auto; }
+.suite-mode-controls > div { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.suite-mode-controls > div > span { color: #58657a; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.suite-mode-controls .mode-track-button { min-width: 36px; padding: 7px 9px; border: 1px solid rgba(17, 24, 39, .08); border-radius: 0; background: rgba(148, 163, 184, .08); color: #3c465d; font-size: 11px; font-weight: 700; letter-spacing: .02em; transition: background-color .16s ease, border-color .16s ease, color .16s ease; }
+.suite-mode-controls .mode-track-button:hover { border-color: rgba(37, 99, 235, .45); background: rgba(37, 99, 235, .1); color: #1d4ed8; }
+.suite-mode-controls .mode-track-button.active { border-color: #2563eb; background: #2563eb; color: #fff; }
 .mode-track-button { min-width: 42px; border: 1px solid rgba(107, 114, 128, 0.24); background: rgba(255, 255, 255, 0.72); color: #3f475c; padding: 8px 10px; cursor: pointer; }
 .mode-track-button.active { border-color: #2563eb; background: #2563eb; color: #ffffff; }
 /* =====================================================================
@@ -1471,15 +1477,14 @@ body.ml-confirm-open { overflow: hidden; }
 .pitch-lesson-rule span { font-size: 15px; line-height: 1.55; }
 
 .pitch-section { display: grid; gap: 14px; margin-top: 20px; padding-top: 28px; border-top: 1px solid rgba(38, 55, 74, 0.16); }
-.pitch-section-heading { display: flex; align-items: baseline; gap: 12px; }
-.pitch-section-heading h2 { margin: 0; }
+.pitch-section-heading { display: flex; align-items: center; gap: 12px; }
+.pitch-section-heading h2 { margin: 0; line-height: 1.2; }
 .pitch-section-number { color: #db684a; font-family: Georgia, serif; font-size: 15px; font-weight: 700; }
 
-.pitch-note-pairs { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; }
-.pitch-note-pair { min-height: 106px; display: grid; align-content: center; justify-items: center; gap: 7px; padding: 10px; border: 1px solid rgba(38, 55, 74, 0.15); border-radius: 8px; background: #fffdf7; cursor: pointer; font: inherit; transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease; }
+.pitch-note-pairs { display: flex; gap: 12px; }
+.pitch-note-pair { flex: 1 1 0; min-height: 136px; display: grid; align-content: center; justify-items: center; gap: 9px; padding: 16px; border: 1px solid rgba(38, 55, 74, 0.15); border-radius: 8px; background: #fffdf7; cursor: default; font: inherit; }
 .pitch-note-pair:nth-child(2n) { background: #edfbf5; }
 .pitch-note-pair:nth-child(3n) { background: #fff2e8; }
-.pitch-note-pair:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(39, 70, 80, 0.12); }
 .pitch-note-pair b { color: #1b3347; font-family: Georgia, serif; font-size: 30px; }
 .pitch-note-pair span { color: #526072; font-size: 13px; }
 
@@ -1542,7 +1547,8 @@ body.ml-confirm-open { overflow: hidden; }
 
 @media (max-width: 720px) {
   .pitch-lesson-intro, .pitch-notation-map { grid-template-columns: 1fr; }
-  .pitch-note-pairs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .pitch-note-pairs { flex-wrap: wrap; }
+  .pitch-note-pair { flex-basis: calc(50% - 6px); }
   .pitch-map-track { grid-template-columns: repeat(8, minmax(36px, 1fr)); overflow-x: auto; }
   .pitch-keyboard-preview { grid-template-columns: repeat(14, 42px); }
   .pitch-practice-head { flex-direction: column; }
@@ -1737,3 +1743,9 @@ body.ml-confirm-open { overflow: hidden; }
 .chord-sequencer-cell.is-merged:not(.is-merged-end) { margin-right: -4px; width: calc(100% + 4px); }
 @media (max-width: 720px) { .interval-compare-grid, .track-role-grid { grid-template-columns: 1fr; }.triad-grid, .chord-symbols { grid-template-columns: repeat(2, minmax(0, 1fr)); }.chord-sequencer-panel { padding: 16px 10px 14px; }.chord-sequencer-header, .chord-transport-group { flex-wrap: wrap; }.chord-clear-button { margin-left: 0; }.chord-sequencer-ruler, .chord-sequencer-row { grid-template-columns: 58px repeat(16, minmax(12px, 1fr)); gap: 6px; } }
 :root[data-theme="dark"] .interval-keyboard, :root[data-theme="dark"] .seventh-table { border-color: var(--ml-border-strong); }:root[data-theme="dark"] .interval-keyboard button, :root[data-theme="dark"] .triad-grid button, :root[data-theme="dark"] .chord-symbols span, :root[data-theme="dark"] .interval-compare-grid article, :root[data-theme="dark"] .track-role-grid article { background: #202a3a; color: #e8edf5; }:root[data-theme="dark"] .interval-readout, :root[data-theme="dark"] .triad-readout { background: #3b3024; color: #e8edf5; }:root[data-theme="dark"] .interval-readout b, :root[data-theme="dark"] .triad-readout b, :root[data-theme="dark"] .interval-compare-grid b, :root[data-theme="dark"] .track-role-grid b, :root[data-theme="dark"] .chord-symbols b, :root[data-theme="dark"] .chord-sequencer-title-row h3 { color: #e8edf5; }:root[data-theme="dark"] .chord-sequencer-panel { background: #202a3a; }:root[data-theme="dark"] .chord-sequencer-shell { background: #253342; }:root[data-theme="dark"] .chord-sequencer-cell { background: #35495b; }:root[data-theme="dark"] .chord-stop-button, :root[data-theme="dark"] .chord-clear-button { background: rgba(255,255,255,0.08); color: var(--ml-text-2); }:root[data-theme="dark"] .chord-bpm-wrap, :root[data-theme="dark"] .chord-bpm-wrap output, :root[data-theme="dark"] .chord-sequencer-row b { color: #e8edf5; }
+
+/* 教学音轨在窄窗口中只让网格横向滚动，不撑破外层内容框。 */
+.chord-track-lab, .chord-sequencer-panel, .chord-sequencer-shell { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
+.chord-sequencer-shell { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+.chord-sequencer-panel.is-16-step .chord-sequencer-track { width: 100%; min-width: 640px; }
+.chord-sequencer-panel.is-32-step .chord-sequencer-track { width: 100%; min-width: 960px; }

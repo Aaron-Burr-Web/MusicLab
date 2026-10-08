@@ -336,7 +336,7 @@
     { key: 'chords-progressions', title: '音程与和弦（五）：简单和弦进行', file: 'chords-progressions.html', group: '音程与和弦',
       sections: [{ title: '简单和弦进行', hash: 'progressions' }] },
     { key: 'tones', title: '调式基础（一）：引入', file: 'tones.html', group: '调式基础',
-      sections: [{ title: '调式与音阶', hash: 'mode-basics' }] },
+      sections: [{ title: '调式与音阶', hash: 'mode-basics' }, { title: '调式和弦音轨', hash: 'mode-chord-track' }] },
     { key: 'tones-major-minor', title: '调式基础（二）：自然大调与小调', file: 'tones-major-minor.html', group: '调式基础',
       sections: [{ title: '自然大调', hash: 'major-scale' }, { title: '自然小调', hash: 'minor-scale' }, { title: '和声小调与旋律小调', hash: 'harmonic-melodic-minor' }] },
     { key: 'tones-common-modes', title: '调式基础（三）：其他常用调式', file: 'tones-common-modes.html', group: '调式基础',
@@ -351,10 +351,10 @@
       sections: [{ title: '歌曲中的贝斯', hash: 'another-one-bass-example' }] },
     { key: 'bass-track', title: '贝斯系列（三）：和弦、贝斯与节奏', file: 'bass-track.html', group: '贝斯系列',
       sections: [{ title: '三轨音轨群', hash: 'bass-track-group' }] },
-    { key: 'others', title: '拓展与其他', file: 'others.html', group: '拓展与其他',
+    { key: 'melodies', title: '旋律与歌曲创作', file: 'melodies.html', group: '旋律与歌曲创作',
       sections: [
-        { title: '拓展学习', hash: 'extension-basics' }, { title: '扩展内容', hash: 'extension-content' },
-        { title: '更多乐理知识', hash: 'more-theory' }
+        { title: '旋律概览', hash: 'melody-overview' }, { title: '旋律音程导向', hash: 'melodic-interval-direction' },
+        { title: '歌曲创作过程', hash: 'songwriting-process' }, { title: '歌曲结构', hash: 'song-structure' }
       ] }
   ];
 
@@ -646,13 +646,16 @@
     { title: '和弦、贝斯与节奏', section: '教程 · 贝斯系列', href: 'Start Learning/bass-track.html#bass-track-group', keywords: '贝斯 bass 和弦 节奏 三轨 音轨' },
     { title: '单音听辨测试', section: '教程 · 音程与和弦', href: 'Start Learning/chords-intervals.html#pitch-test', keywords: '听辨 ear training 测试' },
     { title: '调式基础 · 引入', section: '教程 · 第 4 章', href: 'Start Learning/tones.html#mode-basics', keywords: 'mode scale 音阶 调式 大调 小调' },
+    { title: '调式和弦音轨', section: '教程 · 调式基础', href: 'Start Learning/tones.html#mode-chord-track', keywords: '调式和弦 根音 和弦音轨 调式 音序器' },
     { title: '自然大调与小调', section: '教程 · 调式基础', href: 'Start Learning/tones-major-minor.html#major-scale', keywords: '自然大调 自然小调 和声小调 旋律小调' },
     { title: '其他常用调式', section: '教程 · 调式基础', href: 'Start Learning/tones-common-modes.html#common-modes', keywords: '多利亚 弗里几亚 利底亚 混合利底亚 dorian phrygian lydian mixolydian' },
     { title: '民族调式', section: '教程 · 调式基础', href: 'Start Learning/tones-common-modes.html#folk-modes', keywords: '五声 民族 宫商角徵羽' },
     { title: '调式音轨', section: '教程 · 调式基础', href: 'Start Learning/tones-common-modes.html#mode-track', keywords: '调式音轨 调名 调式 音阶 音序器' },
     { title: '在调式中进行和弦连接', section: '教程 · 调式基础', href: 'Start Learning/tones-chord-connection.html#diatonic-chords', keywords: '调式 和弦连接 罗马数字 共同音 声部进行' },
     { title: '和弦色彩的转换与拼接', section: '教程 · 调式基础', href: 'Start Learning/tones-chord-color.html#color-change', keywords: '和弦色彩 借用和弦 转调 拼接 平行调式' },
-    { title: '拓展与其他', section: '教程 · 第 5 章', href: 'Start Learning/others.html#extension-basics', keywords: '配器 录音 混音 编曲 曲式 复节奏 音色' },
+    { title: '旋律音程导向', section: '教程 · 第 5 章', href: 'Start Learning/melodies.html#melodic-interval-direction', keywords: '旋律 melody 音程 导向 上行 下行 级进 跳进' },
+    { title: '歌曲创作过程', section: '教程 · 第 5 章', href: 'Start Learning/melodies.html#songwriting-process', keywords: '歌曲 创作 动机 发展 主题 编曲 songwriting' },
+    { title: '歌曲结构', section: '教程 · 第 5 章', href: 'Start Learning/melodies.html#song-structure', keywords: '歌曲结构 主歌 副歌 桥段 前副歌 verse chorus bridge' },
     { title: '设置', section: '账户', href: 'settings/settings.html', keywords: 'settings 偏好 账户 主题 深色模式 dark mode' },
     { title: '外观 / 深色模式', section: '设置', href: 'settings/settings.html#appearance', keywords: 'dark mode 深色 浅色 主题 theme 外观' },
     { title: '登录', section: '账户', href: 'login/login.html', keywords: 'login sign in 登录' },

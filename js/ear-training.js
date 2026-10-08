@@ -42,7 +42,7 @@
   const fallbackPool = {};
   let playbackTimer = null;
   let playbackUntil = 0;
-  const playbackDurations = { note: 3200, 'note-advanced': 3200, interval: 3100, chord: 2200, mode: 4100 };
+  const playbackDurations = { note: 3200, 'note-advanced': 3200, interval: 3100, chord: 2200, mode: 5000 };
   const setPlaybackButtons = (disabled) => {
     mounts.forEach((mount) => {
       mount.classList.toggle('is-audio-playing', disabled);
@@ -109,10 +109,14 @@
     { offsets: [0, 4, 8], label: '增三和弦', hint: '悬浮、发飘' },
     { offsets: [0, 4, 7, 10], label: '属七和弦', hint: '想要解决到主和弦' }
   ];
-  const MODE_PATTERNS = [
-    { label: '自然大调', hint: '明亮、稳定', chords: [[48, 52, 55], [53, 57, 60], [55, 59, 62], [48, 52, 55]] },
-    { label: '自然小调', hint: '柔和、内敛', chords: [[48, 51, 55], [53, 56, 60], [55, 58, 62], [48, 51, 55]] },
-    { label: '和声小调', hint: '带有更强的解决倾向', chords: [[48, 51, 55], [53, 56, 60], [55, 59, 62], [48, 51, 55]] }
+  const MODE_SCALES = [
+    { label: '自然大调', hint: '明亮、稳定', intervals: [0, 2, 4, 5, 7, 9, 11, 12] },
+    { label: '多利亚', hint: '小调色彩中带有明亮的六级音', intervals: [0, 2, 3, 5, 7, 9, 10, 12] },
+    { label: '弗里几亚', hint: '低二级带来紧张、异域的色彩', intervals: [0, 1, 3, 5, 7, 8, 10, 12] },
+    { label: '利底亚', hint: '升四级带来开阔、悬浮的色彩', intervals: [0, 2, 4, 6, 7, 9, 11, 12] },
+    { label: '混合利底亚', hint: '低七级削弱终止感', intervals: [0, 2, 4, 5, 7, 9, 10, 12] },
+    { label: '自然小调', hint: '柔和、内省', intervals: [0, 2, 3, 5, 7, 8, 10, 12] },
+    { label: '洛克里亚', hint: '低二级和减五级带来不稳定感', intervals: [0, 1, 3, 5, 6, 8, 10, 12] }
   ];
 
   const pick = (list) => list[Math.floor(Math.random() * list.length)];
@@ -168,17 +172,18 @@
     },
     mode: {
       title: '调式听辨',
-      intro: '听一组简短的和弦进行，判断它更接近哪种调式色彩。',
+      intro: '听一条以 C 为主音的八度音阶，判断它属于哪种常见调式。',
       make() {
-        const mode = pick(MODE_PATTERNS);
+        const mode = pick(MODE_SCALES);
+        const scale = mode.intervals.map((interval) => C3 + interval);
         return {
-          play: () => mode.chords.forEach((chord, index) => chord.forEach((midi) => playSrc(srcOf(midi), index * 0.62, 0.52))),
-          options: MODE_PATTERNS.map((item) => item.label),
+          play: () => scale.forEach((midi, index) => playSrc(srcOf(midi), index * 0.58, 0.86, 0.7)),
+          options: MODE_SCALES.map((item) => item.label),
           answer: mode.label,
-          explain: `这是${mode.label}，整体听感通常${mode.hint}。`
+          explain: `这是${mode.label}音阶，${mode.hint}。音程关系为 ${mode.intervals.join('-')} 个半音。`
         };
       },
-      preload: () => preload(MODE_PATTERNS.flatMap((mode) => mode.chords.flat()))
+      preload: () => preload(MODE_SCALES.flatMap((mode) => mode.intervals.map((interval) => C3 + interval)))
     }
   };
 

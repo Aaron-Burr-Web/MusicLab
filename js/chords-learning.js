@@ -72,19 +72,24 @@
   const trackLab = document.querySelector('[data-chord-track-lab]');
   if (trackLab) {
     const trackMode = trackLab.dataset.chordTrackLab;
-    const STEPS = trackMode === 'octave' ? 4 : 16;
-    const dividerSteps = new Set(STEPS === 4 ? [1, 2, 3] : [4, 8, 12]);
+    const isChords32Track = trackMode === 'chords-32';
+    const STEPS = trackMode === 'octave' ? 4 : isChords32Track ? 32 : 16;
+    const dividerSteps = new Set(STEPS === 4 ? [1, 2, 3] : Array.from({ length: STEPS / 4 - 1 }, (_, index) => (index + 1) * 4));
     const isOctaveTrack = trackMode === 'octave';
     const isProgressionTrack = trackMode === 'progression';
     const isChordsOnlyTrack = trackMode === 'chords-only';
+    const isTonesScaleTrack = trackMode === 'tones-scales';
+    const isModesScaleTrack = trackMode === 'modes-scales';
     const isBassExampleTrack = trackMode === 'bass-example';
     const isBassSuiteTrack = trackMode === 'bass-suite';
     const sharedTransport = isChordsOnlyTrack || isBassExampleTrack || isBassSuiteTrack
-      ? { clock: null, bpm: 96, states: [], listeners: [], bpmListeners: [] } : null;
+      ? { clock: null, bpm: 96, key: 'C', mode: 'Ionian', states: [], listeners: [], bpmListeners: [], modeListeners: [], setMode(key, mode) { this.key = key || this.key; this.mode = mode || this.mode; this.modeListeners.forEach((listener) => listener(this.key, this.mode)); } } : null;
     const octaveRows = trackLab.dataset.chordTrackRange === 'g4-c3'
       ? ['G4', 'Gb4', 'F4', 'E4', 'Eb4', 'D4', 'Db4', 'C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3']
       : ['C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3'];
-    const scaleNotes = isChordsOnlyTrack
+    const scaleNotes = isTonesScaleTrack || isModesScaleTrack
+      ? ['B4', 'Bb4', 'A4', 'Ab4', 'G4', 'Gb4', 'F4', 'E4', 'Eb4', 'D4', 'Db4', 'C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3']
+      : isChordsOnlyTrack || isChords32Track
       ? ['C5', 'B4', 'Bb4', 'A4', 'Ab4', 'G4', 'Gb4', 'F4', 'E4', 'Eb4', 'D4', 'Db4', 'C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3']
       : isProgressionTrack
         ? ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3']
@@ -93,16 +98,36 @@
       .map((note) => [note, [note]]);
     const bassRows = ['C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3']
       .map((note) => [note, [note]]);
+    const modeIntervals = {
+      Ionian: [0, 2, 4, 5, 7, 9, 11], Dorian: [0, 2, 3, 5, 7, 9, 10],
+      Phrygian: [0, 1, 3, 5, 7, 8, 10], Lydian: [0, 2, 4, 6, 7, 9, 11],
+      Mixolydian: [0, 2, 4, 5, 7, 9, 10], Aeolian: [0, 2, 3, 5, 7, 8, 10],
+      Locrian: [0, 1, 3, 5, 6, 8, 10]
+    };
+    const modePitchClasses = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+    const modeLetters = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+    const modeFlats = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+    const modeRowsFor = (key, mode) => {
+      const intervals = modeIntervals[mode];
+      const root = 12 * 4 + modePitchClasses[key];
+      return Array.from({ length: 15 }, (_, index) => {
+        const degree = index % 7;
+        const midi = root + intervals[degree] + 12 * Math.floor(index / 7);
+        const label = modeFlats[midi % 12] + (Math.floor(midi / 12) - 1);
+        return [label, [label]];
+      }).reverse();
+    };
 
-    const createTrack = ({ title, theme, rows, gain, isChord = false, defaultBpm = 96 }) => {
-      const state = { bpm: defaultBpm, pattern: Array.from({ length: rows.length }, () => new Set()), blocks: new Map(), clock: null, playing: false };
+    const createTrack = ({ title, theme, rows, gain, isChord = false, defaultBpm = 96, modeSelectable = false }) => {
+      let trackRows = modeSelectable ? modeRowsFor(sharedTransport.key, sharedTransport.mode) : rows;
+      const state = { bpm: defaultBpm, pattern: Array.from({ length: trackRows.length }, () => new Set()), blocks: new Map(), clock: null, playing: false, render: null };
       if (sharedTransport) {
         state.bpm = sharedTransport.bpm;
         sharedTransport.states.push(state);
       }
       const panel = document.createElement('section');
-      panel.className = `chord-sequencer-panel ${theme}${STEPS === 4 ? ' is-four-step' : ''}`;
-      audio.load(rows.flatMap(([, notes]) => notes.map(source)));
+      panel.className = `chord-sequencer-panel ${theme}${STEPS === 4 ? ' is-four-step' : ''}${STEPS === 16 ? ' is-16-step' : ''}${STEPS === 32 ? ' is-32-step' : ''}`;
+      audio.load(trackRows.flatMap(([, notes]) => notes.map(source)));
       const chordGain = (count) => isChord ? gain / Math.sqrt(Math.max(1, count)) : gain;
       const activeCountAt = (step) => state.pattern.reduce((count, row) => count + (row.has(step) ? 1 : 0), 0);
 
@@ -113,6 +138,12 @@
           if (blockRow === row && step >= start && step < start + length) return { row, start, length };
         }
         return null;
+      };
+      const fillBlocks = (blocks) => {
+        state.blocks.clear();
+        state.pattern.forEach((row) => row.clear());
+        blocks.forEach(({ row, start, length }) => paintBlock(Number(row), start, length));
+        render();
       };
       const updateCell = (row, step) => {
         const cell = panel.querySelector(`.chord-sequencer-cell[data-row="${row}"][data-step="${step}"]`);
@@ -159,7 +190,7 @@
       const beginCellDrag = (event) => {
         if (event.button !== 0 && event.pointerType === 'mouse') return;
         const cell = event.currentTarget;
-        cellDrag = { pointerId: event.pointerId, row: Number(cell.dataset.row), start: Number(cell.dataset.step), moved: false, startedAt: performance.now() };
+        cellDrag = { pointerId: event.pointerId, row: Number(cell.dataset.row), start: Number(cell.dataset.step), moved: false, startedAt: performance.now(), startX: event.clientX, startY: event.clientY };
         try { cell.setPointerCapture?.(event.pointerId); } catch (_) { /* 合成指针事件没有活动指针时可忽略 */ }
       };
       const updateCellDrag = (event) => {
@@ -168,7 +199,8 @@
         const rowRect = cells[0]?.parentElement?.getBoundingClientRect();
         if (!rowRect || event.clientY < rowRect.top || event.clientY > rowRect.bottom) return;
         const end = stepAtPointer(cellDrag.row, event.clientX);
-        if (end === cellDrag.start) return;
+        const movedPixels = Math.hypot(event.clientX - cellDrag.startX, event.clientY - cellDrag.startY);
+        if (end === cellDrag.start && movedPixels < 4) return;
         cellDrag.moved = true;
         cellDrag.end = end;
         paintBlock(cellDrag.row, Math.min(cellDrag.start, end), Math.abs(end - cellDrag.start) + 1);
@@ -184,7 +216,8 @@
       };
 
       const render = () => {
-        panel.innerHTML = `<div class="chord-sequencer-title-row"><h3>${title}</h3></div><div class="chord-sequencer-header"><div class="chord-transport-group"><button class="chord-transport-button" type="button" data-play aria-label="播放或暂停${title}">${state.playing ? '❚❚' : '▶'}</button><button class="chord-stop-button" type="button" data-stop aria-label="停止${title}并回到开头">■</button><label class="chord-bpm-wrap"><span>BPM</span><output>${state.bpm}</output><input type="range" min="40" max="240" step="1" value="${state.bpm}" data-bpm aria-label="${title} BPM 调节器"></label></div><button class="chord-clear-button" type="button" data-clear>Clear</button></div><div class="chord-sequencer-shell"><div class="chord-sequencer-track"><div class="chord-sequencer-ruler"><span>拍</span>${Array.from({ length: STEPS }, (_, step) => `<button type="button" data-seek="${step}" class="${step % 4 === 0 ? 'is-beat' : ''}" aria-label="跳到第 ${step + 1} 格">${step % 4 === 0 ? step / 4 + 1 : '·'}</button>`).join('')}</div><div class="chord-sequencer-grid">${rows.map(([label], rowIndex) => `<div class="chord-sequencer-row"><b>${label}</b>${Array.from({ length: STEPS }, (_, step) => { const block = blockAt(rowIndex, step); return `<button type="button" class="chord-sequencer-cell ${dividerSteps.has(step) ? 'is-divider' : ''} ${state.pattern[rowIndex].has(step) ? 'is-active' : ''} ${block ? 'is-merged' : ''} ${block?.start === step ? 'is-merged-start' : ''} ${block?.start + block?.length - 1 === step ? 'is-merged-end' : ''}" data-row="${rowIndex}" data-step="${step}" aria-label="${title} ${label} 第 ${step + 1} 格" aria-pressed="${state.pattern[rowIndex].has(step)}"></button>`; }).join('')}</div>`).join('')}<i class="chord-playhead" aria-hidden="true"></i></div></div></div><p class="chord-sequencer-hint">长按同一行并横向拖动可合并长音；点击已点亮片段可取消，同一行可建立多个片段。</p>`;
+        const modeControls = modeSelectable ? `<div class="suite-mode-controls"><div><span>Key</span>${Object.keys(modePitchClasses).map((key) => `<button type="button" class="mode-track-button${sharedTransport.key === key ? ' active' : ''}" data-suite-key="${key}">${key}</button>`).join('')}</div><div><span>Mode</span>${Object.keys(modeIntervals).map((mode) => `<button type="button" class="mode-track-button${sharedTransport.mode === mode ? ' active' : ''}" data-suite-mode="${mode}">${mode}</button>`).join('')}</div></div>` : '';
+        panel.innerHTML = `<div class="chord-sequencer-title-row"><h3>${title}</h3>${modeControls}</div><div class="chord-sequencer-header"><div class="chord-transport-group"><button class="chord-transport-button" type="button" data-play aria-label="播放或暂停${title}">${state.playing ? '❚❚' : '▶'}</button><button class="chord-stop-button" type="button" data-stop aria-label="停止${title}并回到开头">■</button><label class="chord-bpm-wrap"><span>BPM</span><output>${state.bpm}</output><input type="range" min="40" max="240" step="1" value="${state.bpm}" data-bpm aria-label="${title} BPM 调节器"></label></div><button class="chord-clear-button" type="button" data-clear>Clear</button></div><div class="chord-sequencer-shell"><div class="chord-sequencer-track"><div class="chord-sequencer-ruler"><span>拍</span>${Array.from({ length: STEPS }, (_, step) => `<button type="button" data-seek="${step}" class="${step % 4 === 0 ? 'is-beat' : ''}" aria-label="跳到第 ${step + 1} 格">${step % 4 === 0 ? step / 4 + 1 : '·'}</button>`).join('')}</div><div class="chord-sequencer-grid">${trackRows.map(([label], rowIndex) => `<div class="chord-sequencer-row"><b>${label}</b>${Array.from({ length: STEPS }, (_, step) => { const block = blockAt(rowIndex, step); return `<button type="button" class="chord-sequencer-cell ${dividerSteps.has(step) ? 'is-divider' : ''} ${state.pattern[rowIndex].has(step) ? 'is-active' : ''} ${block ? 'is-merged' : ''} ${block?.start === step ? 'is-merged-start' : ''} ${block?.start + block?.length - 1 === step ? 'is-merged-end' : ''}" data-row="${rowIndex}" data-step="${step}" aria-label="${title} ${label} 第 ${step + 1} 格" aria-pressed="${state.pattern[rowIndex].has(step)}"></button>`; }).join('')}</div>`).join('')}<i class="chord-playhead" aria-hidden="true"></i></div></div></div><p class="chord-sequencer-hint">长按同一行并横向拖动可合并长音；点击已点亮片段可取消，同一行可建立多个片段。</p>`;
         bind();
       };
 
@@ -208,7 +241,7 @@
         if (sharedTransport) {
           if (sharedTransport.clock) sharedTransport.clock.stop();
           sharedTransport.clock = null;
-          sharedTransport.states.forEach((item) => { item.clock = null; item.playing = false; });
+          sharedTransport.states.forEach((item) => { item.clock = null; item.playing = false; item.render?.(); });
           sharedTransport.listeners.forEach((listener) => listener('stop'));
           render();
           return;
@@ -221,7 +254,7 @@
 
       const playTrackStep = (step, at) => {
         if (step === 'stop' || step === 'end') return;
-        rows.forEach(([, notes], rowIndex) => {
+        trackRows.forEach(([, notes], rowIndex) => {
           const block = blockAt(rowIndex, step);
           if (block && block.start !== step) return;
           if (state.pattern[rowIndex].has(step)) notes.forEach((note) => audio.play(source(note), { at, gain: chordGain(activeCountAt(step)), duration: (15 / state.bpm) * (block?.length || 1), synth: true }));
@@ -236,16 +269,16 @@
           if (!sharedTransport.listeners.includes(playTrackStep)) sharedTransport.listeners.push(playTrackStep);
           sharedTransport.clock = audio.createClock({ bpm: sharedTransport.bpm, steps: STEPS, loop: true, onEnd: () => {
             sharedTransport.clock = null;
-            sharedTransport.states.forEach((item) => { item.clock = null; item.playing = false; });
+            sharedTransport.states.forEach((item) => { item.clock = null; item.playing = false; item.render?.(); });
             sharedTransport.listeners.forEach((listener) => listener('end'));
             render();
           }, onStep: (step, at) => sharedTransport.listeners.forEach((listener) => listener(step, at)) });
-          sharedTransport.states.forEach((item) => { item.clock = sharedTransport.clock; item.playing = true; });
+          sharedTransport.states.forEach((item) => { item.clock = sharedTransport.clock; item.playing = true; item.render?.(); });
           sharedTransport.clock.start();
           render();
           return;
         }
-        state.clock = audio.createClock({ bpm: state.bpm, steps: STEPS, loop: !isOctaveTrack, onEnd: () => {
+        state.clock = audio.createClock({ bpm: state.bpm, steps: STEPS, loop: !isOctaveTrack && !isTonesScaleTrack && !isModesScaleTrack, onEnd: () => {
           state.clock = null;
           state.playing = false;
           render();
@@ -258,6 +291,10 @@
       const bind = () => {
         panel.querySelector('[data-play]').addEventListener('click', () => state.playing ? stop() : start());
         panel.querySelector('[data-stop]').addEventListener('click', stop);
+        if (modeSelectable) {
+          panel.querySelectorAll('[data-suite-key]').forEach((button) => button.addEventListener('click', () => sharedTransport.setMode(button.dataset.suiteKey, sharedTransport.mode)));
+          panel.querySelectorAll('[data-suite-mode]').forEach((button) => button.addEventListener('click', () => sharedTransport.setMode(sharedTransport.key, button.dataset.suiteMode)));
+        }
         panel.querySelector('[data-bpm]').addEventListener('input', (event) => {
           state.bpm = Number(event.target.value);
           if (sharedTransport) {
@@ -275,10 +312,18 @@
           const step = Number(cell.dataset.step);
           const rowIndex = Number(cell.dataset.row);
           const block = blockAt(rowIndex, step);
-          if (block) { removeBlock(block); return; }
+          if (block) {
+            audio.unlock();
+            trackRows[rowIndex][1].forEach((note) => audio.play(source(note), { gain: chordGain(activeCountAt(step)), duration: 15 / state.bpm, synth: true }));
+            removeBlock(block);
+            return;
+          }
           row.has(step) ? row.delete(step) : row.add(step);
           updateCell(rowIndex, step);
-          if (!state.playing && row.has(step)) rows[rowIndex][1].forEach((note) => audio.play(source(note), { gain: chordGain(activeCountAt(step)), duration: 15 / state.bpm, synth: true }));
+          if (!state.playing && row.has(step)) {
+            audio.unlock();
+            trackRows[rowIndex][1].forEach((note) => audio.play(source(note), { gain: chordGain(activeCountAt(step)), duration: 15 / state.bpm, synth: true }));
+          }
         }));
         panel.querySelectorAll('.chord-sequencer-cell').forEach((cell) => {
           cell.addEventListener('pointerdown', beginCellDrag);
@@ -293,6 +338,14 @@
         }));
       };
 
+      if (modeSelectable) {
+        sharedTransport.modeListeners.push((key, mode) => {
+          trackRows = modeRowsFor(key, mode);
+          audio.load(trackRows.flatMap(([, notes]) => notes.map(source)));
+          render();
+        });
+      }
+
       const fillProgression = (groups, button) => {
         state.blocks.clear();
         state.pattern.forEach((row) => row.clear());
@@ -304,16 +357,17 @@
           const start = groupIndex * 4;
           const length = groupIndex === groupsToFill.length - 1 && mergeLast ? mergeLast : 4;
           group.forEach((note) => {
-            const rowIndex = rows.findIndex(([label]) => label === note);
+            const rowIndex = trackRows.findIndex(([label]) => label === note);
             if (rowIndex >= 0) paintBlock(rowIndex, start, length);
           });
         });
         render();
       };
 
+      state.render = render;
       render();
       trackLab.appendChild(panel);
-      return { fillProgression, panel, start, stop, setBpm: (bpm) => {
+      return { fillProgression, fillBlocks, panel, start, stop, setBpm: (bpm) => {
         const slider = panel.querySelector('[data-bpm]');
         if (!slider) return;
         slider.value = String(bpm);
@@ -327,13 +381,15 @@
       createTrack({ title: '尝试', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
     } else if (isProgressionTrack) {
       progressionTrack = createTrack({ title: 'C 大调和弦音轨 · C3–C5 · 16 steps', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true, defaultBpm: 40 });
-    } else if (isChordsOnlyTrack) {
-      chordTrack = createTrack({ title: '和弦', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
+    } else if (isTonesScaleTrack || isModesScaleTrack) {
+      chordTrack = createTrack({ title: isModesScaleTrack ? '七种常见调式编写 · C3-B4 · 16 steps' : '自然大小调编写 · C3-B4 · 16 steps', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true, defaultBpm: 72 });
+    } else if (isChordsOnlyTrack || isChords32Track) {
+      chordTrack = createTrack({ title: isChords32Track ? '和弦连接 · C3-C5 · 32 steps' : '和弦', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
     } else if (isBassExampleTrack) {
       chordTrack = createTrack({ title: '贝斯', theme: 'is-bass', rows: bassRows, gain: 0.78, defaultBpm: 80 });
     } else if (isBassSuiteTrack) {
-      chordTrack = createTrack({ title: '和弦', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
-      createTrack({ title: '贝斯', theme: 'is-bass', rows: bassRows, gain: 0.78 });
+      chordTrack = createTrack({ title: '和弦', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true, modeSelectable: true });
+      createTrack({ title: '贝斯', theme: 'is-bass', rows: bassRows, gain: 0.78, modeSelectable: true });
     } else {
       createTrack({ title: 'Chords 音轨', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
       createTrack({ title: 'Basslines 音轨', theme: 'is-bass', rows: scaleRows, gain: 0.78 });
@@ -352,6 +408,13 @@
       document.querySelector('[data-bass-example-fill]')?.addEventListener('click', () => {
         chordTrack.fillProgression([['C3'], ['C3'], ['G3'], ['A3']], null);
       });
+    }
+
+    if (isTonesScaleTrack && chordTrack) {
+      window.MusicLabScaleTrack = chordTrack;
+    }
+    if (isModesScaleTrack && chordTrack) {
+      window.MusicLabModesTrack = chordTrack;
     }
 
     if (chordTrack && sharedTransport) {

@@ -4,17 +4,31 @@
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicLab | 调式基础 · 在调式中进行和弦连接</title>
     <link rel="icon" type="image/svg+xml" href="../images/favicon.svg"><link rel="stylesheet" href="../css/Home.css"><link rel="stylesheet" href="../css/ui.css"><script src="../js/musiclab-ui.js"></script>
+    <style>
+        .chord-track-lab,
+        .chord-sequencer-panel.is-32-step { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
+        .chord-sequencer-panel.is-32-step .chord-sequencer-shell { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; overflow-x: auto; overflow-y: hidden; }
+        .chord-sequencer-panel.is-32-step .chord-sequencer-track { width: 100%; min-width: 960px; }
+        .chord-sequencer-panel.is-32-step .chord-sequencer-ruler,
+        .chord-sequencer-panel.is-32-step .chord-sequencer-row { grid-template-columns: 64px repeat(32, minmax(18px, 1fr)); gap: 4px; }
+        @media (max-width: 720px) {
+            .chord-sequencer-panel.is-32-step .chord-sequencer-ruler,
+            .chord-sequencer-panel.is-32-step .chord-sequencer-row { grid-template-columns: 58px repeat(32, minmax(18px, 1fr)); gap: 6px; }
+        }
+    </style>
 </head>
 <body class="main" data-lesson="tones-chord-connection">
     <div class="top"><div class="Logo"><a href="../index.html" aria-label="返回主页"></a><img src="../images/MusicLabBlackLogo.png" width="250" alt="MusicLab"></div><ul class="nav"><li id="nav1"><a href="../index.html">主页</a></li><li id="nav2"><a href="../introduction/intro.html">开发组介绍</a></li><li id="nav3"><a href="../The Playground/index.html">游乐园</a></li><li id="nav6"><a href="index.html">初学者教程</a></li><li id="nav5"><a href="../settings/settings.html">设置</a></li><li id="nav4"><a href="../login/login.html">登录 | 注册</a></li></ul><div><hr></div></div>
     <div class="sidebar"><div class="directory-panel"><div class="directory-header" tabindex="0" role="button" aria-label="打开课程目录"><img src="../icons/directory.png" alt="Directory" class="directory-icon"></div><div class="directory-tree"></div></div></div>
     <div class="box_with_side"><div class="learning-content-panel"><div class="learning-content-header"><h1>调式基础（四）：在调式中进行和弦连接</h1></div><div class="learning-content-body">
-        <p>调式不只是旋律使用的音阶，也可以成为和弦连接的地图。先确定主音和音阶，再从每个音级上叠出和弦，就能得到一组相互关联的和声材料。</p>
-        <section class="chord-section" id="diatonic-chords"><div class="chord-section-heading"><span>01</span><h2>从音阶建立和弦</h2></div><p>在 C 大调中，七个音级可以得到 C、Dm、Em、F、G、Am 和 Bdim。罗马数字 I、ii、iii、IV、V、vi、vii° 把和弦功能与具体调名分开，换调时仍然可以使用同一种思考方式。</p><div class="track-role-grid"><article><b>主功能</b><p>I 级提供稳定的归属感，vi 级可以作为柔和的替代。</p></article><article><b>下属功能</b><p>ii 和 IV 级把音乐带离主和弦，形成展开。</p></article><article><b>属功能</b><p>V 和 vii° 包含指向主音的张力，适合引出回归。</p></article></div></section>
-        <section class="chord-section" id="mode-progressions"><div class="chord-section-heading"><span>02</span><h2>让连接服从调式</h2></div><p>在自然小调或 Dorian 等调式中，和弦质量会随音阶变化。不要强行套用大调的 V-I 结尾，先听清调式的特征音，再选择能保留这种色彩的连接。</p><p>一个实用流程是：确定主和弦，找出包含特征音的和弦，再用相邻音级或共同音让声部平滑移动。</p></section>
-        <section class="chord-section" id="voice-leading"><div class="chord-section-heading"><span>03</span><h2>用共同音和级进连接</h2></div><p>相邻和弦之间保留共同音，可以让变化听起来连贯；其余声部尽量小幅移动，可以减少跳跃感。先写低音走向，再安排上方和弦音，往往比一次决定完整和弦更容易控制。</p></section>
+        <p>有了调式之后，你会发现同一个调式的和弦色彩基调较为统一，单个和弦的听感仍然取决于和弦本身的音程关系，但在同一个调式中进行，它们便带上了这个调式的整体色彩。</p>
+        <section class="chord-section" id="diatonic-chords"><div class="chord-section-heading"><span>01</span><h2>从音阶建立和弦</h2></div><p>在 C 大调中，七个音级可以得到 C、Dm、Em、F、G、Am 和 Bdim。罗马数字 I、ii、iii、IV、V、vi、vii° 把和弦功能与具体调名分开，换调时仍然可以使用同一种思考方式，这样在调式内写和弦连接就更加简单而灵活。</p><div class="track-role-grid"><article><b>主功能</b><p>I、iii、IV级都可以提供稳定的归属感，vi 级可以作为柔和的替代。</p></article><article><b>下属功能</b><p>ii、IV、vi级可以把音乐带离主和弦，形成展开。</p></article><article><b>属功能</b><p>iii、V和vii°包含指向主音的张力，适合引出或回归。</p></article></div></section>
+        <section class="chord-section" id="mode-progressions"><div class="chord-section-heading"><span>02</span><h2>让连接遵循一些规则</h2></div><p><b>一：</b>常见的和弦进行一般顺序为主->下属->属->主或者不经过属或者下属和弦，直接在属和弦后面加上下属和弦一般是不合理的。<br><br><b>二：</b>调式内的和弦也可以多样化，例如可以升降部分音八度改变音程距离，省略或增加一些音改变听感，从而获得不同的和声效果。和弦本身色彩由大小调决定；音越多，越显得繁杂、飘渺，反之越简洁、鲜明；音距离越开，听感越分散、宽阔、自由，反之音距离越近，听感越集中、紧凑、约束；根音频率低，会显得更低沉、厚重，反之会更清澈、明亮。在低音区开阔，高音区集中，会更加符合普通乐器的泛音列，听起来更加舒服。<br><br><b>三：</b>和弦属性并非一成不变，例如在自然小调或 Dorian 等调式中，和弦质量会随音阶变化，但它们通常与其强调音的导向有关，例如属七和弦强调的一般是导音，导向回到主音，属七和弦也就更偏向回到主和弦。不要强行套用大调的 V-I 结尾，先听清调式的特征音，再选择能保留这种色彩的连接。</p><p>一个实用流程是：确定主和弦，找出包含特征音的和弦，再用相邻音级或共同音让声部平滑移动。</p></section>
+        <p>在下方的 32 steps 和弦音轨中尝试编写属于当前调式的和弦连接。可以同时点亮多个音组成和弦，也可以横向拖拽延长音符。</p>
+        <div class="chord-track-lab" data-chord-track-lab="chords-32" data-chord-track-range="c3-c5" aria-label="C3 到 C5 的 25 个半音和弦音轨，32 格"></div>
+        <section class="chord-section" id="voice-leading"><div class="chord-section-heading"><span>03</span><h2>用共同音和级进连接</h2></div><p>相邻和弦之间保留共同音，可以让变化听起来连贯；其余声部尽量小幅移动，可以减少跳跃感。先写低音走向，再安排上方和弦音，往往比一次决定完整和弦更容易控制。当你想要写出跳跃感时，再去寻找没有共同音的连接点。</p></section>
         <section class="lesson-quiz" data-lesson-quiz></section><div class="learning-nav"><a href="tones-common-modes.html" class="learning-nav-button prev">上一页：其他常用调式</a><a href="tones-chord-color.html" class="learning-nav-button next">下一页：和弦色彩的转换与拼接</a></div>
     </div></div></div>
-    <script src="../js/audio-engine.js"></script><script src="../js/login.js"></script><script src="../js/lesson-quiz.js"></script>
+    <script src="../js/audio-engine.js"></script><script src="../js/chords-learning.js"></script><script src="../js/login.js"></script><script src="../js/lesson-quiz.js"></script>
 </body>
 </html>
