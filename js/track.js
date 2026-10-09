@@ -13,7 +13,7 @@
   loadingScreen.innerHTML = '<div class="melody-loading-spinner" aria-hidden="true"></div><strong>正在准备音轨</strong><span>首次加载需要一点时间</span>';
   document.body.appendChild(loadingScreen);
 
-  const src = (note) => `../audio/piano_sources/source-piano-${note}-iowa-mf.wav`;
+  const src = (note) => `../audio/piano/sources/source-piano-${note}.wav`;
   const example = document.querySelector('[data-melody-example]');
   const isScale = example?.dataset.melodyExample === 'scale';
   const notes = isScale

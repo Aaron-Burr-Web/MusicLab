@@ -45,6 +45,14 @@
     feedback.textContent = text;
     feedback.className = `interval-practice-feedback${type ? ` is-${type}` : ''}`;
   };
+  const stopPageAudio = () => {
+    window.MusicLabModesTrack?.stop();
+    window.MusicLabAudio?.stopAll();
+    document.querySelectorAll('audio').forEach((audio) => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+  };
   const clearTrack = () => panel.querySelector('[data-clear]')?.click();
   const expectedMidis = ({ pitch, intervals, sign }) => {
     const ascending = intervals.map((interval) => 48 + pitch + interval);
@@ -92,6 +100,7 @@
   };
 
   startButton.addEventListener('click', () => {
+    stopPageAudio();
     questions = shuffle(candidates).slice(0, 8);
     questionIndex = -1;
     current = null;
@@ -100,6 +109,7 @@
   });
 
   exampleButton.addEventListener('click', () => {
+    stopPageAudio();
     if (!current) startButton.click();
     const expected = expectedMidis(current);
     window.MusicLabModesTrack?.fillBlocks(expected.map((midi, index) => ({
@@ -113,6 +123,7 @@
   panel.addEventListener('click', (event) => {
     const playButton = event.target.closest('[data-play]');
     if (!playButton || !current) return;
+    stopPageAudio();
     if (!isCorrect()) {
       setFeedback('调式、顺序或音符不对，再试试吧！', 'wrong');
       return;
@@ -121,4 +132,20 @@
     const bpm = Number(panel.querySelector('[data-bpm]')?.value || 72);
     nextTimer = window.setTimeout(nextQuestion, (STEPS * 60000) / (bpm * 4) + 400);
   }, true);
+
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('[data-ear-play], [data-ear-replay]')) stopPageAudio();
+  }, true);
+  document.querySelectorAll('audio').forEach((audio) => {
+    audio.addEventListener('play', () => {
+      document.querySelectorAll('audio').forEach((other) => {
+        if (other !== audio) {
+          other.pause();
+          other.currentTime = 0;
+        }
+      });
+      window.MusicLabModesTrack?.stop();
+      window.MusicLabAudio?.stopAll();
+    });
+  });
 })();

@@ -917,6 +917,57 @@
     mount.insertAdjacentElement('afterend', footer);
   };
 
+  const setupHorizontalScrollbar = () => {
+    if (document.querySelector('.page-horizontal-scroll')) return;
+    const pageRoot = document.documentElement;
+    const body = document.body;
+    const bar = document.createElement('div');
+    const track = document.createElement('div');
+    bar.className = 'page-horizontal-scroll';
+    bar.setAttribute('aria-label', '页面横向滚动条');
+    bar.setAttribute('role', 'scrollbar');
+    track.className = 'page-horizontal-scroll-track';
+    bar.appendChild(track);
+    document.body.appendChild(bar);
+
+    let syncing = false;
+    const pageScrollLeft = () => Math.max(pageRoot.scrollLeft, body.scrollLeft);
+    const setPageScrollLeft = (left) => {
+      pageRoot.scrollLeft = left;
+      body.scrollLeft = left;
+    };
+    const measure = () => {
+      const contentWidth = Math.max(pageRoot.scrollWidth, body.scrollWidth);
+      const viewportWidth = pageRoot.clientWidth;
+      track.style.width = `${Math.max(viewportWidth, contentWidth)}px`;
+      bar.hidden = contentWidth <= viewportWidth + 1;
+      bar.setAttribute('aria-valuemax', String(Math.max(0, contentWidth - viewportWidth)));
+      const left = pageScrollLeft();
+      bar.setAttribute('aria-valuenow', String(Math.round(left)));
+      if (bar.scrollLeft !== left) bar.scrollLeft = left;
+    };
+    const syncFromPage = () => {
+      if (syncing) return;
+      syncing = true;
+      const left = pageScrollLeft();
+      bar.scrollLeft = left;
+      bar.setAttribute('aria-valuenow', String(Math.round(left)));
+      syncing = false;
+    };
+    bar.addEventListener('scroll', () => {
+      if (syncing) return;
+      syncing = true;
+      setPageScrollLeft(bar.scrollLeft);
+      bar.setAttribute('aria-valuenow', String(Math.round(bar.scrollLeft)));
+      syncing = false;
+    });
+    window.addEventListener('scroll', syncFromPage, { passive: true });
+    document.addEventListener('scroll', syncFromPage, { capture: true, passive: true });
+    window.addEventListener('resize', measure);
+    if (typeof ResizeObserver === 'function') new ResizeObserver(measure).observe(document.body);
+    measure();
+  };
+
   /* ------------------------------------------------------------------ */
   /* 登录后的欢迎体验（首页）                                              */
   /* ------------------------------------------------------------------ */
@@ -1012,6 +1063,7 @@
     swapLogos(theme.resolved());
     setupHeader();
     setupFooter();
+    setupHorizontalScrollbar();
     setupDirectory();
     setupProgress();
     setupWelcome();

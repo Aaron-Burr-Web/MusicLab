@@ -5,10 +5,24 @@
   const audio = window.MusicLabAudio;
   if (!audio) return;
 
-  const source = (note) => `../audio/piano_sources/source-piano-${note}-iowa-mf.wav`;
+  const isIntervalLesson = document.body?.dataset.lesson === 'chords-intervals';
+  const sampleFiles = {
+    C4: 'source-piano-C4.wav',
+    Db4: 'source-piano-Db4.wav', D4: 'source-piano-D4.wav', Eb4: 'source-piano-Eb4.wav',
+    E4: 'source-piano-E4.wav', F4: 'source-piano-F4.wav', Gb4: 'source-piano-Gb4.wav',
+    G4: 'source-piano-G4.wav', Ab4: 'source-piano-Ab4.wav', A4: 'source-piano-A4.wav',
+    Bb4: 'source-piano-Bb4.wav', B4: 'source-piano-B4.wav'
+  };
+  const source = (note) => {
+    const match = String(note).match(/^([A-G](?:b)?)(\d)$/);
+    if (!match) return '';
+    if (isIntervalLesson) return `../audio/piano/sources/source-piano-${note}.wav`;
+    const file = sampleFiles[`${match[1]}4`];
+    return file ? `../audio/piano/sources/${file}` : '';
+  };
   const playNotes = (notes, options = {}) => {
     const { delay = 0, gain = 0.72, controls = [] } = options;
-    return audio.playAudition(notes.map(source), { offsets: notes.map((_, index) => index ? delay : 0), gain, controls });
+    return audio.playAudition(notes.map(source), { offsets: notes.map((_, index) => index ? delay : 0), gain, controls, playbackRate: isIntervalLesson ? 1 : 0.5 });
   };
 
   let intervalMode = 'melody';
@@ -436,7 +450,7 @@
       const intervalNames = ['纯一度', '小二度', '大二度', '小三度', '大三度', '纯四度', '增四度', '纯五度', '小六度', '大六度', '小七度', '大七度', '纯八度'];
       const noteNames = scaleRows.map(([note]) => note);
       const noteLabel = (note) => note.replace('b', '♭').slice(0, -1);
-      const candidates = noteNames.flatMap((root, rootRow) => Array.from({ length: rootRow + 1 }, (_, semitones) => ({ root, rootRow, semitones, target: noteNames[rootRow - semitones], label: intervalNames[semitones] })));
+      const candidates = noteNames.flatMap((root, rootRow) => Array.from({ length: rootRow + 1 }, (_, semitones) => ({ root, rootRow, semitones, target: noteNames[rootRow - semitones], label: intervalNames[semitones] }))).filter(({ semitones }) => semitones > 0);
       let questions = [];
       let questionIndex = -1;
       let current = null;

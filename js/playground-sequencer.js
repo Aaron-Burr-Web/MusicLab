@@ -589,7 +589,7 @@
     while (m > 72) m -= 12;   // C5 = 72
     while (m < 48) m += 12;   // C3 = 48
     const name = `${NOTE_NAMES_FLAT[m % 12]}${Math.floor(m / 12) - 1}`;
-    return SAMPLE_NAMES.has(name) ? `../audio/piano_sources/source-piano-${name}-iowa-mf.wav` : null;
+    return SAMPLE_NAMES.has(name) ? `../audio/piano/sources/source-piano-${name}.wav` : null;
   };
   // 每一行对应的采样：行 0 在最上面（最高音）。baseOctave 是最底行根音的八度。
   const rowSamples = (keyName, modeName, baseOctave) => {

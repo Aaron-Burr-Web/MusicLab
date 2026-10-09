@@ -34,6 +34,7 @@
   const pending = new Map();     // src -> Promise
   const sustainRegions = new Map(); // src -> 可循环的高能量采样区间
   const htmlPools = new Map();   // src -> { voices: HTMLAudioElement[], index }
+  const activeSources = new Set();
   const POOL_SIZE = 6;
   const BUFFER_PREWARM_COUNT = 40;
   const bufferPrewarmed = new Set();
@@ -44,6 +45,7 @@
   let warmupGestureInstalled = false;
   let silentWarmupDone = false;
   let auditionBusyUntil = 0;
+  let playbackGeneration = 0;
 
   const engine = {
     mode: AC && canFetch ? 'webaudio' : 'html'
@@ -74,6 +76,12 @@
     const voice = pool.voices[pool.index];
     pool.index = (pool.index + 1) % POOL_SIZE;
     return voice;
+  };
+
+  const trackSource = (source) => {
+    activeSources.add(source);
+    source.addEventListener('ended', () => activeSources.delete(source), { once: true });
+    return source;
   };
 
   const prewarmBuffer = (src, buffer) => {
@@ -197,6 +205,18 @@
     silentWarmup();
     startKeepAlive();
     return Promise.resolve();
+  };
+
+  engine.stopAll = () => {
+    activeSources.forEach((source) => {
+      try { source.stop(); } catch (_) { /* 已停止的节点可以忽略 */ }
+    });
+    activeSources.clear();
+    htmlPools.forEach((pool) => pool.voices.forEach((voice) => {
+      voice.pause();
+      voice.currentTime = 0;
+    }));
+    auditionBusyUntil = 0;
   };
 
   if (typeof document !== 'undefined') {
@@ -330,7 +350,7 @@
     const bodyEnd = Math.max(0.025, total - tailLength);
 
     // 跳过采样头的低能量噪声，从有效起音处保留触键质感。
-    const attack = ctx.createBufferSource();
+    const attack = trackSource(ctx.createBufferSource());
     attack.buffer = buffer;
     const attackGain = connectGain(attack, gain);
     const attackLength = Math.min(0.12, bodyEnd);
@@ -339,7 +359,7 @@
     attack.start(startAt, region.start);
     attack.stop(Math.min(startAt + attackLength, startAt + total));
 
-    const body = ctx.createBufferSource();
+    const body = trackSource(ctx.createBufferSource());
     body.buffer = buffer;
     body.loop = true;
     body.loopStart = region.start;
@@ -356,7 +376,7 @@
     body.stop(startAt + bodyEnd);
 
     // 尾音保持采样原速，只做增益衰减，保留真实乐器的自然衰减。
-    const tail = ctx.createBufferSource();
+    const tail = trackSource(ctx.createBufferSource());
     tail.buffer = buffer;
     const tailOffset = Math.min(region.end, Math.max(0, buffer.duration - tailLength - 0.01));
     tail.playbackRate.value = 1;
@@ -381,14 +401,17 @@
     return new Promise((resolve) => setTimeout(resolve, prewarmDuration));
   };
 
-  engine.play = (src, { at, gain = 1, duration, synth = false, skipPending = false } = {}) => {
+  engine.play = (src, { at, gain = 1, duration, synth = false, playbackRate = 1, skipPending = false } = {}) => {
+    const generation = playbackGeneration;
     const shortSynth = synth && Number.isFinite(duration) && duration > 0 && duration < 0.8;
     const playbackDuration = shortSynth ? 0.8 : duration;
     const useSynth = synth && !shortSynth;
     const buffer = buffers.get(src);
     const pendingLoad = pending.get(src);
     if (!buffer && pendingLoad && !skipPending) {
-      pendingLoad.then(() => engine.play(src, { at, gain, duration, synth, skipPending: true }));
+      pendingLoad.then(() => {
+        if (generation === playbackGeneration) engine.play(src, { at, gain, duration, synth, playbackRate, skipPending: true });
+      });
       return;
     }
     if (buffer && ctx) {
@@ -397,8 +420,9 @@
         playSynth(src, buffer, startAt, gain, duration);
         return;
       }
-      const source = ctx.createBufferSource();
+      const source = trackSource(ctx.createBufferSource());
       source.buffer = buffer;
+      source.playbackRate.value = playbackRate;
       const gainNode = connectGain(source, gain);
       const onset = sustainRegion(src, buffer).start;
       const sourceDuration = Math.max(0.02, buffer.duration - onset);
@@ -410,6 +434,7 @@
     }
     // HTMLAudio 回退：按延迟排队
     const fire = () => {
+      if (generation !== playbackGeneration) return;
       const voice = htmlVoice(src);
       const playToken = {};
       voice.__musicLabPlayToken = playToken;
@@ -428,6 +453,7 @@
         if (!voice.ended && (endDuration === null || elapsed < endDuration + FADE_SETTLE_SECONDS * 1000)) requestAnimationFrame(updateVolume);
       };
       voice.volume = 0;
+      voice.playbackRate = playbackRate;
       voice.currentTime = 0;
       const request = voice.play();
       if (request) request.catch(() => { /* 尚无用户手势时被拦截，忽略 */ });
@@ -444,7 +470,7 @@
     if (delay > 4) setTimeout(fire, delay); else fire();
   };
 
-  engine.playAudition = (srcs, { controls = [], offsets = [], at, gain = 0.85, duration = 1.2 } = {}) => {
+  engine.playAudition = (srcs, { controls = [], offsets = [], at, gain = 0.85, duration = 1.2, playbackRate = 1 } = {}) => {
     const sources = [].concat(srcs).filter(Boolean);
     const now = engine.now();
     const controlList = [...controls].filter(Boolean);
@@ -464,7 +490,8 @@
     sources.forEach((src, index) => engine.play(src, {
       at: startAt + (Number(offsets[index]) || 0),
       gain: gain / Math.sqrt(Math.max(1, overlapCounts[index])),
-      duration
+      duration,
+      playbackRate
     }));
     if (changedControls.length) {
       const release = () => {

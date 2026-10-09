@@ -25,7 +25,7 @@
   const AUDIO = window.MusicLabAudio || null;
   const esc = (ML && ML.escapeHTML) || ((v) => String(v));
   const scriptUrl = [...document.scripts].find((script) => script.src.endsWith('/ear-training.js'))?.src || document.baseURI;
-  const pianoAudioRoot = new URL('../audio/piano_sources/', scriptUrl);
+  const pianoAudioRoot = new URL('../audio/piano/sources/', scriptUrl);
 
   /* ---------------- 音源 ---------------- */
   // 采样覆盖 C2–C5，且黑键以降号命名
@@ -34,9 +34,20 @@
     'C4', 'Db4', 'D4', 'Eb4', 'E4', 'F4', 'Gb4', 'G4', 'Ab4', 'A4', 'Bb4', 'B4', 'C5']);
   const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
   const midiToName = (midi) => `${FLAT_NAMES[((midi % 12) + 12) % 12]}${Math.floor(midi / 12) - 1}`;
+  const chordSampleFiles = {
+    C4: 'source-piano-C4.wav',
+    Db4: 'source-piano-Db4.wav', D4: 'source-piano-D4.wav', Eb4: 'source-piano-Eb4.wav',
+    E4: 'source-piano-E4.wav', F4: 'source-piano-F4.wav', Gb4: 'source-piano-Gb4.wav',
+    G4: 'source-piano-G4.wav', Ab4: 'source-piano-Ab4.wav', A4: 'source-piano-A4.wav',
+    Bb4: 'source-piano-Bb4.wav', B4: 'source-piano-B4.wav'
+  };
+  const chordSrcOf = (midi) => {
+    const file = chordSampleFiles[`${FLAT_NAMES[((midi % 12) + 12) % 12]}4`];
+    return file ? new URL(file, pianoAudioRoot).href : null;
+  };
   const srcOf = (midi) => {
     const name = midiToName(midi);
-    return SAMPLES.has(name) ? new URL(`source-piano-${name}-iowa-mf.wav`, pianoAudioRoot).href : null;
+    return SAMPLES.has(name) ? new URL(`source-piano-${name}.wav`, pianoAudioRoot).href : null;
   };
 
   const fallbackPool = {};
@@ -64,11 +75,11 @@
     }, playbackUntil - performance.now());
     return true;
   };
-  const playSrc = (src, delaySec = 0, gain = 0.9, durationSec = 1.2) => {
+  const playSrc = (src, delaySec = 0, gain = 0.9, durationSec = 1.2, playbackRate = 1) => {
     if (!src) return;
     if (AUDIO) {
       AUDIO.unlock();
-      AUDIO.play(src, { at: delaySec ? AUDIO.now() + delaySec : undefined, gain, duration: durationSec });
+      AUDIO.play(src, { at: delaySec ? AUDIO.now() + delaySec : undefined, gain, duration: durationSec, playbackRate });
       return;
     }
     const fire = () => {
@@ -77,6 +88,7 @@
       const voice = pool.shift();
       pool.push(voice);
       voice.volume = gain;
+      voice.playbackRate = playbackRate;
       voice.currentTime = 0;
       const req = voice.play();
       if (req) req.catch(() => {});
@@ -98,9 +110,10 @@
   const NOTE_RANGE = [0, 2, 4, 5, 7, 9, 11, 12].map((offset) => C3 + offset); // C3-C4 的八个白键音
   const ADVANCED_NOTE_RANGE = Array.from({ length: 13 }, (_, index) => C3 + index); // C3-C4 的全部半音
   const INTERVALS = [
-    { semitones: 2, label: '大二度' }, { semitones: 4, label: '大三度' }, { semitones: 5, label: '纯四度' },
-    { semitones: 7, label: '纯五度' }, { semitones: 9, label: '大六度' }, { semitones: 12, label: '纯八度' },
-    { semitones: 3, label: '小三度' }
+    { semitones: 1, label: '小二度' }, { semitones: 2, label: '大二度' }, { semitones: 3, label: '小三度' },
+    { semitones: 4, label: '大三度' }, { semitones: 5, label: '纯四度' }, { semitones: 6, label: '增四度' },
+    { semitones: 7, label: '纯五度' }, { semitones: 9, label: '大六度' }, { semitones: 10, label: '小七度' },
+    { semitones: 11, label: '大七度' }, { semitones: 12, label: '纯八度' }
   ];
   const CHORDS = [
     { offsets: [0, 4, 7], label: '大三和弦', hint: '明亮、稳定' },
@@ -120,6 +133,7 @@
   ];
 
   const pick = (list) => list[Math.floor(Math.random() * list.length)];
+  const shuffle = (items) => [...items].sort(() => Math.random() - 0.5);
 
   const makeSingleNoteMode = (title, noteRange) => ({
     title,
@@ -143,17 +157,20 @@
     interval: {
       title: '音程听辨',
       intro: '连续听到两个音，它们之间是什么音程？',
+      lastQuestionKey: '',
       make() {
-        const interval = pick(INTERVALS);
-        const root = C3 + pick([0, 2, 4, 5, 7]);
+        const availableIntervals = INTERVALS.filter((item) => item.semitones !== this.lastQuestionKey);
+        const interval = pick(availableIntervals.length ? availableIntervals : INTERVALS);
+        const root = C3 + Math.floor(Math.random() * 12);
+        this.lastQuestionKey = interval.semitones;
         return {
           play: () => { playSrc(srcOf(root)); playSrc(srcOf(root + interval.semitones), 0.9); },
-          options: INTERVALS.map((i) => i.label),
+          options: shuffle(INTERVALS.map((i) => i.label)),
           answer: interval.label,
           explain: `两个音相差 ${interval.semitones} 个半音，是${interval.label}。`
         };
       },
-      preload: () => preload(Array.from({ length: 25 }, (_, i) => C3 + i - 12))
+      preload: () => preload(Array.from({ length: 24 }, (_, i) => C3 + i))
     },
     chord: {
       title: '和弦听辨',
@@ -162,7 +179,7 @@
         const chord = pick(CHORDS);
         const root = C3 + pick([0, 2, 4, 5, 7]);
         return {
-          play: () => chord.offsets.forEach((o) => playSrc(srcOf(root + o), 0, 0.6)),
+          play: () => chord.offsets.forEach((o) => playSrc(chordSrcOf(root + o), 0, 0.6, 1.2, 0.5)),
           options: CHORDS.map((c) => c.label),
           answer: chord.label,
           explain: `这是${chord.label}（${chord.hint}），音程结构为 ${chord.offsets.join('-')} 个半音。`

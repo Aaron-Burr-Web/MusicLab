@@ -29,7 +29,7 @@
     while (value > 72) value -= 12;
     while (value < 48) value += 12;
     const name = `${flatNames[value % 12]}${Math.floor(value / 12) - 1}`;
-    return sampleNames.has(name) ? `../audio/piano_sources/source-piano-${name}-iowa-mf.wav` : null;
+    return sampleNames.has(name) ? `../audio/piano/sources/source-piano-${name}.wav` : null;
   };
   const scaleNotes = () => {
     const root = pitchClasses[state.key];
@@ -152,7 +152,7 @@
     while (value > 72) value -= 12;
     while (value < 48) value += 12;
     const name = `${flatNames[((value % 12) + 12) % 12]}${Math.floor(value / 12) - 1}`;
-    return sampleNames.has(name) ? `../audio/piano_sources/source-piano-${name}-iowa-mf.wav` : null;
+    return sampleNames.has(name) ? `../audio/piano/sources/source-piano-${name}.wav` : null;
   };
   const rowsForState = () => {
     const intervals = modes[state.mode];
