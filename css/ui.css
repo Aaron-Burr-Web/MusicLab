@@ -180,6 +180,21 @@ body,
 .sidebar { z-index: 40; }
 .box, .box_with_side { z-index: 1; }
 
+/* 内容按自身宽度展开，页面整体负责横向滚动。 */
+html,
+body {
+  overflow-x: auto;
+}
+
+.box,
+.box_with_side {
+  box-sizing: border-box;
+  min-width: max-content;
+  max-width: none;
+  overflow: visible;
+  margin-right: 96px;
+}
+
 .top .nav {
   gap: 6px;
   flex-wrap: nowrap;

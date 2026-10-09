@@ -309,7 +309,7 @@
       sections: [{ title: '节拍和拍子', hash: 'rhythm-basics' }, { title: '小试一下', hash: 'try-it' }] },
     { key: 'beat-instruments', title: '乐器介绍', file: 'beat-instruments.html', group: '节奏基础',
       sections: [{ title: '乐器介绍', hash: 'instrument-introductions' }] },
-    { key: 'beat-we-will-rock-you', title: '示例：We Will Rock You', file: 'beat-we will rock you.html', group: '节奏基础',
+    { key: 'beat-we-will-rock-you', title: '示例：We Will Rock You', file: 'beat-we-will-rock-you.html', group: '节奏基础',
       sections: [{ title: '歌曲中的节奏', hash: 'song-rhythm-example' }] },
     { key: 'beat-track', title: 'Beat 音轨', file: 'beat-track.html', group: '节奏基础',
       sections: [{ title: '在乐曲中', hash: 'in-song' }, { title: 'Beat 音轨', hash: 'beat-track' }] },
@@ -520,7 +520,7 @@
       const currentHash = (window.location.hash || '').replace('#', '');
       const completed = progress.completed();
       const groups = [];
-      LESSONS.forEach((lesson) => {
+      LESSONS.filter((lesson) => lesson.key !== 'index').forEach((lesson) => {
         let group = groups.find((g) => g.title === lesson.group);
         if (!group) { group = { title: lesson.group, lessons: [] }; groups.push(group); }
         group.lessons.push(lesson);
@@ -636,7 +636,7 @@
     { title: 'Beat 音轨', section: '教程 · 节奏基础', href: 'Start Learning/beat-track.html#beat-track', keywords: 'beat track 音轨 鼓机 sequencer' },
     { title: '示例：小星星', section: '教程 · 音符与记谱', href: 'Start Learning/pitches-Twinkle.html#twinkle-melody-example', keywords: '小星星 Twinkle Twinkle Little Star 儿歌 旋律 示例' },
     { title: '音符与记谱（四）：记谱法入门', section: '教程 · 音符与记谱', href: 'Start Learning/pitches-notation.html#notation-basics', keywords: 'notation 五线谱 记谱法 谱号 拍号 时值 音符' },
-    { title: '示例：We Will Rock You', section: '教程 · 节奏基础', href: 'Start Learning/beat-we%20will%20rock%20you.html#song-rhythm-example', keywords: 'We Will Rock You 歌曲 节奏 咚咚啪 摇滚' },
+    { title: '示例：We Will Rock You', section: '教程 · 节奏基础', href: 'Start Learning/beat-we-will-rock-you.html#song-rhythm-example', keywords: 'We Will Rock You 歌曲 节奏 咚咚啪 摇滚' },
     { title: '音程与和弦', section: '教程 · 第 3 章', href: 'Start Learning/chords.html#chord-practice', keywords: 'chord interval 和声' },
     { title: '音程', section: '教程 · 音程与和弦', href: 'Start Learning/chords-intervals.html#intervals', keywords: 'interval 度数 半音数' },
     { title: '音阶', section: '教程 · 音程与和弦', href: 'Start Learning/chords-scales.html#scales', keywords: 'scale 音阶 大调 C大调 全音 半音' },
@@ -726,6 +726,15 @@
       if (settingsItem) settingsItem.before(practiceItem);
       else nav.appendChild(practiceItem);
     }
+    const currentPage = pagePath.split('/').pop() || 'index.html';
+    nav.querySelectorAll('a').forEach((link) => {
+      const linkPage = new URL(link.href, window.location.href).pathname.split('/').pop() || 'index.html';
+      const isPractice = link.closest('[data-practice-link]') && currentPage.toLowerCase() === 'practice.html';
+      if (isPractice || linkPage.toLowerCase() === currentPage.toLowerCase()) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
+      }
+    });
 
     const tools = document.createElement('div');
     tools.className = 'header-tools';

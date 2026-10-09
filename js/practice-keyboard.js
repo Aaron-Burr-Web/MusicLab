@@ -1,11 +1,9 @@
-/* 练习区键盘：点击后播放对应钢琴采样，并更新五线谱位置。 */
+/* 练习区键盘：点击后更新五线谱位置。 */
 (() => {
   'use strict';
 
   const keyboard = document.querySelector('[data-practice-keyboard]');
   if (!keyboard) return;
-  const audio = window.MusicLabAudio;
-
   const naturalNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
   const sharpAfter = { C: 'C#', D: 'D#', F: 'F#', G: 'G#', A: 'A#' };
   const whiteNotes = [];
@@ -19,11 +17,6 @@
   whiteNotes.push('C5');
 
   keyboard.innerHTML = `<div class="practice-keyboard-keys" style="--white-count:${whiteNotes.length}">${whiteNotes.map((note) => `<button class="practice-white-key ${note.startsWith('C') ? 'is-c' : ''}" type="button" data-note="${note}" aria-pressed="${note === 'C3'}">${note.startsWith('C') ? note : ''}</button>`).join('')}${blackNotes.map(({ note, position }) => `<button class="practice-black-key" type="button" data-note="${note}" style="--black-position:${position}" aria-label="${note}" aria-pressed="false"></button>`).join('')}</div>`;
-
-  const flatName = (note) => note.replace('C#', 'Db').replace('D#', 'Eb').replace('F#', 'Gb').replace('G#', 'Ab').replace('A#', 'Bb');
-  const sourceFor = (note) => `audio/piano/piano-${flatName(note)}.wav`;
-  const audioNotes = [...whiteNotes, ...blackNotes.map(({ note }) => note)].map(flatName);
-  if (audio) audio.load([...new Set(audioNotes)].map(sourceFor));
 
   const name = document.querySelector('[data-practice-note-name]');
   const detail = document.querySelector('[data-practice-note-detail]');
@@ -69,14 +62,9 @@
     keyboard.querySelectorAll('[data-note]').forEach((key) => key.setAttribute('aria-pressed', String(key.dataset.note === note)));
   };
 
-  const play = (note) => {
-    if (!audio) return;
-    audio.playAudition(sourceFor(note), { gain: 0.85, controls: keyboard.querySelectorAll('[data-note]') });
-  };
-
   keyboard.addEventListener('click', (event) => {
     const key = event.target.closest('[data-note]');
-    if (key) { update(key.dataset.note); play(key.dataset.note); }
+    if (key) update(key.dataset.note);
   });
 
   update('C3');

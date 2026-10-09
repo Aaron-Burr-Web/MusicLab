@@ -448,8 +448,7 @@
     const sources = [].concat(srcs).filter(Boolean);
     const now = engine.now();
     const controlList = [...controls].filter(Boolean);
-    const isContinuation = controlList.length > 0 && controlList.every((control) => control.disabled);
-    if (!sources.length || (auditionBusyUntil > performance.now() && !isContinuation)) return false;
+    if (!sources.length || controlList.some((control) => control.disabled) || auditionBusyUntil > performance.now()) return false;
     const changedControls = controlList.filter((control) => !control.disabled);
     changedControls.forEach((control) => {
       control.disabled = true;

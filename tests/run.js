@@ -5,10 +5,6 @@
  *  2. 运行时检查：用本机 Chrome / Edge 无头模式打开每个页面，收集控制台错误
  *  3. 交互检查：注册登录、章节小测计入进度、游乐园总控与存档、四轨示例、听辨练习
  *
- * 运行方式（两种模式，避免每次普通改动都跑一遍完整的无头浏览器测试）：
- *   node tests/run.js            → 只跑第 1 步静态检查（秒级、不开浏览器）。开发阶段随时可跑，npm test 也是它。
- *   node tests/run.js --full     → 三步全跑（无头浏览器 + 交互用例，约 1–3 分钟）。npm run test:full。
- *
  * 给 AI Agent 的约定：
  *   - 除非项目维护者明确要求运行测试，否则不要主动执行 npm test、npm run test:full 或等价的 node tests/run.js 命令。
  *   - 项目维护者明确要求测试时，按要求选择默认静态模式或 --full；不要因为普通改动自动触发测试。
@@ -80,6 +76,12 @@ let indexProblems = 0;
 // 课程目录（LESSONS）：每个 file 存在，每个 section.hash 在对应页面里有 id
 let tocProblems = 0;
 const lessonsBlock = (uiSource.match(/const LESSONS = \[([\s\S]*?)\n  \];/) || [])[1] || '';
+const lessonGroups = new Set([...lessonsBlock.matchAll(/group: '([^']+)'/g)]
+  .map((match) => match[1])
+  .filter((group) => group !== '开始音乐之旅'));
+const expectedLessonGroupCount = 6;
+if (lessonGroups.size === expectedLessonGroupCount) ok(`课程目录（LESSONS）包含 ${expectedLessonGroupCount} 组`);
+else fail(`课程目录（LESSONS）应包含 ${expectedLessonGroupCount} 组，实际为 ${lessonGroups.size} 组`);
 for (const lesson of lessonsBlock.matchAll(/file: '([^']+)'[\s\S]*?sections: \[([\s\S]*?)\]/g)) {
   const page = path.join(ROOT, 'Start Learning', lesson[1]);
   if (!fs.existsSync(page)) { fail(`目录指向缺失页面 Start Learning/${lesson[1]}`); tocProblems += 1; continue; }

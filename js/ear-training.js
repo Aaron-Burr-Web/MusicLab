@@ -25,7 +25,7 @@
   const AUDIO = window.MusicLabAudio || null;
   const esc = (ML && ML.escapeHTML) || ((v) => String(v));
   const scriptUrl = [...document.scripts].find((script) => script.src.endsWith('/ear-training.js'))?.src || document.baseURI;
-  const pianoAudioRoot = new URL('../audio/piano/sources/', scriptUrl);
+  const pianoAudioRoot = new URL('../audio/piano_sources/', scriptUrl);
 
   /* ---------------- 音源 ---------------- */
   // 采样覆盖 C2–C5，且黑键以降号命名
@@ -36,7 +36,7 @@
   const midiToName = (midi) => `${FLAT_NAMES[((midi % 12) + 12) % 12]}${Math.floor(midi / 12) - 1}`;
   const srcOf = (midi) => {
     const name = midiToName(midi);
-    return SAMPLES.has(name) ? new URL(`source-piano-${name}.wav`, pianoAudioRoot).href : null;
+    return SAMPLES.has(name) ? new URL(`source-piano-${name}-iowa-mf.wav`, pianoAudioRoot).href : null;
   };
 
   const fallbackPool = {};

@@ -5,7 +5,7 @@
   const audio = window.MusicLabAudio;
   if (!audio) return;
 
-  const source = (note) => `../audio/piano/sources/source-piano-${note}.wav`;
+  const source = (note) => `../audio/piano_sources/source-piano-${note}-iowa-mf.wav`;
   const playNotes = (notes, options = {}) => {
     const { delay = 0, gain = 0.72, controls = [] } = options;
     return audio.playAudition(notes.map(source), { offsets: notes.map((_, index) => index ? delay : 0), gain, controls });
