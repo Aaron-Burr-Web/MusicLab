@@ -216,7 +216,7 @@
       <div class="musiclab-qa-modal" role="dialog" aria-modal="true" aria-labelledby="musiclab-qa-title">
         <button class="musiclab-qa-close" type="button" aria-label="关闭">×</button>
         <div class="musiclab-qa-header">
-          <h2 id="musiclab-qa-title">Q & A</h2>
+          <h2 id="musiclab-qa-title">Survey</h2>
         </div>
         <div class="musiclab-qa-body">
           <p class="musiclab-qa-progress">1 / 3</p>

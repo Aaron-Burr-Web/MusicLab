@@ -73,14 +73,36 @@
                     </div>
                     <h2 id="in-song">在乐曲中</h2>
                     <p>节奏的核心是节拍与速度，但是不同类型的音乐有着不同的节奏特点和表现方式。在长期的音乐演变中，多种丰富的节奏型逐渐形成了。例如下面的这些示例，我们选取了不同音乐风格中一些代表性的节奏类型，点按块会在上方的beat音轨中填充相应的节奏型，来看看不同的节奏型是什么样的，并感受它们的节奏特点。</p>
-                    <div class="beat-instrument-buttons" aria-label="节奏类型试听">
-                        <button class="beat-instrument-button" type="button" data-rhythm="jazz">爵士</button>
-                        <button class="beat-instrument-button" type="button" data-rhythm="samba">桑巴</button>
-                        <button class="beat-instrument-button" type="button" data-rhythm="tango">探戈</button>
-                        <button class="beat-instrument-button" type="button" data-rhythm="waltz">华尔兹</button>
-                        <button class="beat-instrument-button" type="button" data-rhythm="funk">放克</button>
-                        <button class="beat-instrument-button" type="button" data-rhythm="rock">摇滚</button>
-                    </div>
+                    <section class="beat-style-guide" aria-labelledby="beat-style-guide-title">
+                        <h2 id="beat-style-guide-title">风格节奏分析</h2>
+                        <p class="beat-style-guide-intro">判断一种节奏型，先听它把重音放在哪里，再观察鼓组之间如何分工：底鼓通常负责低频支点，军鼓或拍手负责反拍，镲片、沙锤等负责细分拍。下面的描述对应上方按钮填充的示例，适合边听边看格子中的落点。</p>
+                        <div class="beat-style-grid">
+                            <section class="beat-style-section">
+                                <div class="beat-style-copy"><h3>爵士 Jazz</h3><p>爵士的重音很灵活，常常带着轻轻摇摆的感觉，也给即兴留下空间。鼓手会用镲片维持流动，不会把每一拍都敲得一样重；四拍里穿插着切分和弱拍落点，底鼓、军鼓、通鼓和镲片像在彼此对话。听八分音符有没有长短不均的摇摆感，再留意重音是否避开了整齐的强拍排列，就能找到它的爵士气质。</p></div>
+                                <button class="beat-instrument-button beat-style-audition" type="button" data-rhythm="jazz">试听爵士</button>
+                            </section>
+                            <section class="beat-style-section">
+                                <div class="beat-style-copy"><h3>桑巴 Samba</h3><p>桑巴的速度感很强，律动连续又有弹性，许多打击乐器会一起填充拍子里的空隙，让音乐听起来明亮而且一直向前走。你会听到反拍、切分和连续的细分，底鼓与手鼓类声部彼此交错，弱拍也很少真正空下来。观察每拍内部是否有密集而错开的落点，以及重音是否不断从正拍转向反拍，就能感受到它滚动般的律动。</p></div>
+                                <button class="beat-instrument-button beat-style-audition" type="button" data-rhythm="samba">试听桑巴</button>
+                            </section>
+                            <section class="beat-style-section">
+                                <div class="beat-style-copy"><h3>探戈 Tango</h3><p>探戈的节奏有很强的戏剧张力，稳定的脉冲里经常突然出现停顿、重音和短促的回应。底鼓或低音声部像脚步一样提供方向，军鼓和通鼓则在拍子之间制造紧张与释放。听它是不是有“向前推进后突然停住”的呼吸感，也留意弱拍上的击打有没有打破原本均匀的步伐；这种强烈的对比，比单纯的快慢更能说明探戈的特点。</p></div>
+                                <button class="beat-instrument-button beat-style-audition" type="button" data-rhythm="tango">试听探戈</button>
+                            </section>
+                            <section class="beat-style-section">
+                                <div class="beat-style-copy"><h3>华尔兹 Waltz</h3><p>华尔兹最容易从三拍子的舞步感中认出来：第一拍稳定而突出，后两拍轻一些，整体像在旋转和摆动。典型的感觉就是“强、弱、弱”，底鼓或低音在第一拍落下，后两拍由较轻的和声或打击声承接。你可以跟着数“一、二、三”，如果重音每三拍回到第一拍，后两拍又轻而均匀，华尔兹的骨架就很清楚了。</p></div>
+                                <button class="beat-instrument-button beat-style-audition" type="button" data-rhythm="waltz">试听华尔兹</button>
+                            </section>
+                            <section class="beat-style-section">
+                                <div class="beat-style-copy"><h3>放克 Funk</h3><p>放克很看重律动的精确和身体感，它常常用留白、切分和短促的音符制造一种“卡住”却不断向前的推动力。底鼓、军鼓和闭镲会织出紧密的十六分音符网格，重音经常落在弱拍或拍内细分的位置，空出来的地方也同样重要。听它是否依赖十六分细分、反拍重音和明显留白；每个声部都不长，却能组合出紧密律动时，就很接近放克。</p></div>
+                                <button class="beat-instrument-button beat-style-audition" type="button" data-rhythm="funk">试听放克</button>
+                            </section>
+                            <section class="beat-style-section">
+                                <div class="beat-style-copy"><h3>摇滚 Rock</h3><p>摇滚的脉冲直接而有力量，鼓组通常会和贝斯、吉他的重复型一起，搭出稳定又有冲击力的框架。四拍里，底鼓常常支撑第一、第三拍，军鼓强调第二、第四拍，闭镲或镲片用连续的八分音符向前推进。只要找到“底鼓支撑强拍、军鼓打反拍、镲片均匀推进”这三层关系，再听它清楚而重复的重音规则，就能判断出典型的摇滚节奏。</p></div>
+                                <button class="beat-instrument-button beat-style-audition" type="button" data-rhythm="rock">试听摇滚</button>
+                            </section>
+                        </div>
+                    </section>
                     <p>节奏是音乐的骨架，大多类型的乐曲中，你都能听到明显的鼓点，尤其是摇滚等近现代音乐类型中。但大多数舒缓的音乐并不需要强烈的鼓点，但这并不代表节奏不存在。它决定着乐曲的快慢和强弱，根植于乐曲结构之中。有关其与其他声道的配合，你会在后续的学习中逐渐了解到。</p>
                     <br><br>
                     <!-- 章节小测：通过后计入学习进度（js/lesson-quiz.js） -->

@@ -26,7 +26,7 @@
     progress: 'musiclab_progress_v2',   // 前缀；每个账号一份：`${progress}::user:<name>`。未登录不记录、不显示进度
     pendingPass: 'musiclab_pending_pass', // 访客通过的小测（sessionStorage），登录后自动计入
     lastLesson: 'musiclab_last_lesson',   // 每个账号最近访问的章节：`${lastLesson}::user:<name>`
-    profile: 'musiclab_profile',          // Q&A 问卷结果：访客用本键，账号用 `${profile}::user:<name>`
+    profile: 'musiclab_profile',          // Survey 问卷结果：访客用本键，账号用 `${profile}::user:<name>`
     justLoggedIn: 'musiclab_just_logged_in', // sessionStorage：刚登录 / 注册，用于首页欢迎体验
     feedback: 'musiclab_feedback',
     pendingToast: 'musiclab_pending_toast'
@@ -425,7 +425,7 @@
   };
 
   /* ------------------------------------------------------------------ */
-  /* Q&A 问卷结果 → 学习起点推荐                                            */
+  /* Survey 问卷结果 → 学习起点推荐                                        */
   /* ------------------------------------------------------------------ */
   const LEVELS = [
     { key: 'beginner', label: '零基础', start: 'index', startLabel: '从「开始音乐之旅」第一章开始' },
@@ -662,7 +662,7 @@
     { title: '注册', section: '账户', href: 'login/registration.html', keywords: 'register sign up 注册 创建账号' },
     { title: '用户服务条款', section: '账户', href: 'login/terms.html', keywords: 'terms 条款 隐私 privacy 协议' },
     { title: '联系我们 / 反馈', section: '帮助', href: 'contact/contact.html', keywords: 'contact feedback 联系 反馈 建议 bug 问题' },
-    { title: 'Q & A 问卷', section: '主页', href: 'index.html#OpenQA', keywords: '问卷 questionnaire 个性化' }
+    { title: 'Survey 问卷', section: '主页', href: 'index.html#OpenQA', keywords: '问卷 questionnaire 个性化 survey' }
   ];
 
   const normalise = (text) => String(text || '').toLowerCase().replace(/\s+/g, ' ').trim();
@@ -899,7 +899,7 @@
             <li><a href="${url('The Playground/index.html')}">游乐园</a></li>
             <li><a href="${url('practice.html')}">练习区</a></li>
             <li><a href="${url('settings/settings.html#account')}">我的进度</a></li>
-            <li><a href="${url('index.html#OpenQA')}">Q &amp; A 问卷</a></li>
+            <li><a href="${url('index.html#OpenQA')}">Survey 问卷</a></li>
           </ul>
         </div>
         <div>

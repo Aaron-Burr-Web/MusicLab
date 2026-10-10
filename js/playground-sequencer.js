@@ -1030,7 +1030,9 @@
         const block = blockAt(rowIndex, step);
         if (block && block.startStep !== step) return;
         if (row[step]?.classList.contains('active') && samples[rowIndex]) {
-          const duration = theme === 'red' ? undefined : (block?.length || 1) * (15 / master.bpm);
+          const duration = theme === 'red' ? undefined : (theme === 'light-green'
+            ? Math.max(0.06, (block?.length || 1) * (15 / master.bpm))
+            : (block?.length || 1) * (15 / master.bpm));
           AUDIO.play(samples[rowIndex], { at: time, gain: chordGain(activeCount), ...(duration ? { duration, synth: true } : {}) });
         }
       });
