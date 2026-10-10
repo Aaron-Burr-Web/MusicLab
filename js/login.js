@@ -18,27 +18,6 @@
       getPath(),
     );
 
-  const updateActiveNav = () => {
-    const path = getPath();
-    const sectionId = path.match(/\/introduction\//i) ? 'nav2'
-      : path.match(/\/The Playground\//i) ? 'nav3'
-      : path.match(/\/Start Learning\//i) ? 'nav6'
-      : path.match(/\/settings\//i) ? 'nav5'
-      : path.match(/\/login\//i) ? 'nav4'
-      : path.match(/\/contact\//i) ? null
-      : 'nav1';
-
-    document.querySelectorAll('.nav li').forEach((item) => {
-      const isActive = item.id === sectionId;
-      const link = item.querySelector('a');
-
-      item.classList.toggle("active", isActive);
-      link?.classList.toggle("active", isActive);
-      if (isActive) link?.setAttribute("aria-current", "page");
-      else link?.removeAttribute("aria-current");
-    });
-  };
-
   const getLoginPageHref = () => {
     const path = getPath();
     if (/\/login\//i.test(path)) return "login.html";
@@ -97,11 +76,9 @@
     root.style.setProperty("--mx", "50%");
     root.style.setProperty("--my", "50%");
     updateLoginNav();
-    updateActiveNav();
   });
   window.addEventListener("storage", updateLoginNav);
   window.addEventListener("musiclab:auth", updateLoginNav);
 
   updateLoginNav();
-  updateActiveNav();
 })();

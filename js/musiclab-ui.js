@@ -303,30 +303,17 @@
   /* ------------------------------------------------------------------ */
   // 单一数据源：左侧目录、进度卡片、搜索索引都从这里生成
   const LESSONS = [
-    { key: 'index', title: '开始音乐之旅', file: 'index.html', group: '开始音乐之旅',
-      sections: [{ title: '引入', hash: 'learningSubtitle' }] },
     { key: 'beat', title: '节拍和拍子', file: 'beat.html', group: '节奏基础',
       sections: [{ title: '节拍和拍子', hash: 'rhythm-basics' }, { title: '小试一下', hash: 'try-it' }] },
     { key: 'beat-instruments', title: '乐器介绍', file: 'beat-instruments.html', group: '节奏基础',
       sections: [{ title: '乐器介绍', hash: 'instrument-introductions' }] },
-    { key: 'beat-we-will-rock-you', title: '示例：We Will Rock You', file: 'beat-we-will-rock-you.html', group: '节奏基础',
-      sections: [{ title: '歌曲中的节奏', hash: 'song-rhythm-example' }] },
     { key: 'beat-track', title: 'Beat 音轨', file: 'beat-track.html', group: '节奏基础',
       sections: [{ title: '在乐曲中', hash: 'in-song' }, { title: 'Beat 音轨', hash: 'beat-track' }] },
-    { key: 'pitches', title: '音符与记谱（一）：音名与键盘', file: 'pitches.html', group: '音符与记谱',
-      sections: [
-        { title: '音符与记谱', hash: 'pitch-basics' }, { title: '音名与唱名', hash: 'note-names' },
-        { title: '钢琴键盘', hash: 'piano-keyboard' }
-      ] },
     { key: 'pitches-twinkle', title: '示例：小星星', file: 'pitches-Twinkle.html', group: '音符与记谱',
       sections: [{ title: '小星星旋律', hash: 'twinkle-melody-example' }] },
-    { key: 'pitches-melodies', title: '音符与记谱（三）：Melodies 音轨', file: 'pitches-melodies.html', group: '音符与记谱',
-      sections: [{ title: 'Melodies 音轨', hash: 'melodies-track' }, { title: '旋律句编辑器', hash: 'melody-lab' }] },
     { key: 'pitches-notation', title: '音符与记谱（四）：记谱法入门', file: 'pitches-notation.html', group: '音符与记谱',
       sections: [{ title: '五线谱：音高的坐标', hash: 'staff-reading' }, { title: '音符时值', hash: 'note-values' },
         { title: '旋律音轨中的记谱', hash: 'notation-track' }, { title: '其他记谱记号', hash: 'rests-and-marks' }] },
-    { key: 'chords', title: '音程与和弦（一）：小试一下', file: 'chords.html', group: '音程与和弦',
-      sections: [{ title: '小试一下', hash: 'chord-practice' }] },
     { key: 'chords-intervals', title: '音程与和弦（二）：度与音程', file: 'chords-intervals.html', group: '音程与和弦',
       sections: [{ title: '度与音程', hash: 'intervals' }, { title: '单音听辨测试', hash: 'pitch-test' }] },
     { key: 'chords-scales', title: '音程与和弦（三）：音阶', file: 'chords-scales.html', group: '音程与和弦',
@@ -335,8 +322,6 @@
       sections: [{ title: '和弦', hash: 'chords' }, { title: '和弦听辨测试', hash: 'chord-test' }] },
     { key: 'chords-progressions', title: '音程与和弦（五）：简单和弦进行', file: 'chords-progressions.html', group: '音程与和弦',
       sections: [{ title: '简单和弦进行', hash: 'progressions' }] },
-    { key: 'tones', title: '调式基础（一）：引入', file: 'tones.html', group: '调式基础',
-      sections: [{ title: '调式与音阶', hash: 'mode-basics' }, { title: '调式和弦音轨', hash: 'mode-chord-track' }] },
     { key: 'tones-major-minor', title: '调式基础（二）：自然大调与小调', file: 'tones-major-minor.html', group: '调式基础',
       sections: [{ title: '自然大调', hash: 'major-scale' }, { title: '自然小调', hash: 'minor-scale' }, { title: '和声小调与旋律小调', hash: 'harmonic-melodic-minor' }] },
     { key: 'tones-common-modes', title: '调式基础（三）：其他常用调式', file: 'tones-common-modes.html', group: '调式基础',
@@ -728,10 +713,13 @@
     }
     const currentPage = pagePath.split('/').pop() || 'index.html';
     const onPracticePage = document.body?.classList.contains('practice-page') || currentPage.toLowerCase() === 'practice.html';
+    const sectionNavId = pagePath.match(/\/(introduction|Start Learning|The Playground|settings|login|contact)\//i)?.[1];
+    const sectionNav = { introduction: 'nav2', 'Start Learning': 'nav6', 'The Playground': 'nav3', settings: 'nav5', login: 'nav4' };
     nav.querySelectorAll('a').forEach((link) => {
-      const linkPage = new URL(link.href, window.location.href).pathname.split('/').pop() || 'index.html';
+      const linkPath = decodeURIComponent(new URL(link.href, window.location.href).pathname);
       const isPractice = link.closest('[data-practice-link]') && onPracticePage;
-      const isCurrentPage = !onPracticePage && linkPage.toLowerCase() === currentPage.toLowerCase();
+      const isCurrentSection = sectionNavId && link.closest(`#${sectionNav[sectionNavId]}`);
+      const isCurrentPage = !onPracticePage && (isCurrentSection || (!sectionNavId && linkPath === pagePath));
       link.classList.toggle('active', Boolean(isPractice || isCurrentPage));
       if (isPractice || isCurrentPage) {
         link.classList.add('active');

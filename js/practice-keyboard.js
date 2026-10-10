@@ -5,11 +5,19 @@
   const keyboard = document.querySelector('[data-practice-keyboard]');
   if (!keyboard) return;
   const AUDIO = window.MusicLabAudio || null;
-  const audioRoot = new URL('../audio/piano/', document.baseURI);
-  const sampleNames = { 'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab', 'A#': 'Bb' };
+  const audioRoot = new URL('audio/piano/', document.baseURI);
+  const noteToSample = {
+    C2: 'C2', 'C#2': 'Db2', D2: 'D2', 'D#2': 'Eb2', E2: 'E2', F2: 'F2',
+    'F#2': 'Gb2', G2: 'G2', 'G#2': 'Ab2', A2: 'A2', 'A#2': 'Bb2', B2: 'B2',
+    C3: 'C3', 'C#3': 'Db3', D3: 'D3', 'D#3': 'Eb3', E3: 'E3', F3: 'F3',
+    'F#3': 'Gb3', G3: 'G3', 'G#3': 'Ab3', A3: 'A3', 'A#3': 'Bb3', B3: 'B3',
+    C4: 'C4', 'C#4': 'Db4', D4: 'D4', 'D#4': 'Eb4', E4: 'E4', F4: 'F4',
+    'F#4': 'Gb4', G4: 'G4', 'G#4': 'Ab4', A4: 'A4', 'A#4': 'Bb4', B4: 'B4',
+    C5: 'C5'
+  };
   const sampleSource = (note) => {
-    const sampleNote = note.replace(/^([A-G]#)/, (name) => sampleNames[name]);
-    return new URL(`piano-${sampleNote}.wav`, audioRoot).href;
+    const sampleNote = noteToSample[note];
+    return sampleNote ? new URL(`piano-${sampleNote}.wav`, audioRoot).href : null;
   };
   const naturalNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
   const sharpAfter = { C: 'C#', D: 'D#', F: 'F#', G: 'G#', A: 'A#' };
@@ -74,12 +82,14 @@
     if (!key) return;
     const note = key.dataset.note;
     update(note);
+    const source = sampleSource(note);
+    if (!source) return;
     if (AUDIO) {
       AUDIO.unlock();
-      AUDIO.load(sampleSource(note));
-      AUDIO.play(sampleSource(note), { gain: 0.85, duration: 1.2 });
+      AUDIO.load(source);
+      AUDIO.play(source, { gain: 0.85, duration: 1.2 });
     } else {
-      const voice = new Audio(sampleSource(note));
+      const voice = new Audio(source);
       voice.volume = 0.85;
       voice.play().catch(() => {});
     }
