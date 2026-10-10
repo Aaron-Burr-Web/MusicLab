@@ -47,15 +47,19 @@
 .practice-keyboard {
   overflow-x: auto;
   overflow-y: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: #6b7f93 #26374a;
+  -ms-overflow-style: auto;
   padding: 2px;
   border: 1px solid #26374a;
   border-radius: 8px;
   background: #26374a;
 }
 
-.practice-keyboard::-webkit-scrollbar { display: none; }
+.practice-keyboard::-webkit-scrollbar { height: 10px; }
+.practice-keyboard::-webkit-scrollbar-track { background: #26374a; border-radius: 6px; }
+.practice-keyboard::-webkit-scrollbar-thumb { background: #6b7f93; border: 2px solid #26374a; border-radius: 6px; }
+.practice-keyboard::-webkit-scrollbar-thumb:hover { background: #8fa3b8; }
 
 .practice-keyboard-keys {
   position: relative;
@@ -193,6 +197,18 @@
 :root[data-theme="dark"] .practice-lead,
 :root[data-theme="dark"] .practice-note-hint b { color: #e8edf5 !important; }
 :root[data-theme="dark"] .practice-note-hint { background: #3b2929; border-color: var(--ml-border-strong); }
-:root[data-theme="dark"] .practice-staff { border-color: var(--ml-border-strong); background: #fffdf8; }
-:root[data-theme="dark"] .practice-white-key { background: #202a3a; color: #e8edf5; }
-:root[data-theme="dark"] .practice-white-key.is-c { background: #57441f; }
+:root[data-theme="dark"] .practice-staff { border-color: var(--ml-border-strong); background: #202a3a; }
+:root[data-theme="dark"] .practice-white-key { background: #fffef9; color: #26374a; }
+:root[data-theme="dark"] .practice-white-key.is-c { background: #fff0c8; }
+:root[data-theme="dark"] .practice-intro > p { background: #202a3a; color: var(--ml-text) !important; }
+:root[data-theme="dark"] .practice-keyboard { border-color: #0b101b; background: #0b101b; }
+:root[data-theme="dark"] .practice-black-key { border-color: #05070c; background: linear-gradient(135deg, #111827, #05070c); }
+:root[data-theme="dark"] .practice-note-hint span,
+:root[data-theme="dark"] .practice-note-hint small,
+:root[data-theme="dark"] .practice-note-hint p,
+:root[data-theme="dark"] .practice-note-hint > div:first-child small { color: var(--ml-text-2); }
+:root[data-theme="dark"] .practice-staff-lines line,
+:root[data-theme="dark"] .practice-ledger-lines line,
+:root[data-theme="dark"] .practice-staff-stem,
+:root[data-theme="dark"] .practice-staff-note,
+:root[data-theme="dark"] .practice-staff-accidental { stroke: #e8edf5; fill: #e8edf5; }

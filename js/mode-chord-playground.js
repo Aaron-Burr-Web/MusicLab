@@ -19,7 +19,7 @@
   };
   const pitchClasses = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
   const letters = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-  const sampleNames = new Set(['A3', 'A4', 'Ab3', 'Ab4', 'B3', 'B4', 'Bb3', 'Bb4', 'C3', 'C4', 'C5', 'D3', 'D4', 'Db3', 'Db4', 'E3', 'E4', 'Eb3', 'Eb4', 'F3', 'F4', 'G3', 'G4', 'Gb3', 'Gb4']);
+  const sampleNames = new Set(['A1', 'A2', 'A3', 'Ab1', 'Ab2', 'Ab3', 'B1', 'B2', 'B3', 'Bb1', 'Bb2', 'Bb3', 'C1', 'C2', 'C3', 'D1', 'D2', 'D3', 'Db1', 'Db2', 'Db3', 'E1', 'E2', 'E3', 'Eb1', 'Eb2', 'Eb3', 'F1', 'F2', 'F3', 'G1', 'G2', 'G3', 'Gb1', 'Gb2', 'Gb3']);
   const flats = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
   const state = { key: 'C', mode: 'Ionian', bpm: 60, cells: Array.from({ length: ROW_COUNT }, () => new Set()), clock: null, playing: false };
   const exampleNotes = [[15, 1], [15, 5], [15, 9], [15, 16], [15, 17], [15, 19], [13, 21], [15, 23], [12, 24], [12, 31], [13, 32]];
@@ -57,12 +57,11 @@
 
   const midiFor = (name, octave) => 12 * (octave + 1) + (pitchClasses[name] || 0);
   const sampleForMidi = (midi) => {
-    let value = midi;
-    while (value > 72) value -= 12;
-    while (value < 48) value += 12;
-    const name = `${flats[((value % 12) + 12) % 12]}${Math.floor(value / 12) - 1}`;
+    if (midi < 24 || midi > 59) return null;
+    const name = `${flats[midi % 12]}${Math.floor(midi / 12) - 1}`;
     return sampleNames.has(name) ? `../audio/piano/sources/source-piano-${name}.wav` : null;
   };
+  const nameForMidi = (midi) => `${flats[midi % 12]}${Math.floor(midi / 12) - 1}`;
   const scaleNotes = () => {
     const intervals = modes[state.mode];
     return intervals.map((interval, degree) => {
@@ -76,11 +75,11 @@
   const rows = () => {
     const scale = scaleNotes();
     const intervals = modes[state.mode];
-    const root = midiFor(state.key, 3);
+    const root = midiFor(state.key, 1);
     return Array.from({ length: 15 }, (_, index) => {
       const degree = index % 7;
       const midi = root + intervals[degree] + 12 * Math.floor(index / 7);
-      return { label: scale[degree], src: sampleForMidi(midi) };
+      return { label: nameForMidi(midi), src: sampleForMidi(midi) };
     }).reverse();
   };
 
@@ -300,7 +299,7 @@
       if (block) removeBlock(block);
       else state.cells[row].has(step) ? state.cells[row].delete(step) : state.cells[row].add(step);
       updateBlockClasses();
-      if (!state.playing && state.cells[row].has(step) && currentRows[row].src) { audio.unlock(); audio.play(currentRows[row].src, { gain: 0.55, duration: 15 / state.bpm, synth: true }); }
+      if (!state.playing && state.cells[row].has(step) && currentRows[row].src) { audio.unlock(); audio.play(currentRows[row].src, { gain: 0.55, duration: Math.max(0.06, 15 / state.bpm), synth: true }); }
       updatePracticeFeedback();
     }));
     cells.forEach((cell) => {
@@ -335,7 +334,7 @@
     currentRows.forEach((row, index) => {
       const block = blockAt(index, step);
       const isStart = block ? block.start === step : state.cells[index].has(step);
-      if (isStart && row.src) audio.play(row.src, { at, gain: 0.55, duration: (15 / state.bpm) * (block?.length || 1), synth: true });
+      if (isStart && row.src) audio.play(row.src, { at, gain: 0.55, duration: Math.max(0.06, (15 / state.bpm) * (block?.length || 1)), synth: true });
     });
     cells.forEach((cell) => cell.classList.toggle('is-current', Number(cell.dataset.step) === step));
     paintPlayhead(step);

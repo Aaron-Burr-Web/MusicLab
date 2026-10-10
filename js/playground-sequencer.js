@@ -573,8 +573,8 @@
     return displayScale.slice(0, 15).reverse();
   };
 
-  /* ---------- 音名 → 钢琴采样（audio/piano 只有 C3–C5，且升号以降号命名） ---------- */
-  const SAMPLE_NAMES = new Set(['A3', 'A4', 'Ab3', 'Ab4', 'B3', 'B4', 'Bb3', 'Bb4', 'C3', 'C4', 'C5', 'D3', 'D4', 'Db3', 'Db4', 'E3', 'E4', 'Eb3', 'Eb4', 'F3', 'F4', 'G3', 'G4', 'Gb3', 'Gb4']);
+  /* ---------- 音名 → 钢琴采样（audio/piano 为 C3–B5，升号以降号命名） ---------- */
+  const SAMPLE_NAMES = new Set(['A3', 'A4', 'A5', 'Ab3', 'Ab4', 'Ab5', 'B3', 'B4', 'B5', 'Bb3', 'Bb4', 'Bb5', 'C3', 'C4', 'C5', 'D3', 'D4', 'D5', 'Db3', 'Db4', 'Db5', 'E3', 'E4', 'E5', 'Eb3', 'Eb4', 'Eb5', 'F3', 'F4', 'F5', 'G3', 'G4', 'G5', 'Gb3', 'Gb4', 'Gb5']);
   const NOTE_NAMES_FLAT = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
   const noteToMidi = (name, octave) => {
     const letter = name[0];
@@ -583,16 +583,21 @@
     if (acc === '#') pc += 1; else if (acc === '##') pc += 2; else if (acc === 'b') pc -= 1; else if (acc === 'bb') pc -= 2;
     return 12 * (octave + 1) + pc;
   };
-  const midiToSample = (midi) => {
+  const midiToSample = (midi, isBass = false) => {
+    if (isBass) {
+      if (midi < 24 || midi > 59) return null;
+      const bassName = `${NOTE_NAMES_FLAT[midi % 12]}${Math.floor(midi / 12) - 1}`;
+      return `../audio/piano/sources/source-piano-${bassName}.wav`;
+    }
     let m = midi;
     // 超出采样范围时按八度折回
-    while (m > 72) m -= 12;   // C5 = 72
+    while (m > 83) m -= 12;   // B5 = 83
     while (m < 48) m += 12;   // C3 = 48
     const name = `${NOTE_NAMES_FLAT[m % 12]}${Math.floor(m / 12) - 1}`;
     return SAMPLE_NAMES.has(name) ? `../audio/piano/sources/source-piano-${name}.wav` : null;
   };
   // 每一行对应的采样：行 0 在最上面（最高音）。baseOctave 是最底行根音的八度。
-  const rowSamples = (keyName, modeName, baseOctave) => {
+  const rowSamples = (keyName, modeName, baseOctave, isBass = false) => {
     const scale = getScaleNotes(keyName, modeName);
     const rootMidi = noteToMidi(keyName, baseOctave);
     const intervals = modeIntervals[modeName] || modeIntervals.Ionian;
@@ -601,7 +606,7 @@
       const degree = i % 7;
       const octaveShift = Math.floor(i / 7);
       const midi = rootMidi + intervals[degree] + 12 * octaveShift;
-      ascending.push(midiToSample(midi));
+      ascending.push(midiToSample(midi, isBass));
     }
     void scale;
     return ascending.reverse();
@@ -806,7 +811,7 @@
     const canMergeCells = theme !== 'red';
     const blockLengths = new Map();
     const drumLabels = drumTracks.map(([label]) => label);
-    let samples = theme === 'red' ? drumTracks.map(([, src]) => src) : rowSamples(state.key, state.mode, baseOctave);
+    let samples = theme === 'red' ? drumTracks.map(([, src]) => src) : rowSamples(state.key, state.mode, baseOctave, id === 'bass');
     AUDIO.load(samples.filter(Boolean));
     const gain = theme === 'red' ? 1 : theme === 'yellow' ? 0.55 : theme === 'light-green' ? 0.9 : 0.8;
 
@@ -1012,7 +1017,7 @@
         const activeCount = theme === 'yellow'
           ? cellMatrix.reduce((count, row) => count + (row[step]?.classList.contains('active') ? 1 : 0), 0)
           : 1;
-        AUDIO.play(src, { gain: chordGain(activeCount), ...(theme === 'red' ? {} : { duration: 15 / master.bpm, synth: true }) });
+        AUDIO.play(src, { gain: chordGain(activeCount), ...(theme === 'red' ? {} : { duration: theme === 'light-green' ? Math.max(0.06, 15 / master.bpm) : 15 / master.bpm, synth: true }) });
       }
     };
 
@@ -1165,7 +1170,7 @@
       state.mode = mode || state.mode;
       keyButtons.forEach((b) => b.classList.toggle('active', b.dataset.key === state.key));
       modeButtons.forEach((b) => b.classList.toggle('active', b.dataset.mode === state.mode));
-      samples = rowSamples(state.key, state.mode, baseOctave);
+      samples = rowSamples(state.key, state.mode, baseOctave, id === 'bass');
       AUDIO.load(samples.filter(Boolean));
       renderGrid(true);   // 换调式时保留已点亮的位置（音高随行变化）
       updateStatus();
@@ -1188,7 +1193,7 @@
         state.mode = data.mode || 'Ionian';
         keyButtons.forEach((b) => b.classList.toggle('active', b.dataset.key === state.key));
         modeButtons.forEach((b) => b.classList.toggle('active', b.dataset.mode === state.mode));
-        samples = rowSamples(state.key, state.mode, baseOctave);
+        samples = rowSamples(state.key, state.mode, baseOctave, id === 'bass');
         AUDIO.load(samples.filter(Boolean));
         renderGrid(false);
         updateStatus();
@@ -1218,7 +1223,7 @@
   [
     { id: 'rhythm', allowScaleControls: false, theme: 'red', title: '节奏' },
     { id: 'chords', allowScaleControls: true, theme: 'yellow', title: '和弦', baseOctave: 3 },
-    { id: 'bass', allowScaleControls: true, theme: 'light-green', title: '贝斯', baseOctave: 3 },
+    { id: 'bass', allowScaleControls: true, theme: 'light-green', title: '贝斯 · C1-B3', baseOctave: 1 },
     { id: 'melody', allowScaleControls: true, theme: 'blue', title: '旋律', baseOctave: 3 }
   ].forEach((cfg) => {
     const p = createTrackPanel(cfg);

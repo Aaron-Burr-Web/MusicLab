@@ -12,7 +12,7 @@
  *   interval —— 放两个音，选出它们的音程（度数）
  *   chord    —— 同时放三个音，选出和弦性质（大三 / 小三 / 减 / 增 / 属七）
  *
- * 音源使用 sources 中的钢琴采样；有 MusicLabAudio 时走它（调度更准），
+ * 音源使用 audio/piano 中的钢琴采样；有 MusicLabAudio 时走它（调度更准），
  * 没有则回退到 <audio>。每轮结束给出正确率，可以立即再来一轮。
  */
 (() => {
@@ -25,7 +25,7 @@
   const AUDIO = window.MusicLabAudio || null;
   const esc = (ML && ML.escapeHTML) || ((v) => String(v));
   const scriptUrl = [...document.scripts].find((script) => script.src.endsWith('/ear-training.js'))?.src || document.baseURI;
-  const pianoAudioRoot = new URL('../audio/piano/sources/', scriptUrl);
+  const pianoAudioRoot = new URL('../audio/piano/', scriptUrl);
 
   /* ---------------- 音源 ---------------- */
   // 采样覆盖 C2–C5，且黑键以降号命名
@@ -35,11 +35,11 @@
   const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
   const midiToName = (midi) => `${FLAT_NAMES[((midi % 12) + 12) % 12]}${Math.floor(midi / 12) - 1}`;
   const chordSampleFiles = {
-    C4: 'source-piano-C4.wav',
-    Db4: 'source-piano-Db4.wav', D4: 'source-piano-D4.wav', Eb4: 'source-piano-Eb4.wav',
-    E4: 'source-piano-E4.wav', F4: 'source-piano-F4.wav', Gb4: 'source-piano-Gb4.wav',
-    G4: 'source-piano-G4.wav', Ab4: 'source-piano-Ab4.wav', A4: 'source-piano-A4.wav',
-    Bb4: 'source-piano-Bb4.wav', B4: 'source-piano-B4.wav'
+    C4: 'piano-C4.wav',
+    Db4: 'piano-Db4.wav', D4: 'piano-D4.wav', Eb4: 'piano-Eb4.wav',
+    E4: 'piano-E4.wav', F4: 'piano-F4.wav', Gb4: 'piano-Gb4.wav',
+    G4: 'piano-G4.wav', Ab4: 'piano-Ab4.wav', A4: 'piano-A4.wav',
+    Bb4: 'piano-Bb4.wav', B4: 'piano-B4.wav'
   };
   const chordSrcOf = (midi) => {
     const file = chordSampleFiles[`${FLAT_NAMES[((midi % 12) + 12) % 12]}4`];
@@ -47,7 +47,7 @@
   };
   const srcOf = (midi) => {
     const name = midiToName(midi);
-    return SAMPLES.has(name) ? new URL(`source-piano-${name}.wav`, pianoAudioRoot).href : null;
+    return SAMPLES.has(name) ? new URL(`piano-${name}.wav`, pianoAudioRoot).href : null;
   };
 
   const fallbackPool = {};

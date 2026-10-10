@@ -727,13 +727,16 @@
       else nav.appendChild(practiceItem);
     }
     const currentPage = pagePath.split('/').pop() || 'index.html';
+    const onPracticePage = document.body?.classList.contains('practice-page') || currentPage.toLowerCase() === 'practice.html';
     nav.querySelectorAll('a').forEach((link) => {
       const linkPage = new URL(link.href, window.location.href).pathname.split('/').pop() || 'index.html';
-      const isPractice = link.closest('[data-practice-link]') && currentPage.toLowerCase() === 'practice.html';
-      if (isPractice || linkPage.toLowerCase() === currentPage.toLowerCase()) {
+      const isPractice = link.closest('[data-practice-link]') && onPracticePage;
+      const isCurrentPage = !onPracticePage && linkPage.toLowerCase() === currentPage.toLowerCase();
+      link.classList.toggle('active', Boolean(isPractice || isCurrentPage));
+      if (isPractice || isCurrentPage) {
         link.classList.add('active');
         link.setAttribute('aria-current', 'page');
-      }
+      } else link.removeAttribute('aria-current');
     });
 
     const tools = document.createElement('div');
@@ -931,8 +934,9 @@
     document.body.appendChild(bar);
 
     let syncing = false;
-    const pageScrollLeft = () => Math.max(pageRoot.scrollLeft, body.scrollLeft);
+    const pageScrollLeft = () => Math.max(window.scrollX || 0, pageRoot.scrollLeft || 0, body.scrollLeft || 0);
     const setPageScrollLeft = (left) => {
+      window.scrollTo({ left, top: window.scrollY || 0, behavior: 'auto' });
       pageRoot.scrollLeft = left;
       body.scrollLeft = left;
     };

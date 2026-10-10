@@ -18,7 +18,8 @@
 
   const updateActiveNav = () => {
     const path = getPath();
-    const sectionId = path.match(/\/introduction\//i) ? 'nav2'
+    const sectionId = path.match(/\/practice\.html$/i) ? null
+      : path.match(/\/introduction\//i) ? 'nav2'
       : path.match(/\/The Playground\//i) ? 'nav3'
       : path.match(/\/Start Learning\//i) ? 'nav6'
       : path.match(/\/settings\//i) ? 'nav5'
@@ -27,7 +28,8 @@
       : 'nav1';
 
     document.querySelectorAll('.nav li').forEach((item) => {
-      const isActive = item.id === sectionId;
+      const isPracticePage = path.match(/\/practice\.html$/i);
+      const isActive = item.id === sectionId || (isPracticePage && item.matches('[data-practice-link]'));
       const link = item.querySelector('a');
 
       item.classList.toggle('active', isActive);

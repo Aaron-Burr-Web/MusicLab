@@ -19,6 +19,11 @@
     '我们将跳过简单的基础学习，直接开始实操与学习结合环节。',
     '您已经有了雄厚的乐理基础，推荐您直接到游乐园界面开始DAW制作！'
   ];
+  const firstQuestionDestinations = [
+    'Start Learning/index.html',
+    'Start Learning/chords.html',
+    'The Playground/index.html'
+  ];
 
   const ensureStyles = () => {
     if (document.getElementById('musiclab-qa-modal-styles')) return;
@@ -275,10 +280,10 @@
             const ML = window.MusicLab;
             if (ML && ML.profile) {
               ML.profile.save({ level: firstQuestionChoice || 0, interest: answers[1], goal: answers[2] });
-              startLink.href = 'Start Learning/index.html';
-              startLink.textContent = '开始学习';
               ML.toast(ML.auth.isLoggedIn() ? '问卷结果已保存到你的账号' : '问卷结果已保存，登录后会带入账号', { type: 'success' });
             }
+            startLink.href = firstQuestionDestinations[firstQuestionChoice] || firstQuestionDestinations[0];
+            startLink.textContent = '开始学习';
             resultNode.textContent = firstQuestionResultMessages[firstQuestionChoice] || firstQuestionResultMessages[0];
             resultNode.style.display = 'block';
             foot.style.display = 'flex';

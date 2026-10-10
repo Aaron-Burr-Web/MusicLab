@@ -52,7 +52,8 @@
 
 .learning-content-panel {
   width: min(900px, calc(100% - 24px));
-  margin-left: 8px;
+  margin-left: auto;
+  margin-right: auto;
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(17, 17, 17, 0.08);
   border-radius: 20px;
@@ -275,24 +276,45 @@
 .hero-bg {
   position: absolute;
   inset: 0;
-  width: 100%;
+  width: auto;
   height: 100%;
+  min-width: 100%;
   object-fit: cover;
-  filter: brightness(1) saturate(1) contrast(1.05);
+  filter: brightness(1) saturate(1) contrast(1.05) blur(0.5px);
   display: block;
-  opacity: 0.7;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+
+.hero-bg.is-active {
+  opacity: 1;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-media {
+  overflow: hidden;
 }
 
 .hero-overlay {
   position: relative;
-  z-index: 1;
-  min-height: 280px;
+  z-index: 2;
+  height: 100%;
+  min-height: 504px;
   display: flex;
   align-items: flex-end;
+  box-sizing: border-box;
   padding: 32px 28px;
   background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(230,236,255,0.7));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg {
+    transition: none;
+  }
 }
 
 .hero-overlay h1 {
@@ -304,7 +326,7 @@
 .hero-panel {
   position: relative;
   overflow: hidden;
-  min-height: 280px;
+  min-height: 504px;
   border-radius: 24px;
   background: linear-gradient(145deg, #f8faff 0%, #eefaf8 36%, #ffffff 100%);
   border: none;
@@ -502,12 +524,6 @@
 .nav a:focus-visible {
   outline: 2px solid #777777;
   outline-offset: 2px;
-}
-
-.nav a.active {
-  color: #444444;
-  background: rgba(100, 100, 100, 0.16);
-  font-weight: 600;
 }
 
 .open-QA{

@@ -17,6 +17,7 @@
     const match = String(note).match(/^([A-G](?:b)?)(\d)$/);
     if (!match) return '';
     if (isIntervalLesson) return `../audio/piano/sources/source-piano-${note}.wav`;
+    if (Number(match[2]) <= 3) return `../audio/piano/sources/source-piano-${note}.wav`;
     const file = sampleFiles[`${match[1]}4`];
     return file ? `../audio/piano/sources/${file}` : '';
   };
@@ -44,7 +45,7 @@
     const notes = button.dataset.chordAudition.split(',').filter(Boolean);
     audio.load(notes.map(source));
     button.addEventListener('click', () => {
-      playNotes(notes, { delay: intervalMode === 'melody' ? 0.3 : 0, controls: document.querySelectorAll('.chord-audition, [data-interval-keyboard] [data-note]') });
+      playNotes(notes, { delay: isIntervalLesson && intervalMode === 'melody' ? 0.3 : 0, controls: document.querySelectorAll('.chord-audition, [data-interval-keyboard] [data-note]') });
       button.classList.remove('is-playing');
       void button.offsetWidth;
       button.classList.add('is-playing');
@@ -101,8 +102,10 @@
     const octaveRows = trackLab.dataset.chordTrackRange === 'g4-c3'
       ? ['G4', 'Gb4', 'F4', 'E4', 'Eb4', 'D4', 'Db4', 'C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3']
       : ['C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3'];
-    const scaleNotes = isTonesScaleTrack || isModesScaleTrack
+    const scaleNotes = isTonesScaleTrack
       ? ['B4', 'Bb4', 'A4', 'Ab4', 'G4', 'Gb4', 'F4', 'E4', 'Eb4', 'D4', 'Db4', 'C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3']
+      : isModesScaleTrack
+        ? ['B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3', 'B2', 'Bb2', 'A2', 'Ab2', 'G2', 'Gb2', 'F2', 'E2', 'Eb2', 'D2', 'Db2', 'C2', 'B1', 'Bb1', 'A1', 'Ab1', 'G1', 'Gb1', 'F1', 'E1', 'Eb1', 'D1', 'Db1', 'C1']
       : isChordsOnlyTrack || isChords32Track
       ? ['C5', 'B4', 'Bb4', 'A4', 'Ab4', 'G4', 'Gb4', 'F4', 'E4', 'Eb4', 'D4', 'Db4', 'C4', 'B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3']
       : isProgressionTrack
@@ -110,7 +113,7 @@
       : (isOctaveTrack ? octaveRows : ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3']);
     const scaleRows = scaleNotes
       .map((note) => [note, [note]]);
-    const bassRows = ['C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3']
+    const bassRows = ['B3', 'Bb3', 'A3', 'Ab3', 'G3', 'Gb3', 'F3', 'E3', 'Eb3', 'D3', 'Db3', 'C3', 'B2', 'Bb2', 'A2', 'Ab2', 'G2', 'Gb2', 'F2', 'E2', 'Eb2', 'D2', 'Db2', 'C2', 'B1', 'Bb1', 'A1', 'Ab1', 'G1', 'Gb1', 'F1', 'E1', 'Eb1', 'D1', 'Db1', 'C1']
       .map((note) => [note, [note]]);
     const modeIntervals = {
       Ionian: [0, 2, 4, 5, 7, 9, 11], Dorian: [0, 2, 3, 5, 7, 9, 10],
@@ -121,9 +124,9 @@
     const modePitchClasses = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
     const modeLetters = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
     const modeFlats = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
-    const modeRowsFor = (key, mode) => {
+    const modeRowsFor = (key, mode, baseOctave = 4) => {
       const intervals = modeIntervals[mode];
-      const root = 12 * 4 + modePitchClasses[key];
+      const root = 12 * (baseOctave + 1) + modePitchClasses[key];
       return Array.from({ length: 15 }, (_, index) => {
         const degree = index % 7;
         const midi = root + intervals[degree] + 12 * Math.floor(index / 7);
@@ -133,7 +136,7 @@
     };
 
     const createTrack = ({ title, theme, rows, gain, isChord = false, defaultBpm = 96, modeSelectable = false }) => {
-      let trackRows = modeSelectable ? modeRowsFor(sharedTransport.key, sharedTransport.mode) : rows;
+      let trackRows = modeSelectable ? modeRowsFor(sharedTransport.key, sharedTransport.mode, theme === 'is-bass' ? 1 : 4) : rows;
       const state = { bpm: defaultBpm, pattern: Array.from({ length: trackRows.length }, () => new Set()), blocks: new Map(), clock: null, playing: false, render: null };
       if (sharedTransport) {
         state.bpm = sharedTransport.bpm;
@@ -143,6 +146,7 @@
       panel.className = `chord-sequencer-panel ${theme}${STEPS === 4 ? ' is-four-step' : ''}${STEPS === 16 ? ' is-16-step' : ''}${STEPS === 32 ? ' is-32-step' : ''}`;
       audio.load(trackRows.flatMap(([, notes]) => notes.map(source)));
       const chordGain = (count) => isChord ? gain / Math.sqrt(Math.max(1, count)) : gain;
+      const noteDuration = (length = 1) => theme === 'is-bass' ? Math.max(0.06, (15 / state.bpm) * length) : (15 / state.bpm) * length;
       const activeCountAt = (step) => state.pattern.reduce((count, row) => count + (row.has(step) ? 1 : 0), 0);
 
       const blockKey = (row, start) => `${row}:${start}`;
@@ -271,7 +275,7 @@
         trackRows.forEach(([, notes], rowIndex) => {
           const block = blockAt(rowIndex, step);
           if (block && block.start !== step) return;
-          if (state.pattern[rowIndex].has(step)) notes.forEach((note) => audio.play(source(note), { at, gain: chordGain(activeCountAt(step)), duration: (15 / state.bpm) * (block?.length || 1), synth: true }));
+          if (state.pattern[rowIndex].has(step)) notes.forEach((note) => audio.play(source(note), { at, gain: chordGain(activeCountAt(step)), duration: noteDuration(block?.length || 1), synth: true }));
         });
         paint(step);
       };
@@ -328,7 +332,7 @@
           const block = blockAt(rowIndex, step);
           if (block) {
             audio.unlock();
-            trackRows[rowIndex][1].forEach((note) => audio.play(source(note), { gain: chordGain(activeCountAt(step)), duration: 15 / state.bpm, synth: true }));
+            trackRows[rowIndex][1].forEach((note) => audio.play(source(note), { gain: chordGain(activeCountAt(step)), duration: noteDuration(), synth: true }));
             removeBlock(block);
             return;
           }
@@ -336,7 +340,7 @@
           updateCell(rowIndex, step);
           if (!state.playing && row.has(step)) {
             audio.unlock();
-            trackRows[rowIndex][1].forEach((note) => audio.play(source(note), { gain: chordGain(activeCountAt(step)), duration: 15 / state.bpm, synth: true }));
+            trackRows[rowIndex][1].forEach((note) => audio.play(source(note), { gain: chordGain(activeCountAt(step)), duration: noteDuration(), synth: true }));
           }
         }));
         panel.querySelectorAll('.chord-sequencer-cell').forEach((cell) => {
@@ -354,7 +358,7 @@
 
       if (modeSelectable) {
         sharedTransport.modeListeners.push((key, mode) => {
-          trackRows = modeRowsFor(key, mode);
+          trackRows = modeRowsFor(key, mode, theme === 'is-bass' ? 1 : 4);
           audio.load(trackRows.flatMap(([, notes]) => notes.map(source)));
           render();
         });
@@ -363,13 +367,18 @@
       const fillProgression = (groups, button) => {
         state.blocks.clear();
         state.pattern.forEach((row) => row.clear());
+        const finalLength = Number(button?.dataset?.chordFinalLength || 0);
         const mergeLast = Number(button?.dataset?.chordMergeLast || 0);
-        const groupsToFill = mergeLast && groups.length >= 2
+        const groupsToFill = finalLength && groups.length
+          ? groups
+          : mergeLast && groups.length >= 2
           ? [...groups.slice(0, -2), [...new Set(groups.at(-2).concat(groups.at(-1)))]]
           : groups;
         groupsToFill.forEach((group, groupIndex) => {
           const start = groupIndex * 4;
-          const length = groupIndex === groupsToFill.length - 1 && mergeLast ? mergeLast : 4;
+          const length = groupIndex === groupsToFill.length - 1 && (finalLength || mergeLast)
+            ? finalLength || mergeLast
+            : 4;
           group.forEach((note) => {
             const rowIndex = trackRows.findIndex(([label]) => label === note);
             if (rowIndex >= 0) paintBlock(rowIndex, start, length);
@@ -398,7 +407,7 @@
     } else if (isTonesScaleTrack || isModesScaleTrack) {
       chordTrack = createTrack({ title: isModesScaleTrack ? '七种常见调式编写 · C3-B4 · 16 steps' : '自然大小调编写 · C3-B4 · 16 steps', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true, defaultBpm: 72 });
     } else if (isChordsOnlyTrack || isChords32Track) {
-      chordTrack = createTrack({ title: isChords32Track ? '和弦连接 · C3-C5 · 32 steps' : '和弦', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true });
+      chordTrack = createTrack({ title: isChords32Track ? '和弦连接 · C3-C5 · 32 steps' : '和弦', theme: 'is-chords', rows: scaleRows, gain: 0.5, isChord: true, defaultBpm: isChords32Track ? 40 : 96 });
     } else if (isBassExampleTrack) {
       chordTrack = createTrack({ title: '贝斯', theme: 'is-bass', rows: bassRows, gain: 0.78, defaultBpm: 80 });
     } else if (isBassSuiteTrack) {
@@ -409,11 +418,12 @@
       createTrack({ title: 'Basslines 音轨', theme: 'is-bass', rows: scaleRows, gain: 0.78 });
     }
 
-    if (progressionTrack) {
+    if (progressionTrack || (isChords32Track && chordTrack)) {
+      const exampleTrack = progressionTrack || chordTrack;
       document.querySelectorAll('[data-chord-progression]').forEach((button) => {
         button.addEventListener('click', () => {
           const groups = button.dataset.chordProgression.split('|').map((group) => group.split(',').filter(Boolean));
-          progressionTrack.fillProgression(groups, button);
+          exampleTrack.fillProgression(groups, button);
         });
       });
     }

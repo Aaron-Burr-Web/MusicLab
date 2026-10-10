@@ -84,6 +84,68 @@
     return source;
   };
 
+  const polishBuffer = (context, buffer) => {
+    const sampleRate = buffer.sampleRate;
+    const channelCount = buffer.numberOfChannels;
+    const length = buffer.length;
+    const sharpenAmount = 0.14;
+    const lowpassCoefficient = Math.exp(-2 * Math.PI * 3200 / sampleRate);
+    const processedChannels = [];
+    let peak = 0;
+
+    for (let channelIndex = 0; channelIndex < channelCount; channelIndex += 1) {
+      const source = buffer.getChannelData(channelIndex);
+      const sharpened = new Float32Array(length);
+      let low = source[0] || 0;
+      for (let index = 0; index < length; index += 1) {
+        const sample = source[index];
+        low = lowpassCoefficient * low + (1 - lowpassCoefficient) * sample;
+        const value = sample + (sample - low) * sharpenAmount;
+        sharpened[index] = value;
+        peak = Math.max(peak, Math.abs(value));
+      }
+
+      const tailStart = Math.floor(length * 0.92);
+      let tailEnergy = 0;
+      let tailSamples = 0;
+      for (let index = tailStart; index < length; index += 1) {
+        tailEnergy += sharpened[index] * sharpened[index];
+        tailSamples += 1;
+      }
+      const noiseFloor = Math.sqrt(tailEnergy / Math.max(1, tailSamples));
+      const noiseThreshold = Math.max(0.0012, noiseFloor * 2.2);
+      const attackCoefficient = 1 - Math.exp(-1 / Math.max(1, sampleRate * 0.0015));
+      const releaseCoefficient = 1 - Math.exp(-1 / Math.max(1, sampleRate * 0.012));
+      const denoised = new Float32Array(length);
+      let noiseGain = 1;
+      for (let index = 0; index < length; index += 1) {
+        const sample = sharpened[index];
+        const magnitude = Math.abs(sample);
+        const targetGain = magnitude <= noiseThreshold
+          ? 0.28
+          : Math.min(1, 0.28 + (magnitude - noiseThreshold) / noiseThreshold * 0.72);
+        const coefficient = targetGain > noiseGain ? attackCoefficient : releaseCoefficient;
+        noiseGain += (targetGain - noiseGain) * coefficient;
+        const value = sample * noiseGain;
+        denoised[index] = value;
+        peak = Math.max(peak, Math.abs(value));
+      }
+      processedChannels.push(denoised);
+    }
+
+    const output = context.createBuffer(channelCount, length, sampleRate);
+    const outputScale = peak > 0.92 ? 0.92 / peak : 1;
+    processedChannels.forEach((channel, channelIndex) => {
+      if (outputScale === 1) output.copyToChannel(channel, channelIndex);
+      else {
+        const scaled = new Float32Array(length);
+        for (let index = 0; index < length; index += 1) scaled[index] = channel[index] * outputScale;
+        output.copyToChannel(scaled, channelIndex);
+      }
+    });
+    return output;
+  };
+
   const prewarmBuffer = (src, buffer) => {
     if (bufferPrewarmed.has(src) || engine.mode !== 'webaudio') return Promise.resolve();
     const context = getContext();
@@ -118,9 +180,10 @@
       .then((res) => { if (!res.ok) throw new Error(`${res.status} ${src}`); return res.arrayBuffer(); })
       .then((data) => context.decodeAudioData(data))
       .then((buffer) => {
-        buffers.set(src, buffer);
-        return Promise.all([prewarmBuffer(src, buffer), prewarmSynthBuffer(src, buffer)])
-          .then(() => { pending.delete(src); return buffer; });
+        const polishedBuffer = polishBuffer(context, buffer);
+        buffers.set(src, polishedBuffer);
+        return Promise.all([prewarmBuffer(src, polishedBuffer), prewarmSynthBuffer(src, polishedBuffer)])
+          .then(() => { pending.delete(src); return polishedBuffer; });
       })
       .catch((error) => {
         // 单个文件失败就退回 HTMLAudio 播放这个采样，不影响其他
@@ -354,15 +417,19 @@
     attack.buffer = buffer;
     const attackGain = connectGain(attack, gain);
     const attackLength = Math.min(0.12, bodyEnd);
-    attackGain.gain.setValueAtTime(gain, startAt);
-    attackGain.gain.linearRampToValueAtTime(0.001, startAt + attackLength);
+    const attackFadeIn = Math.min(FADE_IN_SECONDS, attackLength * 0.25);
+    attackGain.gain.setValueAtTime(FADE_FLOOR, startAt);
+    attackGain.gain.linearRampToValueAtTime(gain, startAt + attackFadeIn);
+    attackGain.gain.setValueAtTime(gain, startAt + attackFadeIn);
+    attackGain.gain.linearRampToValueAtTime(FADE_FLOOR, startAt + attackLength);
     attack.start(startAt, region.start);
     attack.stop(Math.min(startAt + attackLength, startAt + total));
 
     const body = trackSource(ctx.createBufferSource());
     body.buffer = buffer;
     body.loop = true;
-    body.loopStart = region.start;
+    const bodyStartOffset = Math.min(region.end - 0.02, region.start + attackLength);
+    body.loopStart = bodyStartOffset;
     body.loopEnd = Math.max(region.start + 0.02, mainNaturalEnd);
     body.playbackRate.value = mainPlaybackRate;
     const bodyGain = connectGain(body, gain);
@@ -372,7 +439,7 @@
       bodyGain.gain.setValueAtTime(gain, startAt + bodyEnd - FADE_OUT_SECONDS);
       scheduleExponentialFade(bodyGain, gain, startAt + bodyEnd - FADE_OUT_SECONDS, startAt + bodyEnd);
     }
-    body.start(startAt, region.start);
+    body.start(startAt + attackLength, bodyStartOffset);
     body.stop(startAt + bodyEnd);
 
     // 尾音保持采样原速，只做增益衰减，保留真实乐器的自然衰减。
@@ -383,8 +450,9 @@
     const tailGain = connectGain(tail, gain * 0.7);
     const tailFadeIn = Math.min(FADE_IN_SECONDS, tailLength * 0.25);
     const tailStart = Math.max(startAt, startAt + bodyEnd - tailFadeIn);
-    tailGain.gain.setValueAtTime(gain * 0.7, tailStart);
-    scheduleExponentialFade(tailGain, gain * 0.7, tailStart, startAt + total);
+    tailGain.gain.setValueAtTime(FADE_FLOOR, tailStart);
+    tailGain.gain.linearRampToValueAtTime(gain * 0.7, tailStart + tailFadeIn);
+    scheduleExponentialFade(tailGain, gain * 0.7, tailStart + tailFadeIn, startAt + total);
     tail.start(tailStart, tailOffset);
     tail.stop(startAt + total);
   };

@@ -1,9 +1,16 @@
-/* 练习区键盘：点击后更新五线谱位置。 */
+/* 练习区键盘：点击后播放对应钢琴采样并更新五线谱位置。 */
 (() => {
   'use strict';
 
   const keyboard = document.querySelector('[data-practice-keyboard]');
   if (!keyboard) return;
+  const AUDIO = window.MusicLabAudio || null;
+  const audioRoot = new URL('../audio/piano/', document.baseURI);
+  const sampleNames = { 'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab', 'A#': 'Bb' };
+  const sampleSource = (note) => {
+    const sampleNote = note.replace(/^([A-G]#)/, (name) => sampleNames[name]);
+    return new URL(`piano-${sampleNote}.wav`, audioRoot).href;
+  };
   const naturalNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
   const sharpAfter = { C: 'C#', D: 'D#', F: 'F#', G: 'G#', A: 'A#' };
   const whiteNotes = [];
@@ -64,7 +71,18 @@
 
   keyboard.addEventListener('click', (event) => {
     const key = event.target.closest('[data-note]');
-    if (key) update(key.dataset.note);
+    if (!key) return;
+    const note = key.dataset.note;
+    update(note);
+    if (AUDIO) {
+      AUDIO.unlock();
+      AUDIO.load(sampleSource(note));
+      AUDIO.play(sampleSource(note), { gain: 0.85, duration: 1.2 });
+    } else {
+      const voice = new Audio(sampleSource(note));
+      voice.volume = 0.85;
+      voice.play().catch(() => {});
+    }
   });
 
   update('C3');
