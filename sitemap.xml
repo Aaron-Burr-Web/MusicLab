@@ -7,6 +7,11 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://example.com/practice.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
   <url>
     <loc>https://example.com/introduction/intro.html</loc>
@@ -55,6 +60,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://example.com/Start%20Learning/beat-we-will-rock-you.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://example.com/Start%20Learning/chords.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -66,6 +76,16 @@
   </url>
   <url>
     <loc>https://example.com/Start%20Learning/chords-chords.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/chords-scales.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/chords-progressions.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -91,6 +111,41 @@
   </url>
   <url>
     <loc>https://example.com/Start%20Learning/tones-chord-color.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/bass-instruments.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/bass-another-one.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/bass-track.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/melodies.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/pitches-Twinkle.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/pitches-melodies.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/Start%20Learning/pitches-notation.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
